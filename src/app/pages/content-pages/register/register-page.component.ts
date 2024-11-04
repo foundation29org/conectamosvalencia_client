@@ -39,7 +39,7 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
   myuuid: string = uuidv4();
   @ViewChild('recaptcha') recaptchaElement: ElementRef;
   captchaToken: string = "";
-  needCaptcha: boolean = true;
+  needCaptcha: boolean = false;
 
   private subscription: Subscription = new Subscription();
 
@@ -48,7 +48,7 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.addRecaptchaScript();
+    //this.addRecaptchaScript();
   }
 
   renderReCaptch() {
