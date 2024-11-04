@@ -1,0 +1,10 @@
+
+    export const environment = {
+        production: true,
+        api: undefined,  //Server URL: 'http://<direction>:<port>'
+        blobAccessToken:{sasToken: null,blobAccountUrl: 'https://blobuk.blob.core.windows.net/'},
+        googlemapkey: undefined,  //googlemap apikey
+        captcha: undefined, //googlemap captcha
+        hotjarSiteId:undefined // Horjar ID
+        };
+    

@@ -1,0 +1,49 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-12 col-md-3">
+      <mat-card class="mb-3">
+        <mat-card-header>
+          <mat-card-title>Filtrar necesidades</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-radio-group 
+            [(ngModel)]="selectedNeedType"
+            (change)="onNeedTypeChange($event.value)"
+            class="need-type-filter">
+            <mat-radio-button 
+              *ngFor="let type of needTypes" 
+              [value]="type.id"
+              class="d-block mb-2">
+              {{type.label}}
+            </mat-radio-button>
+          </mat-radio-group>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Estadísticas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stats">
+            <p><strong>Total solicitudes:</strong> {{getNeedStats().total}}</p>
+            <div *ngFor="let type of needTypes">
+              <p *ngIf="type.id !== 'all'">
+                <strong>{{type.label}}:</strong> 
+                {{getNeedStats().byType[type.id]}}
+              </p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-md-9">
+      <mat-card>
+        <mat-card-content>
+          <div #mapContainer id="map"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

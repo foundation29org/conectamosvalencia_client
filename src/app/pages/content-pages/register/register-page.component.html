@@ -1,0 +1,123 @@
+<!--Registration Page Starts-->
+
+<div class="h-100">
+  <div class=""><!--col-sm-12 my-auto-->
+      <div class="mt-4 card card-block mx-auto" style="max-width: 40rem !important;">
+          <div class="card-body">
+              <div class="row">
+                <div class="col-12 col-sm-12 align-items-center">
+                  <div *ngIf="!isVerifyemail" class="card mx-auto">
+                    <h2 class="text-center content-header mb-3">Crear cuenta</h2>
+                 
+                      <form   (ngSubmit)="onSubmit()" #f="ngForm">
+                        <div class="form-group">
+                          <div class="">
+                            <input type="text" class="form-control" name="userName" id="userName" placeholder="Nombre" ngModel required #userName="ngModel">
+                          </div>
+                          <small class="form-text text-muted danger" *ngIf="!userName.valid && (userName.dirty || userName.touched)">Este campo es obligatorio</small>
+                        </div>
+                      
+                        <div class="form-group">
+                          <div class="">
+                            <input type="text" class="form-control" name="position" id="position" placeholder="Cargo" ngModel required #position="ngModel">
+                          </div>
+                          <small class="form-text text-muted danger" *ngIf="!position.valid && (position.dirty || position.touched)">Este campo es obligatorio</small>
+                        </div>
+                      
+                        <div class="form-group">
+                          <div class="">
+                            <input type="text" class="form-control" name="institution" id="institution" placeholder="Institución" ngModel required #institution="ngModel">
+                          </div>
+                          <small class="form-text text-muted danger" *ngIf="!institution.valid && (institution.dirty || institution.touched)">Este campo es obligatorio</small>
+                        </div>
+                        <div class="form-group">
+                          <div class="">
+                            <input type="tel" 
+                                   class="form-control" 
+                                   name="phone" 
+                                   id="phone" 
+                                   placeholder="Teléfono" 
+                                   ngModel 
+                                   required 
+                                   pattern="^[0-9]{9}$"
+                                   #phone="ngModel">
+                          </div>
+                          <small class="form-text text-muted danger" *ngIf="!phone.valid && (phone.dirty || phone.touched)">
+                            Introduce un número de teléfono válido (9 dígitos)
+                          </small>
+                        </div>
+                        <div class="form-group">
+                          <div class="">
+                              <input type="email" class="form-control" name="email" id="email" placeholder="Correo electrónico" [(ngModel)]="emailpar1" ngModel required email #email="ngModel">
+                          </div>
+                          <small class="form-text text-muted danger" *ngIf="!email.valid && (email.dirty || email.touched)">Introduce un correo electrónico válido</small>
+                        </div>
+                        <div class="form-group">
+                          <div class="">
+                              <input type="email" class="form-control" name="email2" id="email2" placeholder="Repite el correo electrónico" [(ngModel)]="emailpar2" ngModel required email2 #email2="ngModel" [equalTo]="email">
+                          </div>
+                          <small class="form-text text-muted danger" *ngIf="email2.errors?.equalTo">Los correos electrónicos no coinciden</small>
+                        </div>
+                          <div class="form-group col-sm-offset-1 mb-0">
+                            <mat-checkbox [(ngModel)]="openedTerms" 
+                            [disabled]="!openedTerms" 
+                            name="terms" 
+                            required 
+                            #terms="ngModel" 
+                            id="terms"
+                            (click)="!openedTerms ? openTerms() : null">
+                            <label class="d-inline pointer" style="margin-bottom: auto !important;">
+                                <span (click)="openTerms(); $event.stopPropagation()" class="primary">
+                                    <small style="white-space: normal;"> Acepto la política de protección de datos de ConectamosValencia.
+                                    </small>
+                                </span>
+                            </label>
+                        </mat-checkbox>
+                            <small class="form-text text-muted danger" *ngIf="!terms.valid && (terms.dirty || terms.touched) && openedTerms">Este campo es requerido</small>
+                            <small class="form-text text-muted danger" *ngIf="!terms.valid && (terms.dirty || terms.touched) && !openedTerms">Es obligatorio leer la política de privacidad antes de continuar</small>
+                          </div>
+                          <div class="form-group">
+                                  <div class="col-md-9">
+                                    <div class="card-body">
+                                        <div #recaptcha ></div>
+                                      <span *ngIf="needCaptcha && f.valid && (openedTerms)" class="form-text text-muted danger">Este campo es requerido</span>
+                                    </div>
+                                  </div>
+                                </div>
+                          <div class="form-group text-center">
+                              <button (click)="goToLogin()" type="button" class="btn btn-grey btn-outline-grey">Cancelar</button>
+                              <span *ngIf="!sending">
+                                <div *ngIf="f.valid && (openedTerms);then formValid else formError"></div>
+                                <ng-template #formValid>
+                                    <button class="ml-2 btn btn-dark" [disabled]="needCaptcha" type="submit">
+                                        Crear cuenta
+                                    </button>
+                                </ng-template>
+                                <ng-template #formError>
+                                    <button class="ml-2 btn btn-dark" type="button" (click)="submitInvalidForm()">
+                                      Crear cuenta
+                                    </button>
+                                </ng-template>
+                            </span>
+                              <span *ngIf="sending">
+                                <i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i>
+                              </span>
+                          </div>
+                          <div *ngIf="isEmailBusy" class="form-group text-center">
+                              <span class="pl-2 text-muted danger">Ya existe una cuenta con este correo electrónico</span>
+                          </div>
+                      </form>
+                  </div>
+                  <div *ngIf="isVerifyemail" class="card-block mx-auto">
+                    <div class="col-md-12">
+                      <button (click)="goToLogin()" type="button" class="btn btn-dark btn-block btn-raised">{{'menu.Login' | translate }}</button>
+                    </div>
+                  </div>
+              </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!--Registration Page Ends-->

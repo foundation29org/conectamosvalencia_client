@@ -1,0 +1,24 @@
+.centerSpinner{
+  margin: auto;
+  width: 50%;
+}
+.mat-form-field {
+  width: 100%;
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 9999 !important;
+}
+
+agm-map {
+  height: 300px;
+}
+
+::ng-deep .gm-style-iw-d{
+  max-height: 190px !important;
+  min-width: 100px !important;
+}
+
+.btn-success, .btn-warning{
+  color: #FFF !important;
+}

@@ -1,0 +1,33 @@
+#map {
+  height: 70vh;
+  width: 100%;
+}
+
+.need-type-filter {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.stats {
+  p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+mat-card {
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 991px) {
+  #map {
+    height: 50vh;
+  }
+  .container-fluid {
+    padding: 0.5rem;
+  }
+  
+  mat-card {
+    margin-bottom: 0.5rem;
+  }
+}

@@ -1,0 +1,149 @@
+.navbar {
+  //top: 91% !important;
+  background-color: #343a40;
+  //border-top-left-radius: 1.5rem;
+  //border-top-right-radius: 1.5rem;
+}
+
+.navbar .navbar-nav {
+  display: flex;
+}
+
+.navbar-nav {
+  flex-direction: row;
+}
+
+.nav-item {
+  flex: 1;
+  text-align: center;
+}
+
+.navbar-container{
+  width: 100%;
+}
+
+.dropdown-toggle::after {
+  display:none;
+}
+
+.navbar-expand-lg .navbar-nav {
+  display: flex;
+  flex-direction: row;
+}
+
+.dropdown-item {
+  line-height: 1rem;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.logo-img {
+  width: 60px;
+}
+
+.close-task{
+  position: absolute;
+  top: 0px;
+  right: 4px;
+}
+
+::ng-deep .swal2-modal .swal2-cancel{
+  background-color: #6c757d !important;
+}
+
+::ng-deep .swal2-modal .swal2-confirm{
+  background-color: #009DA0 !important;
+}
+
+ ::ng-deep .mat-checkbox-layout{
+  white-space: normal;
+}
+
+::ng-deep .mat-checkbox-label{
+  font-size: 1rem !important;
+  text-transform: none !important;
+  letter-spacing: 0.3px !important;
+  display: block;
+  font-family: "Rubik", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  white-space: pre-wrap;
+  font-weight: 300 !important;
+  //color: inherit !important;
+}
+
+ form label{
+  font-size: 1rem !important;
+  text-transform: none !important;
+  letter-spacing: 0.3px !important;
+  //color: inherit !important;
+}
+
+ ::ng-deep .mat-radio-label-content{
+  font-weight: normal !important;
+}
+
+ ::ng-deep .example-radio-group > .mat-radio-button{
+  font-family: "Rubik", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+ ::ng-deep .mat-radio-label {
+    white-space: pre-wrap;
+}
+
+.menuClinic-sm{
+  padding: 1em;
+  margin-left: 275px;
+}
+
+.btn-header:hover {
+  border-bottom-width: 2px !important;
+  border-color: #bf1922 !important;
+  border-bottom: 2px solid #bf1922 !important;
+}
+
+@media ( max-width: 991px ){
+.navbar-container {
+    width: 100% !important;
+  }
+
+  .navbar-header {
+      width: 100% !important;
+    }
+
+    .menuClinic-sm{
+      margin-left: 0px;
+    }
+    .logo-img{
+      margin-left: 0.75rem !important;
+    }
+}
+@media ( max-width: 600px ){
+.font-alert {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 481px) {
+
+
+  .navbar-header-logos{
+    max-width: 50px;
+  }
+}
+
+@media (max-width: 377px) {
+ 
+
+  .logo-img{
+    width: 50px;
+  }
+
+}
+
+@media (max-width: 320px) {
+  .logo-img{
+    width: 40px;
+  }
+
+}

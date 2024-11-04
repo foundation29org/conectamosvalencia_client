@@ -1,0 +1,345 @@
+<div class="row">
+	<div class="col-sm-12">
+	  <div class="content-header">Mis recursos</div>
+	  <p class="content-sub-header"> Gestiona tus necesidades y ofertas. Aquí podrás ver, editar y eliminar todos los recursos que has creado.</p>
+	</div>
+  </div>
+  <div class="row mb-3">
+	<div class="col-sm-12">
+	  <button class="btn btn-primary float-end" (click)="showNewResourceModal(contentResource)">
+		<i class="ft-plus"></i> Nuevo recurso
+	  </button>
+	</div>
+  </div>
+  <div class="card">
+	<div class="card-header">
+	  <div class="row">
+		<div class="col-md-12 mb-3">
+		  <h4>Filtros</h4>
+		  <div class="row g-3">
+			<!-- Filtro por tipo -->
+			<div class="col-md-3">
+			  <select class="form-select" [(ngModel)]="filters.type" (ngModelChange)="applyFilters()">
+				<option value="">Todos los tipos</option>
+				<option value="need">Necesidad</option>
+				<option value="offer">Oferta</option>
+			  </select>
+			</div>
+  
+			<!-- Filtro por estado -->
+			<div class="col-md-3">
+				<select class="form-select" [(ngModel)]="filters.status" (ngModelChange)="applyFilters()">
+				  <option value="">Todos los estados</option>
+				  <option value="new">Nuevo</option>
+				  <option value="in_progress">En proceso</option>
+				  <option value="completed">Completado</option>
+				</select>
+			  </div>
+  
+			<!-- Filtro por fecha -->
+			<div class="col-md-3">
+			  <input 
+				type="date" 
+				class="form-control" 
+				[(ngModel)]="filters.date"
+				(ngModelChange)="applyFilters()"
+				placeholder="Filtrar por fecha">
+			</div>
+  
+			<!-- Búsqueda por texto -->
+			<div class="col-md-3">
+			  <input 
+				type="text" 
+				class="form-control" 
+				[(ngModel)]="filters.search"
+				(ngModelChange)="applyFilters()"
+				placeholder="Buscar...">
+			</div>
+		  </div>
+		  <div class="row mt-2" *ngIf="hasActiveFilters()">
+			<div class="col">
+			  <button class="btn btn-outline-secondary btn-sm" 
+					  (click)="clearFilters()"
+					  >
+				<i class="ft-x"></i> Limpiar filtros
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  
+	<div class="card-content">
+	  <div class="card-body">
+		<!-- Tabla de recursos -->
+		<div class="table-responsive">
+		  <table class="table table-hover">
+			<thead>
+				<tr>
+					<th (click)="sort('type')">
+					  Tipo {{sortColumn === 'type' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th (click)="sort('needs')">
+					  Necesidades/Ofertas {{sortColumn === 'needs' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th (click)="sort('status')">
+					  Estado {{sortColumn === 'status' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th (click)="sort('timestamp')">
+					  Fecha {{sortColumn === 'timestamp' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th>Acciones</th>
+				  </tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let resource of filteredResources | slice:(currentPage-1)*pageSize:currentPage*pageSize">
+				<td>
+				  <span [class.badge-danger]="resource.type === 'need'"
+						[class.badge-success]="resource.type === 'offer'"
+						class="badge">
+					{{resource.type === 'need' ? 'Necesidad' : 'Oferta'}}
+				  </span>
+				</td>
+				<td>
+				  <ul class="mb-0 list-unstyled">
+					<li *ngFor="let need of resource.needs">
+						{{getNeedLabel(need)}}
+						<i class="ft-info ms-1" 
+						style="font-size: 14px; color: #666;"
+						[ngbPopover]="getNeedInfo(need)"
+						popoverClass="info-popover"
+						placement="right"
+						[openDelay]="200"
+						triggers="mouseenter:mouseleave">
+					 </i>
+					<li *ngIf="resource.otherNeeds">{{resource.otherNeeds}}</li>
+				  </ul>
+				</td>
+				<td>
+					<select class="form-select form-select-sm" 
+							[(ngModel)]="resource.status"
+							(change)="updateStatus(resource)"
+							[ngClass]="{
+							  'bg-warning text-dark': resource.status === 'new',
+							  'bg-info text-white': resource.status === 'in_progress',
+							  'bg-success text-white': resource.status === 'completed'
+							}">
+					  <option value="new">Nuevo</option>
+					  <option value="in_progress">En proceso</option>
+					  <option value="completed">Completado</option>
+					</select>
+				  </td>
+				<td>{{resource.timestamp | date:'dd/MM/yyyy HH:mm'}}</td>
+				<td>
+				  <div class="btn-group">
+					<button class="btn btn-sm btn-info mr-1" 
+						*ngIf="resource.details"
+						(click)="viewDetails(resource)"
+						[matTooltip]="'Ver detalles adicionales'">
+						<i class="ft-file-text"></i>
+					</button>
+
+					<button *ngIf="resource.location.lat && resource.location.lng" class="btn btn-sm btn-info mr-1" 
+						  (click)="showOnMap(resource.location, mapModal)">
+					<i class="ft-map-pin"></i> Ver
+				  </button>
+
+				  <button class="btn btn-sm btn-primary mr-1" 
+						(click)="editResource(resource)"
+						[matTooltip]="'Editar recurso'">
+						<i class="ft-edit-2"></i>
+					</button>
+				
+				  <button class="btn btn-sm btn-primary" 
+						(click)="deleteResource(resource._id)"
+						[matTooltip]="'Eliminar recurso'">
+						<i class="ft-trash-2"></i>
+					</button>
+				  </div>
+				</td>
+			  </tr>
+			</tbody>
+		  </table>
+		</div>
+  
+		<!-- Paginación -->
+		<div class="d-flex justify-content-between align-items-center mt-3">
+		  <div>
+			Mostrando {{startIndex + 1}} - {{endIndex}} de {{totalItems}} elementos
+		  </div>
+		  <ngb-pagination
+			[collectionSize]="totalItems"
+			[(page)]="currentPage"
+			[pageSize]="pageSize"
+			(pageChange)="onPageChange($event)">
+		  </ngb-pagination>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+  <ng-template #contentResource let-c="close" let-d="dismiss" appendTo="body">
+	<div class="modal-header">
+	 <h4 class="modal-title">{{editingResourceId ? 'Editar' : 'Nuevo'}} Recurso</h4>
+	  <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+		<span aria-hidden="true">&times;</span>
+	  </button>
+	</div>
+	<div class="modal-body">
+	  <!-- Importante: [formGroup] en lugar de formGroup -->
+	  <form [formGroup]="resourceForm">
+		<!-- Tipo de recurso -->
+		<div class="mb-3">
+			<label class="form-label">Tipo</label>
+			<mat-radio-group formControlName="type" class="d-flex gap-4">
+			  <mat-radio-button value="need" color="warn" class="mr-3">
+				 Necesidad
+			  </mat-radio-button>
+			  <mat-radio-button value="offer" color="primary">
+				 Oferta
+			  </mat-radio-button>
+			</mat-radio-group>
+		  </div>
+  
+		<!-- Necesidades -->
+		<div class="mb-3">
+		  <label class="form-label">Necesidades/Ofertas</label>
+		  <div formArrayName="needs">
+			<div class="row">
+				<div class="col-6 col-md-4 mb-2" *ngFor="let needType of needTypes">
+					<mat-checkbox 
+					[checked]="isNeedSelected(needType.id)"
+					(change)="onNeedToggle(needType.id, $event.checked)"
+					class="d-block mb-2">
+					{{needType.label}}
+					<i class="ft-info ms-1" 
+					   style="font-size: 14px; color: #666;"
+					   [ngbPopover]="needType.info"
+					   popoverClass="info-popover"
+					   placement="right"
+					   [openDelay]="200"
+					   triggers="mouseenter:mouseleave">
+					</i>
+				  </mat-checkbox>
+				</div>
+			  </div>
+		  </div>
+		</div>
+  
+		<!-- Otras necesidades -->
+		<div class="mb-3">
+		  <label class="form-label">Otras necesidades</label>
+		  <textarea class="form-control" formControlName="otherNeeds" rows="3"></textarea>
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label">Detalles adicionales</label>
+			<textarea 
+			  class="form-control" 
+			  formControlName="details" 
+			  rows="3"
+			  placeholder="Añade cualquier información adicional que pueda ser relevante...">
+			</textarea>
+			<small class="text-muted">
+			  <i class="ft-info me-1"></i>
+			  Puedes incluir aquí cualquier detalle específico que ayude a coordinar mejor la ayuda.
+			</small>
+		  </div>
+  
+		<!-- Ubicación -->
+		<div class="mb-3" *ngIf="resourceForm.get('type').value === 'need' || resourceForm.get('type').value === 'offer'">
+			<label class="form-label">Ubicación</label>
+			
+			<div class="text-muted mb-2" *ngIf="resourceForm.get('type').value === 'need'">
+			  <small>
+				<i class="ft-info me-1"></i>
+				Es importante marcar la ubicación exacta donde se necesita la ayuda para poder coordinar mejor la asistencia.
+				Haz clic en el mapa para seleccionar el punto.
+			  </small>
+			</div>
+		  
+			<div class="text-muted mb-2" *ngIf="resourceForm.get('type').value === 'offer'">
+			  <small>
+				<i class="ft-info me-1"></i>
+				Puedes marcar una ubicación de referencia si lo deseas, aunque no es obligatorio para las ofertas de ayuda.
+			  </small>
+			  <small> Si deseas indicar una ubicación de referencia, por favor sé lo más preciso posible. 
+				Puedes hacer zoom en el mapa para marcar el punto exacto. Una ubicación precisa 
+				ayudará a coordinar mejor la ayuda.</small>
+			</div>
+		  
+			<div class="map-container offset-1 col-10">
+				<agm-map 
+				[latitude]="defaultLat" 
+				[longitude]="defaultLng" 
+				[zoom]="7"
+				(mapReady)="mapReadyHandler($event)">
+				<agm-marker 
+				  *ngIf="showMarker && resourceForm.get('lat').value"
+				  [latitude]="resourceForm.get('lat').value"
+				  [longitude]="resourceForm.get('lng').value"
+				  [markerDraggable]="true"
+				  (dragEnd)="onMarkerDragEnd($event)">
+				</agm-marker>
+			  </agm-map>
+			</div>
+			
+			<!-- Campos ocultos para el formulario -->
+			<div class="row" [hidden]="true">
+			  <div class="col-md-6">
+				<input type="number" formControlName="lat">
+			  </div>
+			  <div class="col-md-6">
+				<input type="number" formControlName="lng">
+			  </div>
+			</div>
+		  
+			<!-- Mostrar las coordenadas seleccionadas -->
+			<div class="text-muted small offset-1 col-10" *ngIf="resourceForm.get('lat').value">
+			  <!--Ubicación seleccionada: {{resourceForm.get('lat').value}}, {{resourceForm.get('lng').value}}-->
+			  <button type="button" class="btn btn-sm btn-primary mt-2" (click)="clearLocation()">
+				<i class="ft-x"></i> Borrar ubicación
+			  </button>
+			</div>
+		  </div>
+  
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+		  <button type="button" class="btn btn-primary" (click)="saveResource()" [disabled]="!resourceForm.valid">Guardar</button>
+		</div>
+	  </form>
+	</div>
+  </ng-template>
+
+  <ng-template #mapModal let-c="close" let-d="dismiss">
+	<div class="modal-header">
+	  <h4 class="modal-title">Ubicación</h4>
+	  <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+		<span aria-hidden="true">&times;</span>
+	  </button>
+	</div>
+	<div class="modal-body">
+	  <div class="map-container" style="height: 400px;">
+		<agm-map 
+		  [latitude]="selectedLocation.lat" 
+		  [longitude]="selectedLocation.lng" 
+		  [zoom]="15">
+		  <agm-marker 
+			[latitude]="selectedLocation.lat" 
+			[longitude]="selectedLocation.lng">
+		  </agm-marker>
+		</agm-map>
+	  </div>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" (click)="c('Close click')">Cerrar</button>
+	</div>
+  </ng-template>
+
+<div class="col-lg-12 col-12 form-group" *ngIf="working">
+	<div>
+		<p class="centerSpinner"><i class="fa fa-spinner fa-spin fa-3x fa-fw pink"></i></p>
+	</div>
+	<div>{{'generics.Sending' | translate }}...</div>
+</div>
