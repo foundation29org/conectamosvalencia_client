@@ -567,9 +567,9 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
     var a = document.createElement('a');
     var dateNow = new Date();
     var stringDateNow = this.dateService.transformDate(dateNow);
-    a.download    = "AyudamosValencia_"+stringDateNow+".csv";
+    a.download    = "ConectamosValencia_"+stringDateNow+".csv";
     a.href        = url;
-    a.textContent = "AyudamosValencia_"+stringDateNow+".csv";
+    a.textContent = "ConectamosValencia_"+stringDateNow+".csv";
     a.setAttribute("id", "download")
 
     document.getElementById('content').appendChild(a);

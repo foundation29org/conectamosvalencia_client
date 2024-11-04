@@ -18,7 +18,7 @@ const routes: Routes = [
         path: '.',
         component: LandPageComponent,
         data: {
-          title: 'Ayudamos Valencia'
+          title: 'Conectamos Valencia'
         },
       }
     ]

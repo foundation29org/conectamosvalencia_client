@@ -286,7 +286,7 @@
     "t2.3": "Are you the patient or a caregiver?",
     "t2.4": "Select who you are below.",
     "t3": "Do you give us your consent to do so?",
-    "p1title": "¡Bienvenido a Ayudamos Valencia!",
+    "p1title": "¡Bienvenido a Conectamos Valencia!",
     "p1": "Esta plataforma ha sido creada para facilitar la coordinación de ayuda durante emergencias. Aquí podrás informar sobre tus necesidades básicas durante una situación de emergencia, como falta de electricidad, agua potable, alimentos, medicamentos, o asistencia sanitaria, de forma anónima y sencilla. Nuestro objetivo es mejorar la respuesta y asegurar que la ayuda llegue a quienes más la necesitan en Valencia.",
     "p1.1": "Given the situation, there is no guarantee that your needs can be attended, but communicating them is the first step towards getting the aid you require."
   },
@@ -446,7 +446,7 @@
   "cookies":{
     "title": "Cookies policy",
     "t1": "1. Object",
-    "p1.1": "The SJD Barcelona Children’s Hospital (hereinafter HSJD) recognises the importance of the applicable legislation and regulations pertaining to privacy and data protection. In this sense, the protection of the safety, integrity and confidentiality of our clients' and users' information is very important to us and we therefore strive to act responsibly in this regard. This page describes our application’s (hereinafter, the Application) cookies policy <a href='https://conectamosvalencia.azurewebsites.net/' target='_blank'>https://conectamosvalencia.azurewebsites.net/</a> (hereinafter the Application).",
+    "p1.1": "The SJD Barcelona Children’s Hospital (hereinafter HSJD) recognises the importance of the applicable legislation and regulations pertaining to privacy and data protection. In this sense, the protection of the safety, integrity and confidentiality of our clients' and users' information is very important to us and we therefore strive to act responsibly in this regard. This page describes our application’s (hereinafter, the Application) cookies policy <a href='https://conectamosvalencia.com/' target='_blank'>https://conectamosvalencia.com/</a> (hereinafter the Application).",
     "p1.2": "The provisions of both the Legal Notice and the Privacy policy will apply for the purpose of this Cookies Policy.",
     "t2": "2. Acceptance of the Cookies Policy",
     "p2.1": "As specified in the first layer ('banner on cookies'), the User has accepted or is able to accept this Cookies Policy. The use of technical means to prevent cookies from being downloaded to the user's browser does not invalidate the consent given for legal purposes, although the technical result may be that some or none of the cookies will not be downloaded, the effects of which are described later in this Cookies Policy.",
