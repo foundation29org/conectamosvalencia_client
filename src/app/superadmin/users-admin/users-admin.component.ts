@@ -9,6 +9,7 @@ import {  NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/Subscription';
 import {DateAdapter} from '@angular/material/core';
 import { SortService} from 'app/shared/services/sort.service';
+import { DateService } from 'app/shared/services/date.service';
 import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
 
@@ -43,7 +44,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
   emailMsg="";
   msgList: any = {};
 
-  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService,private adapter: DateAdapter<any>, private sortService: SortService){
+  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService,private adapter: DateAdapter<any>, private sortService: SortService, private dateService: DateService){
     this.adapter.setLocale(this.authService.getLang());
     this.lang = this.authService.getLang()
     switch(this.authService.getLang()){

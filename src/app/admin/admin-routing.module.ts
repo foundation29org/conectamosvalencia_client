@@ -3,23 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'app/shared/auth/auth-guard.service';
 import { RoleGuard } from 'app/shared/auth/role-guard.service';
 
-import { UsersAdminComponent } from "./users-admin/users-admin.component";
 import { MapaPageComponent2 } from './mapa/mapa.component';
-import { MyResourcesComponent } from './myresources/myresources.component';
+import { ResourcesComponent } from '../admin/resources/resources.component';
 
 const routes: Routes = [
   {
     path: '',
     children: [
-      {
-        path: 'users',
-        component: UsersAdminComponent,
-        data: {
-          title: 'Todos los recursos',
-          expectedRole: ['Admin']
-        },
-        canActivate: [AuthGuard, RoleGuard]
-      },
       {
         path: 'mapa',
         component: MapaPageComponent2,
@@ -30,14 +20,14 @@ const routes: Routes = [
         canActivate: [AuthGuard, RoleGuard]
       },
       {
-        path: 'myresources',
-        component: MyResourcesComponent,
+        path: 'resources',
+        component: ResourcesComponent,
         data: {
-          title: 'Mis recursos',
-          expectedRole: ['Admin']
+          title: 'Recursos',
+          expectedRole: ['Admin', 'SuperAdmin']
         },
         canActivate: [AuthGuard, RoleGuard]
-      }      
+      }     
     ]
   }
 ];

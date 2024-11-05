@@ -51,13 +51,13 @@ export class AuthService {
       if(tokenPayload.role == 'SuperAdmin'){
         // is role superadmin
         this.setRedirectUrl('/superadmin/users')
-      }else if(tokenPayload.role == 'Clinical'){
+      }else if(tokenPayload.role == 'User'){
         // is role Clinical
-        this.setRedirectUrl('/clinical/home')
+        this.setRedirectUrl('/user/myresources')
       }else if(tokenPayload.role == 'Admin'){
         // Admin
         this.setGroup(tokenPayload.group);
-        this.setRedirectUrl('/admin/users')
+        this.setRedirectUrl('/admin/resources')
       }
       else{
         // is role user
@@ -85,13 +85,13 @@ export class AuthService {
     if(tokenPayload.role == 'SuperAdmin'){
       // is role superadmin
       this.setRedirectUrl('/superadmin/users')
-    }else if(tokenPayload.role == 'Clinical'){
+    }else if(tokenPayload.role == 'User'){
       // is role clinic
-      this.setRedirectUrl('/clinical/home')
+      this.setRedirectUrl('/user/myresources')
     }else if(tokenPayload.role == 'Admin'){
       // Admin
       this.setGroup(tokenPayload.group);
-      this.setRedirectUrl('/admin/users')
+      this.setRedirectUrl('/admin/resources')
     }else{
       // is role user
       this.setRedirectUrl('/home')

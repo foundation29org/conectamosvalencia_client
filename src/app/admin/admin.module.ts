@@ -10,8 +10,6 @@ import { MatchHeightModule } from "../shared/directives/match-height.directive";
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { AgmCoreModule } from '@agm/core';
 
-import { UsersAdminComponent } from "./users-admin/users-admin.component";
-import { MyResourcesComponent } from './myresources/myresources.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -20,11 +18,13 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {AutosizeModule} from 'ngx-autosize';
 import { SafePipe } from '../shared/services/safe.pipe';
 import { MapaPageComponent2 } from './mapa/mapa.component';
+import { ResourcesComponent } from './resources/resources.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatFormFieldModule } from '@angular/material/form-field'
 
 @NgModule({
     imports: [
@@ -50,14 +50,14 @@ import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
         MatRadioModule,
         MatCheckboxModule,
         MatTooltipModule,
-        NgbPopoverModule
+        NgbPopoverModule,
+        MatFormFieldModule
     ],
     exports: [TranslateModule],
     declarations: [
-        UsersAdminComponent,
-        MyResourcesComponent,
         SafePipe,
-        MapaPageComponent2
+        MapaPageComponent2,
+        ResourcesComponent
     ],
     providers: [],
 })

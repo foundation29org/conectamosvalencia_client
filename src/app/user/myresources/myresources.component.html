@@ -19,21 +19,29 @@
 		  <div class="row g-3">
 			<!-- Filtro por tipo -->
 			<div class="col-md-3">
-			  <select class="form-select" [(ngModel)]="filters.type" (ngModelChange)="applyFilters()">
-				<option value="">Todos los tipos</option>
-				<option value="need">Necesidad</option>
-				<option value="offer">Oferta</option>
-			  </select>
+				<mat-form-field appearance="outline" class="w-100">
+					<mat-select [(ngModel)]="filters.type" 
+								(selectionChange)="applyFilters()"
+								placeholder="Todos los tipos">
+					  <mat-option value="">Todos los tipos</mat-option>
+					  <mat-option value="need">Necesidad</mat-option>
+					  <mat-option value="offer">Oferta</mat-option>
+					</mat-select>
+				  </mat-form-field>
 			</div>
   
 			<!-- Filtro por estado -->
 			<div class="col-md-3">
-				<select class="form-select" [(ngModel)]="filters.status" (ngModelChange)="applyFilters()">
-				  <option value="">Todos los estados</option>
-				  <option value="new">Nuevo</option>
-				  <option value="in_progress">En proceso</option>
-				  <option value="completed">Completado</option>
-				</select>
+				<mat-form-field appearance="outline" class="w-100">
+					<mat-select [(ngModel)]="filters.status" 
+								(selectionChange)="applyFilters()"
+								placeholder="Todos los estados">
+					  <mat-option value="">Todos los estados</mat-option>
+					  <mat-option value="new">Nuevo</mat-option>
+					  <mat-option value="in_progress">En proceso</mat-option>
+					  <mat-option value="completed">Completado</mat-option>
+					</mat-select>
+				  </mat-form-field>
 			  </div>
   
 			<!-- Filtro por fecha -->
@@ -116,18 +124,18 @@
 				  </ul>
 				</td>
 				<td>
-					<select class="form-select form-select-sm" 
-							[(ngModel)]="resource.status"
-							(change)="updateStatus(resource)"
-							[ngClass]="{
-							  'bg-warning text-dark': resource.status === 'new',
-							  'bg-info text-white': resource.status === 'in_progress',
-							  'bg-success text-white': resource.status === 'completed'
-							}">
-					  <option value="new">Nuevo</option>
-					  <option value="in_progress">En proceso</option>
-					  <option value="completed">Completado</option>
-					</select>
+					<mat-select [(ngModel)]="resource.status"
+								(selectionChange)="updateStatus(resource)"
+								class="status-select"
+								[ngClass]="{
+								  'status-new': resource.status === 'new',
+								  'status-progress': resource.status === 'in_progress',
+								  'status-completed': resource.status === 'completed'
+								}">
+					  <mat-option value="new">Nuevo</mat-option>
+					  <mat-option value="in_progress">En proceso</mat-option>
+					  <mat-option value="completed">Completado</mat-option>
+					</mat-select>
 				  </td>
 				<td>{{resource.timestamp | date:'dd/MM/yyyy HH:mm'}}</td>
 				<td>
@@ -191,20 +199,19 @@
 	  <form [formGroup]="resourceForm">
 		<!-- Tipo de recurso -->
 		<div class="mb-3">
-			<label class="form-label">Tipo</label>
+			<label class="form-label">Tipo *</label>
 			<mat-radio-group formControlName="type" class="d-flex gap-4">
-			  <mat-radio-button value="need" color="warn" class="mr-3">
-				 Necesidad
-			  </mat-radio-button>
-			  <mat-radio-button value="offer" color="primary">
-				 Oferta
-			  </mat-radio-button>
+			  <mat-radio-button value="need" color="warn" class="mr-2">Necesidad</mat-radio-button>
+			  <mat-radio-button value="offer" color="primary">Oferta</mat-radio-button>
 			</mat-radio-group>
+			<div class="text-danger" *ngIf="resourceForm.get('type').touched && resourceForm.get('type').errors?.required">
+			  El tipo es requerido
+			</div>
 		  </div>
   
 		<!-- Necesidades -->
 		<div class="mb-3">
-		  <label class="form-label">Necesidades/Ofertas</label>
+		  <label class="form-label">Necesidades/Ofertas *</label>
 		  <div formArrayName="needs">
 			<div class="row">
 				<div class="col-6 col-md-4 mb-2" *ngFor="let needType of needTypes">
@@ -224,6 +231,9 @@
 				  </mat-checkbox>
 				</div>
 			  </div>
+		  </div>
+		  <div class="text-danger" *ngIf="resourceForm.errors?.needsRequired && (resourceForm.touched || resourceForm.dirty)">
+			Debes seleccionar al menos una necesidad o completar el campo "Otras necesidades"
 		  </div>
 		</div>
   
@@ -299,14 +309,20 @@
 			<div class="text-muted small offset-1 col-10" *ngIf="resourceForm.get('lat').value">
 			  <!--Ubicación seleccionada: {{resourceForm.get('lat').value}}, {{resourceForm.get('lng').value}}-->
 			  <button type="button" class="btn btn-sm btn-primary mt-2" (click)="clearLocation()">
-				<i class="ft-x"></i> Borrar ubicación
+				<i class="fas fa-times"></i> Borrar ubicación
 			  </button>
+			</div>
+			<div class="text-danger offset-1 col-10" 
+			*ngIf="resourceForm.get('type').value === 'need' && 
+				   (resourceForm.get('lat').touched || resourceForm.get('lng').touched) && 
+				   (!resourceForm.get('lat').value || !resourceForm.get('lng').value)">
+			  La ubicación es obligatoria para las necesidades. Por favor, selecciona un punto en el mapa.
 			</div>
 		  </div>
   
 		<div class="modal-footer">
 		  <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
-		  <button type="button" class="btn btn-primary" (click)="saveResource()" [disabled]="!resourceForm.valid">Guardar</button>
+		  <button type="button" class="btn btn-primary" (click)="saveResource()" >Guardar</button>
 		</div>
 	  </form>
 	</div>

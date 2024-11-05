@@ -16,12 +16,12 @@ export class RoleGuard implements CanActivate {
       if(this.authService.getRole() == 'SuperAdmin'){
         // is role superadmin
         this.authService.setRedirectUrl('/superadmin/users')
-      }else if(this.authService.getRole() == 'Clinical'){
+      }else if(this.authService.getRole() == 'User'){
         // is role Clinical
-        this.authService.setRedirectUrl('/clinical/dashboard/home')
+        this.authService.setRedirectUrl('/user/myresources')
       }else if(this.authService.getRole() == 'Admin'){
         // Admin
-        this.authService.setRedirectUrl('/admin/users')
+        this.authService.setRedirectUrl('/admin/resources')
       }else{
 
         this.authService.setRedirectUrl('/home');

@@ -73,6 +73,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   rowIndex: number = -1;
   emailMsg="";
   msgList: any = {};
+  role: any;
 
   needTypes = [
     { id: 'all', label: 'Todas las necesidades', info: 'Incluye todas las categorías de necesidades' },
@@ -118,12 +119,12 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
           break;
 
     }  
-
+    //get role
+    this.role = this.authService.getRole();
     this.initForm();
   }
 
   ngOnInit() {
-    console.log(this.authService.getIdUser())
     this.getRequests();
     
     // Observar cambios en los filtros
@@ -134,15 +135,29 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     });
   }
 
+  atLeastOneNeedValidator() {
+    return (formGroup: FormGroup) => {
+      const needs = formGroup.get('needs') as FormArray;
+      const otherNeeds = formGroup.get('otherNeeds').value;
+
+      if (needs.length === 0 && (!otherNeeds || otherNeeds.trim() === '')) {
+        return { needsRequired: true };
+      }
+
+      return null;
+    };
+  }
+
   initForm() {
     this.resourceForm = this.fb.group({
-      type: ['need', Validators.required],
+      type: ['', Validators.required],
       needs: this.fb.array([]),
       otherNeeds: [''],
       details: [''],
-      lat: [''],
-      lng: [''],
-      status: ['new', Validators.required]
+      lat: [null],
+      lng: [null]
+    }, {
+      validators: this.atLeastOneNeedValidator()
     });
   
     // Actualizar validaciones cuando cambia el tipo
@@ -161,6 +176,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
       latControl.updateValueAndValidity();
       lngControl.updateValueAndValidity();
     });
+    this.editingResourceId = null;
   }
 
   get needsArray() {
@@ -310,12 +326,23 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
           await this.submitNeed(resourceData).toPromise();
         }
         // Mostrar éxito
-        Swal.fire({
-          icon: 'success',
-          title: '',
-          text: 'Recurso creado correctamente',
-          confirmButtonText: 'Aceptar'
-        });
+        if(this.editingResourceId){
+          Swal.fire({
+            icon: 'success',
+            title: '',
+            text: 'Recurso actualizado correctamente',
+            confirmButtonText: 'Aceptar'
+          });
+        }else{
+          Swal.fire({
+            icon: 'success',
+            title: '',
+            text: 'Recurso creado correctamente',
+            confirmButtonText: 'Aceptar'
+          });
+          
+        }
+        
         this.closeModal();
         this.getRequests(); // Recargar la lista
       } catch (error) {
@@ -328,13 +355,51 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
         });
       }
     } else {
-      // Mostrar error si el formulario no es válido
+      Object.keys(this.resourceForm.controls).forEach(key => {
+        const control = this.resourceForm.get(key);
+        control.markAsTouched();
+      });
+  
+      const errorMessages = [];
+      const form = this.resourceForm;
+  
+      // Validación de tipo
+      if (form.get('type').errors?.required) {
+        errorMessages.push('- Debes seleccionar un tipo (Necesidad u Oferta)');
+      }
+  
+      // Validación de necesidades
+      const needsArray = form.get('needs') as FormArray;
+      const otherNeeds = form.get('otherNeeds').value;
+      if (needsArray.length === 0 && (!otherNeeds || otherNeeds.trim() === '')) {
+        errorMessages.push('- Debes seleccionar al menos una necesidad o completar el campo "Otras necesidades"');
+      }
+  
+      // Validación de ubicación para necesidades
+      if (form.get('type').value === 'need') {
+        if (!form.get('lat').value || !form.get('lng').value) {
+          errorMessages.push('- Para las necesidades es obligatorio indicar la ubicación en el mapa');
+        }
+      }
+  
+      // Validación de detalles (si es requerido)
+      if (form.get('details').errors?.required) {
+        errorMessages.push('- El campo "Detalles" es obligatorio');
+      }
+  
+      let message = 'Por favor, completa los siguientes campos:';
+      if (errorMessages.length > 0) {
+        message += '<br><br>' + errorMessages.join('<br>');
+      }
+  
       Swal.fire({
         icon: 'warning',
         title: 'Formulario incompleto',
-        text: 'Por favor, completa todos los campos requeridos.',
-        confirmButtonText: 'Aceptar'
+        html: message,
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3085d6'
       });
+      return;
     }
   }
 
@@ -620,30 +685,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  
-  fieldStatusChanged(row: any) {
-    const status = row.status;
-    const statusInfo = this.translate.instant(`needs.status.${status}`);
-    
-    const data = { 
-      status: status,
-      statusInfo: statusInfo
-    };
-
-    this.subscription.add(
-      this.http.put(`${environment.api}/api/needs/status/${row._id}`, data)
-        .subscribe(
-          (res: any) => {
-            this.toastr.success('', this.translate.instant("generics.Data saved successfully"));
-          },
-          (err) => {
-            console.log(err);
-            this.toastr.error('', this.translate.instant("generics.Error saving data"));
-          }
-        )
-    );
-  }
-
 
   onSubmitExportData(){
     var tempRes = JSON.parse(JSON.stringify(this.resources));

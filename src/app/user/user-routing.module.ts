@@ -3,21 +3,21 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'app/shared/auth/auth-guard.service';
 import { RoleGuard } from 'app/shared/auth/role-guard.service';
 
-import { UsersAdminComponent } from "./users-admin/users-admin.component";
+import { MyResourcesComponent } from './myresources/myresources.component';
 
 const routes: Routes = [
   {
     path: '',
     children: [
       {
-        path: 'users',
-        component: UsersAdminComponent,
+        path: 'myresources',
+        component: MyResourcesComponent,
         data: {
-          title: 'Users',
-          expectedRole: ['SuperAdmin']
+          title: 'Mis recursos',
+          expectedRole: ['User', 'Admin', 'SuperAdmin']
         },
         canActivate: [AuthGuard, RoleGuard]
-      }
+      }      
     ]
   }
 ];
@@ -26,4 +26,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class SuperAdminRoutingModule { }
+export class UserRoutingModule { }

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { SuperAdminRoutingModule } from "./superadmin-routing.module";
+import { UserRoutingModule } from "./user-routing.module";
 import { TranslateModule } from '@ngx-translate/core';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -10,28 +10,29 @@ import { MatchHeightModule } from "../shared/directives/match-height.directive";
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { AgmCoreModule } from '@agm/core';
 
-import { UsersAdminComponent } from "./users-admin/users-admin.component";
+import { MyResourcesComponent } from './myresources/myresources.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {AutosizeModule} from 'ngx-autosize';
-import { SafePipe2 } from '../shared/services/safe2.pipe';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatFormFieldModule } from '@angular/material/form-field'
 
 @NgModule({
     imports: [
         CommonModule,
-        SuperAdminRoutingModule,
+        UserRoutingModule,
         NgbModule,
         MatchHeightModule,
         TranslateModule,
         FormsModule,
+        ReactiveFormsModule,
         MatSelectModule,
         MatInputModule,
         MatDatepickerModule,
@@ -48,13 +49,12 @@ import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
         MatCheckboxModule,
         MatTooltipModule,
         NgbPopoverModule,
-        ReactiveFormsModule
+        MatFormFieldModule
     ],
     exports: [TranslateModule],
     declarations: [
-        UsersAdminComponent,
-        SafePipe2
+        MyResourcesComponent
     ],
     providers: [],
 })
-export class SuperAdminModule { }
+export class UserModule { }
