@@ -48,6 +48,18 @@
                       <p class="d-none">{{'menu.Dashboard' | translate }}</p>
                     </a>
                   </li>
+                  <li class="nav-item d-flex">
+                    <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/superadmin/resources">
+                      <i class="ft-list font-medium-3 white" [ngClass]="{'grey': actualUrl=='/superadmin/resources'}"></i>
+                      <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/superadmin/resources'}">Panel de gestión</p>
+                    </a>
+                  </li>
+                  <li class="nav-item d-flex">
+                    <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/admin/mapa">
+                      <i class="ft-map font-medium-3 white" [ngClass]="{'grey': actualUrl=='/admin/mapa'}"></i>
+                      <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/admin/mapa'}">Mapa</p>
+                    </a>
+                  </li>
                 <li class="nav-item">
                   <a class="nav-link" href="javascript:;" (click)="logout()" title="{{'navbar.Logout' | translate }}">
                       <i class="ft-power font-medium-3 white"></i>

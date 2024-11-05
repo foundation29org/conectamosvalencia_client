@@ -24,15 +24,19 @@ const routes: Routes = [
         path: 'mapa',
         component: MapaPageComponent2,
         data: {
-          title: 'Mapa de calor'
-        }
+          title: 'Mapa de calor',
+          expectedRole: ['Admin', 'SuperAdmin']
+        },
+        canActivate: [AuthGuard, RoleGuard]
       },
       {
         path: 'myresources',
         component: MyResourcesComponent,
         data: {
-          title: 'Mis recursos'
-        }
+          title: 'Mis recursos',
+          expectedRole: ['Admin']
+        },
+        canActivate: [AuthGuard, RoleGuard]
       }      
     ]
   }
