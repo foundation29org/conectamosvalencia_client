@@ -15,17 +15,31 @@
       </div>
         <div class="navbar-container pl-0">
             <div  id="navbarSupportedContent">
-              <ul class="navbar-nav m-r-0" *ngIf="role=='Admin'">
+              <ul class="navbar-nav m-r-0" *ngIf="role=='User'">
                 <li class="nav-item d-flex">
-                  <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/admin/users">
-                    <i class="ft-list font-medium-3 white" [ngClass]="{'grey': actualUrl=='/admin/users'}"></i>
-                    <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/admin/users'}">Panel de gestión</p>
+                  <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/user/myresources">
+                    <i class="ft-user font-medium-3 white" [ngClass]="{'grey': actualUrl=='/user/myresources'}"></i>
+                    <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/user/myresources'}">Mis recursos</p>
                   </a>
                 </li>
                 <li class="nav-item d-flex">
-                  <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/admin/myresources">
-                    <i class="ft-user font-medium-3 white" [ngClass]="{'grey': actualUrl=='/admin/myresources'}"></i>
-                    <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/admin/myresources'}">Mis recursos</p>
+                  <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" href="javascript:;" (click)="logout()" title="{{'navbar.Logout' | translate }}">
+                    <i class="ft-power font-medium-3 white"></i>
+                    <p class="d-none d-md-inline-block mb-0 ml-1">Cerrar sesión</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="navbar-nav m-r-0" *ngIf="role=='Admin'">
+                <li class="nav-item d-flex">
+                  <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/admin/resources">
+                    <i class="ft-list font-medium-3 white" [ngClass]="{'grey': actualUrl=='/admin/resources'}"></i>
+                    <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/admin/resources'}">Panel de gestión</p>
+                  </a>
+                </li>
+                <li class="nav-item d-flex">
+                  <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/user/myresources">
+                    <i class="ft-user font-medium-3 white" [ngClass]="{'grey': actualUrl=='/user/myresources'}"></i>
+                    <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/user/myresources'}">Mis recursos</p>
                   </a>
                 </li>
                 <li class="nav-item d-flex">
@@ -44,14 +58,20 @@
                 <ul class="navbar-nav m-r-0" *ngIf="role=='SuperAdmin'">
                   <li class="nav-item">
                     <a class="nav-link" routerLink="/superadmin/users">
-                      <i class="ft-home font-medium-3 white" [ngClass]="{'grey': actualUrl=='/superadmin/users'}"></i>
-                      <p class="d-none">{{'menu.Dashboard' | translate }}</p>
+                      <i class="ft-users font-medium-3 white" [ngClass]="{'grey': actualUrl=='/superadmin/users'}"></i>
+                      <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/superadmin/users'}">Usuarios</p>
                     </a>
                   </li>
                   <li class="nav-item d-flex">
-                    <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/superadmin/resources">
-                      <i class="ft-list font-medium-3 white" [ngClass]="{'grey': actualUrl=='/superadmin/resources'}"></i>
-                      <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/superadmin/resources'}">Panel de gestión</p>
+                    <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/admin/resources">
+                      <i class="ft-list font-medium-3 white" [ngClass]="{'grey': actualUrl=='/admin/resources'}"></i>
+                      <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/admin/resources'}">Panel de gestión</p>
+                    </a>
+                  </li>
+                  <li class="nav-item d-flex">
+                    <a class="nav-link d-flex align-items-center justify-content-center flex-grow-1" routerLink="/user/myresources">
+                      <i class="ft-user font-medium-3 white" [ngClass]="{'grey': actualUrl=='/user/myresources'}"></i>
+                      <p class="d-none d-md-inline-block mb-0 ml-1" [ngClass]="{'grey': actualUrl=='/user/myresources'}">Mis recursos</p>
                     </a>
                   </li>
                   <li class="nav-item d-flex">

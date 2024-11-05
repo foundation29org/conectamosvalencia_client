@@ -54,6 +54,16 @@
 					  <span>{{value}}</span>
 					</ng-template>
 				  </ngx-datatable-column>
+				  <ngx-datatable-column name="Role" prop="role" [flexGrow]="2" [sortable]="true">
+					<ng-template let-value="value" ngx-datatable-cell-template>
+					  <span>{{value}}</span>
+					</ng-template>
+				  </ngx-datatable-column>
+				  <ngx-datatable-column name="Último acceso" prop="lastLogin" [flexGrow]="2" [sortable]="true">
+					<ng-template let-value="value" ngx-datatable-cell-template>
+					  <span>{{value | date:'dd/MM/yyyy HH:mm'}}</span>
+					</ng-template>
+				  </ngx-datatable-column>
 		  
 				<ngx-datatable-column name="Estado" prop="confirmed" [flexGrow]="2" [sortable]="true">
 				  <ng-template let-value="value" ngx-datatable-cell-template>

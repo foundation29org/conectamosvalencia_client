@@ -16,12 +16,12 @@ import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
 
 @Component({
-    selector: 'app-users-admin',
-    templateUrl: './users-admin.component.html',
-    styleUrls: ['./users-admin.component.scss']
+    selector: 'app-resources',
+    templateUrl: './resources.component.html',
+    styleUrls: ['./resources.component.scss']
 })
 
-export class UsersAdminComponent implements OnInit, OnDestroy{
+export class ResourcesComponent implements OnInit, OnDestroy{
   @ViewChild('myTable') table: DatatableComponent;
   selectedRow: any = null;
 
@@ -55,6 +55,8 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
   showMarker = false;
   selectedLocation: any = null;
   @ViewChild('mapModal') mapModal: any;
+
+  editingResourceId: string | null = null;
 
   user: any = {};
   modalReference: NgbModalRef;
@@ -116,51 +118,10 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
 
     }  
 
-    this.initForm();
   }
 
   ngOnInit() {
     this.getRequests();
-    
-    // Observar cambios en los filtros
-    Object.keys(this.filters).forEach(key => {
-      this.resourceForm.get(key)?.valueChanges.subscribe(() => {
-        this.applyFilters();
-      });
-    });
-  }
-
-  initForm() {
-    this.resourceForm = this.fb.group({
-      type: ['need', Validators.required],
-      needs: this.fb.array([]),
-      otherNeeds: [''],
-      details: [''],
-      lat: [''],
-      lng: [''],
-      status: ['new', Validators.required]
-    });
-  
-    // Actualizar validaciones cuando cambia el tipo
-    this.resourceForm.get('type').valueChanges.subscribe(type => {
-      const latControl = this.resourceForm.get('lat');
-      const lngControl = this.resourceForm.get('lng');
-      
-      if (type === 'need') {
-        latControl.setValidators([Validators.required]);
-        lngControl.setValidators([Validators.required]);
-      } else {
-        latControl.clearValidators();
-        lngControl.clearValidators();
-      }
-      
-      latControl.updateValueAndValidity();
-      lngControl.updateValueAndValidity();
-    });
-  }
-
-  get needsArray() {
-    return this.resourceForm.get('needs') as FormArray;
   }
 
   hasActiveFilters(): boolean {
@@ -170,9 +131,6 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
     });
   }
 
-  isNeedSelected(needId: string): boolean {
-    return this.needsArray.value.includes(needId);
-  }
 
   getNeedLabel(needId: string): string {
     const needType = this.needTypes.find(type => type.id === needId);
@@ -241,7 +199,6 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
     this.totalItems = this.filteredResources.length;
   }
   
-
   getSortIcon(column: string): string {
     if (this.sortColumn === column) {
       return this.sortDirection === 1 ? '↑' : '↓';
@@ -249,93 +206,15 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
     return '↕';
   }
 
-  onNeedToggle(needId: string, checked: boolean) {
-    const needsArray = this.needsArray;
-    
-    if (needId === 'all' && checked) {
-      // Si selecciona 'all', añadir todos los IDs excepto 'all'
-      needsArray.clear();
-      this.needTypes
-        .filter(type => type.id !== 'all')
-        .forEach(type => needsArray.push(this.fb.control(type.id)));
-    } else if (needId === 'all' && !checked) {
-      // Si deselecciona 'all', limpiar todo
-      needsArray.clear();
-    } else {
-      if (checked) {
-        needsArray.push(this.fb.control(needId));
-        // Remover 'all' si estaba seleccionado
-        const allIndex = needsArray.value.indexOf('all');
-        if (allIndex >= 0) {
-          needsArray.removeAt(allIndex);
-        }
-      } else {
-        const index = needsArray.value.indexOf(needId);
-        if (index >= 0) {
-          needsArray.removeAt(index);
-        }
-      }
-    }
-  }
-
-  showNewResourceModal(content) {
-    this.initForm(); // Asegurarse de que el formulario está inicializado
-    
-    let ngbModalOptions: NgbModalOptions = {
-      keyboard: false,
-      windowClass: 'ModalClass-lg'
-    };
-    this.modalReference = this.modalService.open(content, ngbModalOptions);
-  }
-
   closeModal() {
     this.modalReference.close();
   }
 
-  async saveResource() {
-    if (this.resourceForm.valid) {
-      const resourceData = this.resourceForm.value;
-      resourceData.location = {
-        lat: resourceData.lat,
-        lng: resourceData.lng
-      };
-      
-      try {
-        await this.submitNeed(resourceData).toPromise();
-        // Mostrar éxito
-        Swal.fire({
-          icon: 'success',
-          title: '',
-          text: 'Recurso creado correctamente',
-          confirmButtonText: 'Aceptar'
-        });
-        this.closeModal();
-        this.getRequests(); // Recargar la lista
-      } catch (error) {
-        console.error('Error al crear el recurso:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo crear el recurso. Por favor, inténtalo de nuevo.',
-          confirmButtonText: 'Aceptar'
-        });
-      }
-    } else {
-      // Mostrar error si el formulario no es válido
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario incompleto',
-        text: 'Por favor, completa todos los campos requeridos.',
-        confirmButtonText: 'Aceptar'
-      });
-    }
+  updateStatusNeed(needRequest): Observable<any> {
+    let apiUrl = environment.api + '/api/status/needs/'+this.editingResourceId;
+    return this.http.put(apiUrl, needRequest);
   }
-
-  submitNeed(needRequest): Observable<any> {
-    let apiUrl = environment.api + '/api/needs/'+this.authService.getIdUser();
-    return this.http.post(apiUrl, needRequest);
-  }
-
+  
   viewDetails(resource: any) {
     Swal.fire({
       title: 'Detalles adicionales',
@@ -471,60 +350,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
     this.applyFilters();
   }
 
-  updateStatus(resource: any) {
-    /*this.resourceService.updateStatus(resource._id, resource.status).subscribe(
-      () => {
-        this.toastr.success('Estado actualizado correctamente');
-      },
-      error => {
-        this.toastr.error('Error al actualizar el estado');
-      }
-    );*/
-  }
-
-  mapReadyHandler(map: google.maps.Map): void {
-    this.map = map;
-    this.mapClickListener = this.map.addListener('click', (e: google.maps.MouseEvent) => {
-      this.zone.run(() => {
-        this.resourceForm.patchValue({
-          lat: e.latLng.lat(),
-          lng: e.latLng.lng()
-        });
-        this.showMarker = true;
-      });
-    });
-  }
-
-  onMarkerDragEnd(event: any) {
-    this.resourceForm.patchValue({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng()
-    });
-  }
-
-  clearLocation() {
-    this.resourceForm.patchValue({
-      lat: '',
-      lng: ''
-    });
-    this.showMarker = false;
-  }
-
- showOnMap(location: any) {
-  let ngbModalOptions: NgbModalOptions = {
-    keyboard: false,
-    windowClass: 'ModalClass-md'
-  };
-  
-  this.selectedLocation = location;
-  this.modalService.open(this.mapModal, ngbModalOptions);
-}
-
-  capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-  
-  fieldStatusChanged(row: any) {
+  /*fieldStatusChanged(row: any) {
     const status = row.status;
     const statusInfo = this.translate.instant(`needs.status.${status}`);
     
@@ -545,8 +371,64 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
           }
         )
     );
+  }*/
+
+  async updateStatus(resource: any) {
+    try {
+      /*await this.http.put(`${environment.api}/api/needs/${resource._id}`, {
+        status: resource.status
+      }).toPromise();*/
+      this.editingResourceId = resource._id;
+
+      const status = resource.status;
+    const statusInfo = this.translate.instant(`needs.status.${status}`);
+    
+    const data = { 
+      status: status,
+      statusInfo: statusInfo
+    };
+
+      await this.updateStatusNeed(data).toPromise();
+  
+      Swal.fire({
+        icon: 'success',
+        title: 'Estado actualizado',
+        text: 'El estado se ha actualizado correctamente',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    } catch (error) {
+      console.error('Error al actualizar el estado:', error);
+      
+      // Revertir el cambio en caso de error
+      resource.status = resource.previousStatus;
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo actualizar el estado. Por favor, inténtalo de nuevo.',
+        confirmButtonText: 'Aceptar'
+      });
+    }
   }
 
+
+ showOnMap(location: any) {
+  let ngbModalOptions: NgbModalOptions = {
+    keyboard: false,
+    windowClass: 'ModalClass-md'
+  };
+  
+  this.selectedLocation = location;
+  this.modalService.open(this.mapModal, ngbModalOptions);
+}
+
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  
 
   onSubmitExportData(){
     var tempRes = JSON.parse(JSON.stringify(this.resources));
@@ -614,5 +496,48 @@ getRowClass = (row: any) => {
     'selected-row': this.selectedRow === row
   };
 }
+
+deleteResource(resourceId: string) {
+  // Mostrar diálogo de confirmación
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción no se puede deshacer',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Proceder con la eliminación
+      this.http.delete(`${environment.api}/api/superadmin/needs/${resourceId}`)
+        .subscribe(
+          () => {
+            // Éxito
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: 'El recurso ha sido eliminado correctamente',
+              confirmButtonText: 'Aceptar'
+            });
+            // Recargar la lista
+            this.getRequests();
+          },
+          (error) => {
+            // Error
+            console.error('Error al eliminar el recurso:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar el recurso. Por favor, inténtalo de nuevo.',
+              confirmButtonText: 'Aceptar'
+            });
+          }
+        );
+    }
+  });
+}
+
 
 }

@@ -1,0 +1,211 @@
+<div class="row">
+	<div class="col-sm-12">
+	  <div class="content-header">Panel de gestión de recursos</div>
+	  <p class="content-sub-header">Gestiona y filtra todas las necesidades y ofertas registradas en la plataforma.</p>
+	</div>
+  </div>
+  <div class="card">
+	<div class="card-header">
+	  <div class="row">
+		<div class="col-md-12 mb-3">
+		  <h4>Filtros</h4>
+		  <div class="row g-3">
+			<!-- Filtro por tipo -->
+			<div class="col-md-3">
+				<mat-form-field appearance="outline" class="w-100">
+					<mat-select [(ngModel)]="filters.type" 
+								(selectionChange)="applyFilters()"
+								placeholder="Todos los tipos">
+					  <mat-option value="">Todos los tipos</mat-option>
+					  <mat-option value="need">Necesidad</mat-option>
+					  <mat-option value="offer">Oferta</mat-option>
+					</mat-select>
+				  </mat-form-field>
+			</div>
+  
+			<!-- Filtro por estado -->
+			<div class="col-md-3">
+				<mat-form-field appearance="outline" class="w-100">
+					<mat-select [(ngModel)]="filters.status" 
+								(selectionChange)="applyFilters()"
+								placeholder="Todos los estados">
+					  <mat-option value="">Todos los estados</mat-option>
+					  <mat-option value="new">Nuevo</mat-option>
+					  <mat-option value="in_progress">En proceso</mat-option>
+					  <mat-option value="completed">Completado</mat-option>
+					</mat-select>
+				  </mat-form-field>
+			  </div>
+  
+			<!-- Filtro por fecha -->
+			<div class="col-md-3">
+			  <input 
+				type="date" 
+				class="form-control" 
+				[(ngModel)]="filters.date"
+				(ngModelChange)="applyFilters()"
+				placeholder="Filtrar por fecha">
+			</div>
+  
+			<!-- Búsqueda por texto -->
+			<div class="col-md-3">
+			  <input 
+				type="text" 
+				class="form-control" 
+				[(ngModel)]="filters.search"
+				(ngModelChange)="applyFilters()"
+				placeholder="Buscar...">
+			</div>
+		  </div>
+		  <div class="row mt-2" *ngIf="hasActiveFilters()">
+			<div class="col">
+			  <button class="btn btn-outline-secondary btn-sm" 
+					  (click)="clearFilters()"
+					  >
+				<i class="ft-x"></i> Limpiar filtros
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  
+	<div class="card-content">
+	  <div class="card-body">
+		<!-- Tabla de recursos -->
+		<div class="table-responsive">
+		  <table class="table table-hover">
+			<thead>
+				<tr>
+					<th (click)="sort('type')">
+					  Tipo {{sortColumn === 'type' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th (click)="sort('needs')">
+					  Necesidades/Ofertas {{sortColumn === 'needs' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th (click)="sort('status')">
+					  Estado {{sortColumn === 'status' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th (click)="sort('timestamp')">
+					  Fecha {{sortColumn === 'timestamp' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+					</th>
+					<th>Acciones</th>
+				  </tr>
+			</thead>
+			<tbody>
+			  <tr *ngFor="let resource of filteredResources | slice:(currentPage-1)*pageSize:currentPage*pageSize">
+				<td>
+				  <span [class.badge-danger]="resource.type === 'need'"
+						[class.badge-success]="resource.type === 'offer'"
+						class="badge">
+					{{resource.type === 'need' ? 'Necesidad' : 'Oferta'}}
+				  </span>
+				</td>
+				<td>
+				  <ul class="mb-0 list-unstyled">
+					<li *ngFor="let need of resource.needs">
+						{{getNeedLabel(need)}}
+						<i class="ft-info ms-1" 
+						style="font-size: 14px; color: #666;"
+						[ngbPopover]="getNeedInfo(need)"
+						popoverClass="info-popover"
+						placement="right"
+						[openDelay]="200"
+						triggers="mouseenter:mouseleave">
+					 </i>
+					</li>
+					<li *ngIf="resource.otherNeeds">{{resource.otherNeeds}}</li>
+				  </ul>
+				</td>
+				<td>
+					<mat-select [(ngModel)]="resource.status"
+								(selectionChange)="updateStatus(resource)"
+								class="status-select"
+								[ngClass]="{
+								  'status-new': resource.status === 'new',
+								  'status-progress': resource.status === 'in_progress',
+								  'status-completed': resource.status === 'completed'
+								}">
+					  <mat-option value="new">Nuevo</mat-option>
+					  <mat-option value="in_progress">En proceso</mat-option>
+					  <mat-option value="completed">Completado</mat-option>
+					</mat-select>
+				  </td>
+				<td>{{resource.timestamp | date:'dd/MM/yyyy HH:mm'}}</td>
+				<td>
+				  <div class="btn-group">
+					<button class="btn btn-sm btn-info mr-1" 
+						*ngIf="resource.details"
+						(click)="viewDetails(resource)"
+						[matTooltip]="'Ver detalles adicionales'">
+						<i class="ft-file-text"></i>
+					</button>
+
+					<button *ngIf="resource.location.lat && resource.location.lng" class="btn btn-sm btn-info mr-1" 
+						  (click)="showOnMap(resource.location, mapModal)">
+					<i class="ft-map-pin"></i> Ver
+				  </button>
+				  <!-- Ver el telefono-->
+				  <button class="btn btn-sm btn-info mr-1" 
+						  (click)="viewPhone(resource)"
+						  [matTooltip]="'Ver teléfono'">
+					<i class="ft-phone"></i>
+				  </button>
+				  <button class="btn btn-sm btn-primary" 
+						(click)="deleteResource(resource._id)"
+						[matTooltip]="'Eliminar recurso'">
+						<i class="ft-trash-2"></i>
+					</button>
+				  </div>
+				</td>
+			  </tr>
+			</tbody>
+		  </table>
+		</div>
+  
+		<!-- Paginación -->
+		<div class="d-flex justify-content-between align-items-center mt-3">
+		  <div>
+			Mostrando {{startIndex + 1}} - {{endIndex}} de {{totalItems}} elementos
+		  </div>
+		  <ngb-pagination
+			[collectionSize]="totalItems"
+			[(page)]="currentPage"
+			[pageSize]="pageSize"
+			(pageChange)="onPageChange($event)">
+		  </ngb-pagination>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <ng-template #mapModal let-c="close" let-d="dismiss">
+	<div class="modal-header">
+	  <h4 class="modal-title">Ubicación</h4>
+	  <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+		<span aria-hidden="true">&times;</span>
+	  </button>
+	</div>
+	<div class="modal-body">
+	  <div class="map-container" style="height: 400px;">
+		<agm-map 
+		  [latitude]="selectedLocation.lat" 
+		  [longitude]="selectedLocation.lng" 
+		  [zoom]="15">
+		  <agm-marker 
+			[latitude]="selectedLocation.lat" 
+			[longitude]="selectedLocation.lng">
+		  </agm-marker>
+		</agm-map>
+	  </div>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" (click)="c('Close click')">Cerrar</button>
+	</div>
+  </ng-template>
+<div class="col-lg-12 col-12 form-group" *ngIf="working">
+	<div>
+		<p class="centerSpinner"><i class="fa fa-spinner fa-spin fa-3x fa-fw pink"></i></p>
+	</div>
+	<div>{{'generics.Sending' | translate }}...</div>
+</div>
