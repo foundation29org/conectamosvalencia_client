@@ -7,7 +7,7 @@ export const Full_ROUTES: Routes = [
     path: 'admin',
     loadChildren: () => import('../../admin/admin.module').then(m => m.AdminModule),
     canActivate: [RoleGuard],
-    data: { expectedRole: ['Admin'] }
+    data: { expectedRole: ['Admin', 'SuperAdmin'] }
   },
   {
     path: 'superadmin',

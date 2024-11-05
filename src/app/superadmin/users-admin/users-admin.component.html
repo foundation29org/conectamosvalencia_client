@@ -49,6 +49,11 @@
 					<span>{{value}}</span>
 				  </ng-template>
 				</ngx-datatable-column>
+				<ngx-datatable-column name="Teléfono" prop="phone" [flexGrow]="2" [sortable]="true">
+					<ng-template let-value="value" ngx-datatable-cell-template>
+					  <span>{{value}}</span>
+					</ng-template>
+				  </ngx-datatable-column>
 		  
 				<ngx-datatable-column name="Estado" prop="confirmed" [flexGrow]="2" [sortable]="true">
 				  <ng-template let-value="value" ngx-datatable-cell-template>
