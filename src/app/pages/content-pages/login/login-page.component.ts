@@ -107,7 +107,7 @@ export class LoginPageComponent implements OnDestroy, OnInit{
         if(response.message === "Check email") { 
           Swal.fire({
             title: '¡Ya casi está!',
-            html: '<p class="mt-2">Hemos enviado un enlace de acceso a tu dirección de email.</p><ol><li class="mb-2">Abre tu bandeja de entrada y busca un email de ConectamosValencia.</li> <li class="mb-2">Haz clic en el enlace dentro del email para completar el proceso de inicio de sesión. Ten en cuenta que este enlace solo es válido durante 5 minutos.</li> <li class="mb-2">Si no ves el email, revisa tu carpeta de spam o correo no deseado. Si aún no lo encuentras o el enlace ha expirado, por favor, inicia sesión de nuevo.</li> </ol>',
+            html: '<p class="mt-2">Hemos enviado un enlace de acceso a tu dirección de email.</p><ol class="text-left"><li class="mb-2">Abre tu bandeja de entrada y busca un email de ConectamosValencia.</li> <li class="mb-2">Haz clic en el enlace dentro del email para completar el proceso de inicio de sesión. Ten en cuenta que este enlace solo es válido durante 5 minutos.</li> <li class="mb-2">Si no ves el email, revisa tu carpeta de spam o correo no deseado. Si aún no lo encuentras o el enlace ha expirado, por favor, inicia sesión de nuevo.</li> </ol>',
             icon: 'success',
             showCancelButton: false,
             confirmButtonColor: '#DD6B55',

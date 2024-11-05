@@ -39,7 +39,7 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
   myuuid: string = uuidv4();
   @ViewChild('recaptcha') recaptchaElement: ElementRef;
   captchaToken: string = "";
-  needCaptcha: boolean = false;
+  needCaptcha: boolean = true;
 
   private subscription: Subscription = new Subscription();
 
@@ -48,7 +48,7 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    //this.addRecaptchaScript();
+    this.addRecaptchaScript();
   }
 
   renderReCaptch() {
@@ -140,7 +140,7 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
             this.isVerifyemail = true;
             Swal.fire('', 
               '¡Cuenta creada correctamente! ' +
-              'Ya puedes iniciar sesión en ConectamosValencia con tu correo electrónico.', 
+              'Ya puedes iniciar sesión.', 
               "success");
               //go to login
               this.goToLogin();
