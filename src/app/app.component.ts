@@ -10,6 +10,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
 import { EventsService } from 'app/shared/services/events.service';
+import { AuthService } from './shared/auth/auth.service';
 
 
 @Component({
@@ -23,60 +24,20 @@ export class AppComponent implements OnInit, OnDestroy {
   tituloEvent: string = '';
 
 
-  constructor(public toastr: ToastrService, private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title, public translate: TranslateService, private eventsService: EventsService) {
+  constructor(public toastr: ToastrService, private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title, public translate: TranslateService, private eventsService: EventsService,  private authService: AuthService) {
     this.translate.use('es');
-    sessionStorage.setItem('lang', 'es');
   }
 
   ngOnInit() {
-    this.eventsService.on('http-error', function (error) {
-      var msg1 = 'No internet connection';
-      var msg2 = 'Trying to connect ...';
 
-      if (sessionStorage.getItem('lang')) {
-        var actuallang = sessionStorage.getItem('lang');
-        if (actuallang == 'es') {
-          msg1 = 'Sin conexión a Internet';
-          msg2 = 'Intentando conectar ...';
-        } else if (actuallang == 'pt') {
-          msg1 = 'Sem conexão à internet';
-          msg2 = 'Tentando se conectar ...';
-        } else if (actuallang == 'de') {
-          msg1 = 'Keine Internetverbindung';
-          msg2 = 'Versucht zu verbinden ...';
-        } else if (actuallang == 'nl') {
-          msg1 = 'Geen internet verbinding';
-          msg2 = 'Proberen te verbinden ...';
+    this.authService.checkAuthStatus().subscribe(
+      isAuthenticated => {
+        if (isAuthenticated) {
+          const url = this.authService.getRedirectUrl();
+          this.router.navigate([url], { replaceUrl: true });
         }
       }
-      if (error.message) {
-        if (error == 'The user does not exist') {
-          Swal.fire({
-            icon: 'warning',
-            title: this.translate.instant("errors.The user does not exist"),
-            html: this.translate.instant("errors.The session has been closed")
-          })
-        }
-      } else {
-
-        Swal.fire({
-          title: msg1,
-          text: msg2,
-          icon: 'warning',
-          showCancelButton: false,
-          confirmButtonColor: '#33658a',
-          confirmButtonText: 'OK',
-          showLoaderOnConfirm: true,
-          allowOutsideClick: false,
-          reverseButtons: true
-        }).then((result) => {
-          if (result.value) {
-            location.reload();
-          }
-
-        });
-      }
-    }.bind(this));
+    );
 
     this.subscription = this.router.events
       .filter((event) => event instanceof NavigationEnd)

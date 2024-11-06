@@ -20,12 +20,6 @@ import Swal from 'sweetalert2';
 })
 
 export class UsersAdminComponent implements OnInit, OnDestroy{
-  @ViewChild('f') newLangForm: NgForm;
-
-  addedlang: boolean = false;
-  lang: any;
-  allLangs: any;
-  langs: any;
   working: boolean = false;
   sending: boolean = false;
   loadingUsers: boolean = false;
@@ -45,23 +39,6 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
   msgList: any = {};
 
   constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService,private adapter: DateAdapter<any>, private sortService: SortService, private dateService: DateService){
-    this.adapter.setLocale(this.authService.getLang());
-    this.lang = this.authService.getLang()
-    switch(this.authService.getLang()){
-      case 'en':
-        this.timeformat="M/d/yy";
-        break;
-      case 'es':
-          this.timeformat="d/M/yy";
-          break;
-      case 'nl':
-          this.timeformat="d-M-yy";
-          break;
-      default:
-          this.timeformat="M/d/yy";
-          break;
-
-    }
     
   }
 
@@ -78,7 +55,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
     this.loadingUsers = true;
     this.subscription.add( this.http.get(environment.api+'/api/admin/allusers/')
     .subscribe( (res : any) => {
-      this.users = res.map(user => {
+      this.users = res.data.map(user => {
         return {
           ...user,
           userName: this.capitalizeFirstLetter(user.userName)

@@ -1,37 +1,41 @@
-import { CanActivate, ActivatedRouteSnapshot, Router, ActivatedRoute } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthService } from './auth.service';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  constructor(public authService: AuthService, public router: Router, private route: ActivatedRoute,  public toastr: ToastrService, public translate: TranslateService) {}
-
-  canActivate(route: ActivatedRouteSnapshot):boolean {
-    const expectedRole = route.data.expectedRole;
-    if (!this.authService.isAuthenticated() || expectedRole.indexOf(this.authService.getRole()) == -1) {
-      this.toastr.error('', this.translate.instant("generics.notpermission"));
-      if(this.authService.getRole() == 'SuperAdmin'){
-        // is role superadmin
-        this.authService.setRedirectUrl('/superadmin/users')
-      }else if(this.authService.getRole() == 'User'){
-        // is role Clinical
-        this.authService.setRedirectUrl('/user/myresources')
-      }else if(this.authService.getRole() == 'Admin'){
-        // Admin
-        this.authService.setRedirectUrl('/admin/resources')
-      }else{
-
-        this.authService.setRedirectUrl('/home');
-
-      }
-      this.router.navigate([this.authService.getLoginUrl()]);
-      //  this.router.navigate(["/login"]);
-        this.authService.logout();
-        return false;
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/pages/login']);
+      return false;
     }
+
+    const expectedRoles = route.data['expectedRole'];
+    const userRole = this.authService.getRole();
+
+    if (!expectedRoles || !userRole || !expectedRoles.includes(userRole)) {
+      // Redirigir según el rol del usuario
+      switch(userRole) {
+        case 'User':
+          this.router.navigate(['/user/myresources']);
+          break;
+        case 'Admin':
+          this.router.navigate(['/admin/resources']);
+          break;
+        case 'SuperAdmin':
+          this.router.navigate(['/superadmin/users']);
+          break;
+        default:
+          this.router.navigate(['/pages/login']);
+      }
+      return false;
+    }
+
     return true;
   }
 }

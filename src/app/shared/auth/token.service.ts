@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from "@angular/common/http";
@@ -7,55 +6,60 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import * as decode from 'jwt-decode';
 import { AuthService } from './auth.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TokenService {
-  private token: string;
-  private loginUrl: string = '/.';
-  private redirectUrl: string = '/home';
-  private isloggedIn: boolean = false;
-  private message: string;
-  private iduser: string;
-  private role: string;
-  private subrole: string;
-  private group: string;
-  private lang: string;
-  private platform: string;
-  private expToken: number = null;
-
-  private isApp: boolean = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1 && location.hostname != "localhost" && location.hostname != "127.0.0.1";
 
   constructor(private http: HttpClient, public authService: AuthService) {}
 
-
-  isTokenValid():boolean{
-    if(sessionStorage.getItem('token') && this.authService.getIdUser()!=undefined){
-      if((this.authService.getToken() == sessionStorage.getItem('token'))&& this.authService.getIdUser()!=undefined){
-        const tokenPayload = decode(sessionStorage.getItem('token'));
-        if(tokenPayload.sub ==this.authService.getIdUser()){
-          return true;
-        }else{
-          return false;
+  isTokenValid(): boolean {
+    try {
+        // Obtener el token de las cookies
+        const cookies = document.cookie.split(';');
+        const authTokenCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
+        
+        if (!authTokenCookie) {
+            console.log('No auth token cookie found');
+            return false;
         }
-      }else{
-        return false;
-      }
-    }else{
-      return false;
-    }
-  }
 
-  //deprecated
-  testToken(): Observable<boolean>{
-    return this.http.get(environment.api+'/api/testToken')
-      .map( (res : any) => {
-        console.log(res);
-          return res;
-       }, (err) => {
-         console.log(err);
-         return false;
-       }
-      );
-  }
+        const token = authTokenCookie.split('=')[1];
+        const tokenPayload = decode(token);
+        const currentTime = Date.now() / 1000;
+
+        // Validar expiración
+        if (!tokenPayload.exp || tokenPayload.exp < currentTime) {
+            console.log('Token expired or invalid expiration');
+            return false;
+        }
+
+        // Validar que el rol sea válido
+        const validRoles = ['User', 'Admin', 'SuperAdmin'];
+        if (!tokenPayload.role || !validRoles.includes(tokenPayload.role)) {
+            console.log('Invalid role in token');
+            return false;
+        }
+
+        // En lugar de validar contra sessionStorage, hacer una llamada al servidor
+        return true;
+
+    } catch (error) {
+        console.error('Token validation error:', error);
+        return false;
+    }
+}
+
+// Método alternativo que valida el token con el servidor
+validateTokenWithServer(): Observable<boolean> {
+    return this.http.get(`${environment.api}/api/me`, {
+        withCredentials: true
+    }).pipe(
+        map(() => true),
+        catchError(() => of(false))
+    );
+}
 
 }

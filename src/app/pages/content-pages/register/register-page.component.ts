@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, OnDestroy, LOCALE_ID, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, } from "@angular/router";
 import { environment } from 'environments/environment';
@@ -14,15 +14,11 @@ import { TermsConditionsPageComponent } from "../terms-conditions/terms-conditio
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs/Subscription';
 
-export function getCulture() {
-  return sessionStorage.getItem('culture');
-}
 
 @Component({
   selector: 'app-register-page',
   templateUrl: './register-page.component.html',
   styleUrls: ['./register-page.component.scss'],
-  providers: [{ provide: LOCALE_ID, useFactory: getCulture }]
 
 })
 
@@ -40,6 +36,8 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
   @ViewChild('recaptcha') recaptchaElement: ElementRef;
   captchaToken: string = "";
   needCaptcha: boolean = true;
+  private lastSubmitTime: number = 0;
+  private readonly THROTTLE_TIME_MS: number = 2000; // 2 segundos entre intentos
 
   private subscription: Subscription = new Subscription();
 
@@ -125,11 +123,33 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
 
   //  On submit click, reset field value
   onSubmit() {
-      this.sending = true;
-      this.isVerifyemail = false;
-      this.isEmailBusy = false;
-      //codificar el password
-      this.registerForm.value.email = (this.registerForm.value.email).toLowerCase();
+
+    if (!this.captchaToken) {
+      Swal.fire(
+        this.translate.instant("generics.Warning"),
+        'Por favor, complete el captcha antes de continuar',
+        "warning"
+      );
+      return;
+    }
+
+    // Rate limiting básico
+    const now = Date.now();
+    if (now - this.lastSubmitTime < this.THROTTLE_TIME_MS) {
+      Swal.fire(
+        this.translate.instant("generics.Warning"),
+        'Por favor, espere unos segundos antes de intentar nuevamente',
+        "warning"
+      );
+      return;
+    }
+    this.lastSubmitTime = now;
+
+    this.sending = true;
+    this.isVerifyemail = false;
+    this.isEmailBusy = false;
+    //codificar el password
+    this.registerForm.value.email = (this.registerForm.value.email).toLowerCase();
 
       var params = this.registerForm.value;
       params.captchaToken = this.captchaToken;
@@ -144,9 +164,9 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
               "success");
               //go to login
               this.goToLogin();
-          }else if (res.message == 'user exists') {
+          }else if (res.message == 'Si existe una cuenta asociada, recibirá un correo con más instrucciones.') {
             this.isEmailBusy = true;
-            Swal.fire(this.translate.instant("generics.Warning"), 'Ya existe una cuenta con este correo electrónico', "warning");
+            Swal.fire(this.translate.instant("generics.Warning"), 'Si existe una cuenta asociada, recibirá un correo con más instrucciones.', "warning");
           }else if (res.message == 'Token is empty or invalid' || res.message == 'recaptcha failed') {
             Swal.fire(this.translate.instant("generics.Warning"), res.message, "warning");
           }

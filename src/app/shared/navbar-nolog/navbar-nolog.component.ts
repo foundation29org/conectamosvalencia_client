@@ -16,8 +16,7 @@ export class NavbarComponentNolog{
 
 
     constructor(public translate: TranslateService) {
-      /*this.translate.use('en');
-      sessionStorage.setItem('lang', 'en');*/
+      this.translate.use('en');
     }
 
 

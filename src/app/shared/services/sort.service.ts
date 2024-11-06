@@ -213,25 +213,6 @@ export class SortService {
         }
     }
 
-    GetSortFilesNcrName(prop: string, lang: string) {
-        return function (a, b) {
-            if (a.origenFile[prop] == 'textanaresult.json') {
-                if (lang == 'es') {
-                    a.origenFile[prop] = 'Free Text'
-                } else {
-                    a.origenFile[prop] = 'Texto libre'
-                }
-
-            }
-            if (a.origenFile[prop] > b.origenFile[prop]) {
-                return 1;
-            } else if (a.origenFile[prop] < b.origenFile[prop]) {
-                return -1;
-            }
-            return 0;
-        }
-    }
-
     GetSortOtherFiles(prop: string) {
         return function (a, b) {
             if (a.origenFile[prop] > b.origenFile[prop]) {

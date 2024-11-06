@@ -39,7 +39,7 @@ import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
         UiSwitchModule,
         AgmCoreModule.forRoot({
             apiKey: "AIzaSyAcbDF_C9btRGAUWSePhOR4UxsVbtK3cJA",
-            language: sessionStorage && sessionStorage.getItem('lang') || 'es'
+            language: 'es'
           }),
         NgxDatatableModule,
         AutosizeModule,
