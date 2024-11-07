@@ -148,6 +148,7 @@ private handleLoginWithEmailAndKey(email: string, key: string) {
      }
 
      sendSignInLink(email: string, event?: Event) {
+      this.sending = true;
       this.isLoginFailed = false;
       if(event) {
         event.preventDefault();  // Evita el envío real del formulario
@@ -155,6 +156,7 @@ private handleLoginWithEmailAndKey(email: string, key: string) {
       let form = {email: email};
     this.subscription.add( this.authService.login(form).subscribe(
       (response:any) => {
+        this.sending = false;
         console.log(response);
         if(response.message === "Check email") { 
           Swal.fire({

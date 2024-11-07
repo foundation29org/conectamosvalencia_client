@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs/Subscription';
 import {DateAdapter} from '@angular/material/core';
 import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
+import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 
 @Component({
     selector: 'app-resources',
@@ -94,7 +95,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
     { id: 'other', label: 'Otras necesidades', info: 'Categoría general para necesidades que no encajan en las anteriores' }
   ];
 
-  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, private authGuard: AuthGuard, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService,private adapter: DateAdapter<any>, private fb: FormBuilder, private zone: NgZone){
+  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, private authGuard: AuthGuard, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService,private adapter: DateAdapter<any>, private fb: FormBuilder, private zone: NgZone, private errorHandler: ErrorHandlerService){
 
 
   }
@@ -329,29 +330,6 @@ export class ResourcesComponent implements OnInit, OnDestroy{
     this.applyFilters();
   }
 
-  /*fieldStatusChanged(row: any) {
-    const status = row.status;
-    const statusInfo = this.translate.instant(`needs.status.${status}`);
-    
-    const data = { 
-      status: status,
-      statusInfo: statusInfo
-    };
-
-    this.subscription.add(
-      this.http.put(`${environment.api}/api/needs/status/${row._id}`, data)
-        .subscribe(
-          (res: any) => {
-            this.toastr.success('', this.translate.instant("generics.Data saved successfully"));
-          },
-          (err) => {
-            console.log(err);
-            this.toastr.error('', this.translate.instant("generics.Error saving data"));
-          }
-        )
-    );
-  }*/
-
   async updateStatus(resource: any) {
     try {
       /*await this.http.put(`${environment.api}/api/needs/${resource._id}`, {
@@ -384,12 +362,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
       // Revertir el cambio en caso de error
       resource.status = resource.previousStatus;
       
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se pudo actualizar el estado. Por favor, inténtalo de nuevo.',
-        confirmButtonText: 'Aceptar'
-      });
+      this.errorHandler.handleError(error, 'No se pudo actualizar el estado. Por favor, inténtalo de nuevo.');
     }
   }
 
@@ -506,12 +479,7 @@ deleteResource(resourceId: string) {
           (error) => {
             // Error
             console.error('Error al eliminar el recurso:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo eliminar el recurso. Por favor, inténtalo de nuevo.',
-              confirmButtonText: 'Aceptar'
-            });
+            this.errorHandler.handleError(error, 'No se pudo eliminar el recurso. Por favor, inténtalo de nuevo.');
           }
         );
     }

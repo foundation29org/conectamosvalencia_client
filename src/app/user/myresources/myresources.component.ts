@@ -7,6 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from 'app/shared/auth/auth.service';
 import { DateService } from 'app/shared/services/date.service';
 import { AuthGuard } from 'app/shared/auth/auth-guard.service';
+import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
@@ -96,7 +97,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     { id: 'other', label: 'Otras necesidades', info: 'Categoría general para necesidades que no encajan en las anteriores' }
   ];
 
-  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, private authGuard: AuthGuard, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService,private adapter: DateAdapter<any>, private fb: FormBuilder, private zone: NgZone){
+  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, private authGuard: AuthGuard, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService,private adapter: DateAdapter<any>, private fb: FormBuilder, private zone: NgZone, private errorHandler: ErrorHandlerService){
     //get role
     this.role = this.authService.getRole();
     this.initForm();
@@ -325,12 +326,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
         this.getRequests(); // Recargar la lista
       } catch (error) {
         console.error('Error al crear el recurso:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo crear el recurso. Por favor, inténtalo de nuevo.',
-          confirmButtonText: 'Aceptar'
-        });
+        this.errorHandler.handleError(error, 'No se pudo crear el recurso. Por favor, inténtalo de nuevo.');
       }
     } else {
       Object.keys(this.resourceForm.controls).forEach(key => {
@@ -446,12 +442,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
             (error) => {
               // Error
               console.error('Error al eliminar el recurso:', error);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo eliminar el recurso. Por favor, inténtalo de nuevo.',
-                confirmButtonText: 'Aceptar'
-              });
+              this.errorHandler.handleError(error, 'No se pudo eliminar el recurso. Por favor, inténtalo de nuevo.');
             }
           );
       }
@@ -612,13 +603,8 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
       
       // Revertir el cambio en caso de error
       resource.status = resource.previousStatus;
-      
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se pudo actualizar el estado. Por favor, inténtalo de nuevo.',
-        confirmButtonText: 'Aceptar'
-      });
+
+      this.errorHandler.handleError(error, 'No se pudo actualizar el estado. Por favor, inténtalo de nuevo.');
     }
   }
 

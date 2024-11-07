@@ -19,7 +19,7 @@ export class TokenService {
     try {
         // Obtener el token de las cookies
         const cookies = document.cookie.split(';');
-        const authTokenCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
+        const authTokenCookie = cookies.find(cookie => cookie.trim().startsWith('cv_auth_token='));
         
         if (!authTokenCookie) {
             console.log('No auth token cookie found');

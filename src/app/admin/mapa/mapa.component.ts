@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 declare const google: any;
 
 export interface NeedRequest {
@@ -73,7 +74,7 @@ export class MapaPageComponent2 implements OnInit{
 
 
   private apiUrl = environment.api + '/api/needs';
-  constructor(public translate: TranslateService, private http: HttpClient) { }
+  constructor(public translate: TranslateService, private http: HttpClient, private errorHandler: ErrorHandlerService) { }
 
   ngOnInit() {
     this.loadNeeds();
@@ -127,6 +128,7 @@ export class MapaPageComponent2 implements OnInit{
       this.filterNeeds();
     } catch (error) {
       console.error('Error loading needs:', error);
+      this.errorHandler.handleError(error, 'Error al cargar las necesidades. Por favor, inténtalo de nuevo.');
     }
   }
 
