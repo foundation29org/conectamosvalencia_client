@@ -1,4 +1,4 @@
-<div class="row" *ngIf="!working ">
+<div class="row" *ngIf="loadedUsers ">
 	<div class="col-lg-12 col-12">
 
 
@@ -97,7 +97,7 @@
 
 	</div>
 </div>
-<div class="col-lg-12 col-12 form-group" *ngIf="working">
+<div class="col-lg-12 col-12 form-group" *ngIf="!loadedUsers">
 	<div>
 		<p class="centerSpinner"><i class="fa fa-spinner fa-spin fa-3x fa-fw pink"></i></p>
 	</div>

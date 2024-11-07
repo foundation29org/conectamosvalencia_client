@@ -11,7 +11,7 @@
 	  </button>
 	</div>
   </div>
-  <div class="card">
+  <div class="card" *ngIf="loadedNeeds">
 	<div class="card-header">
 	  <div class="row">
 		<div class="col-md-12 mb-3">
@@ -185,6 +185,12 @@
 	  </div>
 	</div>
   </div>
+  <div *ngIf="!loadedNeeds">
+	<div class="col-lg-12 col-12 form-group">
+		<p class="centerSpinner"><i class="fa fa-spinner fa-spin fa-3x fa-fw pink"></i></p>
+		<div>Cargando recursos...</div>
+	</div>
+  </div>
 
 
   <ng-template #contentResource let-c="close" let-d="dismiss" appendTo="body">
@@ -352,10 +358,3 @@
 	  <button type="button" class="btn btn-secondary" (click)="c('Close click')">Cerrar</button>
 	</div>
   </ng-template>
-
-<div class="col-lg-12 col-12 form-group" *ngIf="working">
-	<div>
-		<p class="centerSpinner"><i class="fa fa-spinner fa-spin fa-3x fa-fw pink"></i></p>
-	</div>
-	<div>{{'generics.Sending' | translate }}...</div>
-</div>

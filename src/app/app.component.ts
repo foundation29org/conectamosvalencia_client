@@ -8,8 +8,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import Swal from 'sweetalert2';
-import { EventsService } from 'app/shared/services/events.service';
 import { AuthService } from './shared/auth/auth.service';
 
 
@@ -24,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
   tituloEvent: string = '';
 
 
-  constructor(public toastr: ToastrService, private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title, public translate: TranslateService, private eventsService: EventsService,  private authService: AuthService) {
+  constructor(public toastr: ToastrService, private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title, public translate: TranslateService,  private authService: AuthService) {
     this.translate.use('es');
   }
 

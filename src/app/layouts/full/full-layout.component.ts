@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy, ElementRef, Inject, Renderer2, AfterViewInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from 'app/shared/services/config.service';
 import { AuthService } from 'app/shared/auth/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
-import { EventsService} from 'app/shared/services/events.service';
 import { Injectable, Injector } from '@angular/core';
-import { Data } from 'app/shared/services/data.service';
 import { LayoutService } from "app/shared/services/layout.service";
 import { Subscription } from "rxjs";
 
@@ -48,10 +45,8 @@ export class FullLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
     isApp: boolean = false;
     isHomePage: boolean = false;
     isClinicalPage: boolean = false;
-    eventsService: any = null;
 
-    constructor(private elementRef: ElementRef, private layoutService: LayoutService, private configService: ConfigService, @Inject(DOCUMENT) private document: Document, private renderer: Renderer2, private authService: AuthService,  private router: Router, private inj: Injector, private dataservice: Data) {
-      this.eventsService = this.inj.get(EventsService);
+    constructor(private layoutService: LayoutService, private configService: ConfigService, @Inject(DOCUMENT) private document: Document, private renderer: Renderer2, private authService: AuthService,  private router: Router) {
           this.isApp = this.document.URL.indexOf( 'http://' ) === -1 && this.document.URL.indexOf( 'https://' ) === -1 && location.hostname != "localhost" && location.hostname != "127.0.0.1";
           this.role = this.authService.getRole();
 

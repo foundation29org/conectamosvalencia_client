@@ -6,14 +6,11 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from 'app/shared/auth/auth.service';
 import { DateService } from 'app/shared/services/date.service';
-import { AuthGuard } from 'app/shared/auth/auth-guard.service';
 import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
-import {DateAdapter} from '@angular/material/core';
-import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -25,10 +22,7 @@ import Swal from 'sweetalert2';
 export class MyResourcesComponent implements OnInit, OnDestroy{
   @ViewChild('myTable') table: DatatableComponent;
   selectedRow: any = null;
-
-  working: boolean = false;
-  sending: boolean = false;
-  loadingNeeds: boolean = false;
+  loadedNeeds: boolean = false;
   resources: any = [];
   filteredResources: any[] = [];
   filters = {
@@ -56,21 +50,16 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   @ViewChild('contentResource') contentResource: any;
   editingResourceId: string | null = null;
 
-  user: any = {};
   modalReference: NgbModalRef;
   private subscription: Subscription = new Subscription();
-  timeformat="";
-  groupId: any;
-  groupEmail: any;
+
+
   defaultLat: number = 39.4699;
   defaultLng: number = -0.3763;
   lat: number = 39.4699;
   lng: number = -0.3763;
   zoom = 7;
   rowIndex: number = -1;
-  emailMsg="";
-  msgList: any = {};
-  role: any;
 
   needTypes = [
     { id: 'all', label: 'Todas las necesidades', info: 'Incluye todas las categorías de necesidades' },
@@ -97,9 +86,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     { id: 'other', label: 'Otras necesidades', info: 'Categoría general para necesidades que no encajan en las anteriores' }
   ];
 
-  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, private authGuard: AuthGuard, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService,private adapter: DateAdapter<any>, private fb: FormBuilder, private zone: NgZone, private errorHandler: ErrorHandlerService){
-    //get role
-    this.role = this.authService.getRole();
+  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService, private fb: FormBuilder, private zone: NgZone, private errorHandler: ErrorHandlerService){
     this.initForm();
   }
 
@@ -480,7 +467,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   }
 
   getRequests(){
-    this.loadingNeeds = true;
+    this.loadedNeeds = false;
     this.subscription.add( this.http.get(environment.api+'/api/needsuser/complete/'+this.authService.getIdUser())
     .subscribe( (response : any) => {
       if(response.success) {
@@ -509,10 +496,10 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
         this.updatePaginationIndexes();
         //this.applyFilters();
       }
-      this.loadingNeeds = false;      
+      this.loadedNeeds = true;      
     }, (err) => {
       console.log(err);
-      this.loadingNeeds = false;
+      this.loadedNeeds = true;
     }));
   }
 
@@ -646,75 +633,5 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   this.modalService.open(this.mapModal, ngbModalOptions);
 }
 
-  capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  onSubmitExportData(){
-    var tempRes = JSON.parse(JSON.stringify(this.resources));
-    for(var j=0;j<tempRes.length;j++){
-      delete tempRes[j].icon;
-    }
-    this.createFile(tempRes);
-  }
-
-  createFile(res){
-    let json2csvCallback = function (err, csv) {
-      if (err) throw err;
-      var blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
-    var url  = URL.createObjectURL(blob);
-    var p = document.createElement('p');
-    document.getElementById('content').appendChild(p);
-
-    var a = document.createElement('a');
-    var dateNow = new Date();
-    var stringDateNow = this.dateService.transformDate(dateNow);
-    a.download    = "ConectamosValencia_"+stringDateNow+".csv";
-    a.href        = url;
-    a.textContent = "ConectamosValencia_"+stringDateNow+".csv";
-    a.setAttribute("id", "download")
-
-    document.getElementById('content').appendChild(a);
-    document.getElementById("download").click();
-  }.bind(this);
-
-  var options ={'expandArrayObjects' :true, "delimiter": { 'field': ';' }, excelBOM: true}
-  json2csv(res, json2csvCallback, options);
-
-  }
-
-  onMarkerClick(request: any) {
-    console.log('Marker clicked:', request); // Para verificar que se llama
-    this.selectedRow = request;
-    
-    // Encontrar el índice de la fila
-    const rowIndex = this.resources.findIndex(user => user === request);
-    
-    if (rowIndex >= 0) {
-        // Calcular la página donde está la fila
-        const pageSize = this.table.pageSize || 10;
-        const pageNumber = Math.floor(rowIndex / pageSize);
-        this.table.offset = pageNumber;
-        
-        // Esperar a que se actualice la vista
-        setTimeout(() => {
-            // Buscar la fila por su índice
-            const rows = document.querySelectorAll('.datatable-row-wrapper');
-            const targetRow = rows[rowIndex % pageSize];
-            
-            if (targetRow) {
-                //targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                targetRow.classList.add('flash-highlight');
-                setTimeout(() => targetRow.classList.remove('flash-highlight'), 1000);
-            }
-        }, 100);
-    }
-  }
-
-getRowClass = (row: any) => {
-  return {
-    'selected-row': this.selectedRow === row
-  };
-}
 
 }

@@ -1,15 +1,10 @@
-import { Component, ViewChild, OnDestroy, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from 'app/shared/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import {  NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/Subscription';
-import {DateAdapter} from '@angular/material/core';
 import { SortService} from 'app/shared/services/sort.service';
-import { DateService } from 'app/shared/services/date.service';
 import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
 import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
@@ -21,25 +16,11 @@ import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 })
 
 export class UsersAdminComponent implements OnInit, OnDestroy{
-  working: boolean = false;
-  sending: boolean = false;
-  loadingUsers: boolean = false;
-  loadingUsersNotActived: boolean = false;
-  notActivedUsers: any = [];
+  loadedUsers: boolean = false;
   users: any = [];
-  user: any = {};
-  modalReference: NgbModalRef;
   private subscription: Subscription = new Subscription();
-  timeformat="";
-  // Google map lat-long
-  lat: number = 50.431134;
-  lng: number = 30.654701;
-  zoom = 3;
-  rowIndex: number = -1;
-  emailMsg="";
-  msgList: any = {};
 
-  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService,private adapter: DateAdapter<any>, private sortService: SortService, private dateService: DateService, private errorHandler: ErrorHandlerService){
+  constructor(private http: HttpClient, public translate: TranslateService, public toastr: ToastrService, private sortService: SortService, private errorHandler: ErrorHandlerService){
     
   }
 
@@ -53,7 +34,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
   }
 
   getUsers(){
-    this.loadingUsers = true;
+    this.loadedUsers = false;
     this.subscription.add( this.http.get(environment.api+'/api/admin/allusers/')
     .subscribe( (res : any) => {
       this.users = res.data.map(user => {
@@ -65,10 +46,10 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
       
       // Ordenar por fecha de creación (más recientes primero)
       this.users.sort(this.sortService.GetSortOrderInverse("creationDate"));
-      this.loadingUsers = false;      
+      this.loadedUsers = true;      
     }, (err) => {
       console.log(err);
-      this.loadingUsers = false;
+      this.loadedUsers = true;
       this.errorHandler.handleError(err, this.translate.instant("generics.error try again"));
     }));
   }
