@@ -1,22 +1,11 @@
-import { Component, Output, EventEmitter, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, Output, EventEmitter, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { NgForm } from '@angular/forms';
 import { AuthService } from 'app/shared/auth/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
-import {  NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/Subscription';
 
 import { LayoutService } from '../services/layout.service';
 import { ConfigService } from '../services/config.service';
-
-declare var device;
-declare global {
-  interface Navigator {
-    app: {
-      exitApp: () => any; // Or whatever is the type of the exitApp function
-    }
-  }
-}
 
 @Component({
   selector: "app-navbar",
@@ -32,41 +21,12 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleHideSidebar = new EventEmitter<Object>();
 
   public config: any = {};
-
-  isApp: boolean = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 && location.hostname != "localhost" && location.hostname != "127.0.0.1";
-  isAndroid: boolean = false;
-  patients: any;
-  currentPatient: any = {};
   redirectUrl: string = '';
   actualUrl: string = '';
-  email: string = '';
   role: string = 'User';
-  roleShare: string = 'Clinical';
-  modalReference: NgbModalRef;
-  @ViewChild('f') sendForm: NgForm;
-  sending: boolean = false;
-  revonking: boolean = false;
-  listOfSharingAccounts: any = [];
-  permissions: any = {};
-  selectedPatient: any = {};
-  shareWithObject: any = {};
-  isMine: boolean = false;
-  message: string = '';
-  indexPermissions: number = -1;
-  loading: boolean = true;
-  myUserId: string = '';
-  myEmail: string = '';
   isHomePage: boolean = false;
-  isClinicalPage: boolean = false;
-  age: any = {};
-  private subscription: Subscription = new Subscription();
 
   constructor(public translate: TranslateService, private layoutService: LayoutService, private configService: ConfigService, private authService: AuthService, private router: Router) {
-    if (this.isApp) {
-      if (device.platform == 'android' || device.platform == 'Android') {
-        this.isAndroid = true;
-      }
-    }
 
     this.role = this.authService.getRole();
     this.redirectUrl = this.authService.getRedirectUrl();
@@ -78,13 +38,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         var tempUrl1 = (this.actualUrl).toString();
         if (tempUrl1.indexOf('/home') != -1) {
           this.isHomePage = true;
-          this.isClinicalPage = false;
         } else {
-          if (tempUrl1.indexOf('/clinical/diagnosis') != -1) {
-            this.isClinicalPage = true;
-          } else {
-            this.isClinicalPage = false;
-          }
           this.isHomePage = false;
         }
 
@@ -119,7 +73,6 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     if (this.layoutSub) {
       this.layoutSub.unsubscribe();
     }
@@ -159,9 +112,5 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     );
 }
-
-  exit() {
-    navigator.app.exitApp();
-  }
 
 }

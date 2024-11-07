@@ -1,10 +1,8 @@
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { TokenService } from './token.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-import Swal from 'sweetalert2';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
@@ -13,7 +11,6 @@ export class AuthGuard implements CanActivate {
 
   constructor(
     private authService: AuthService,
-    private tokenService: TokenService,
     private toastr: ToastrService,
     private translate: TranslateService,
     private router: Router

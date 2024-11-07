@@ -1,17 +1,13 @@
-import { Component, ViewChild, OnDestroy, NgZone, OnInit } from '@angular/core';
+import { Component, ViewChild, OnDestroy, OnInit } from '@angular/core';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from 'app/shared/auth/auth.service';
 import { DateService } from 'app/shared/services/date.service';
-import { AuthGuard } from 'app/shared/auth/auth-guard.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
-import {DateAdapter} from '@angular/material/core';
 import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
 import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
@@ -43,7 +39,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
   totalItems = 0;
   startIndex = 0;
   endIndex = 0;
-  resourceForm: FormGroup;
+
   sortDirection = 1;  // 1 ascendente, -1 descendente
   sortColumn = 'timestamp';  
 
@@ -95,7 +91,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
     { id: 'other', label: 'Otras necesidades', info: 'Categoría general para necesidades que no encajan en las anteriores' }
   ];
 
-  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, private authGuard: AuthGuard, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService,private adapter: DateAdapter<any>, private fb: FormBuilder, private zone: NgZone, private errorHandler: ErrorHandlerService){
+  constructor(private http: HttpClient, public translate: TranslateService, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService, private errorHandler: ErrorHandlerService){
 
 
   }

@@ -1,18 +1,12 @@
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/observable/throw'
 import 'rxjs/add/operator/catch';
 
 import { AuthService } from './auth.service';
-import { TokenService } from './token.service';
 import { environment } from 'environments/environment';
-
-import { EventsService } from 'app/shared/services/events.service';
-import { takeUntil } from 'rxjs/operators';
-import * as decode from 'jwt-decode';
-import { tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2';
@@ -23,7 +17,6 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private inj: Injector, private router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    var eventsService = this.inj.get(EventsService);
     let authService = this.inj.get(AuthService);
 
     var isExternalReq = false;
@@ -36,17 +29,6 @@ export class AuthInterceptor implements HttpInterceptor {
       });
 
       return next.handle(authReq).pipe(
-        tap(
-          event => {
-            if (event instanceof HttpResponse) {
-              /*console.log('Response:', {
-                url: event.url,
-                status: event.status,
-                headers: event.headers.keys()
-              });*/
-            }
-          }
-        ),
         catchError((error: any) => {
           console.log('Interceptor error:', error);
           if (req.url.endsWith('/api/me')) {
@@ -93,9 +75,17 @@ export class AuthInterceptor implements HttpInterceptor {
           if (error.status === 404 || error.status === 0) {
             if (!isExternalReq) {
               const returnMessage = error.error?.message || error.message;
-              eventsService.broadcast('http-error', returnMessage);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: returnMessage
+              });
             } else {
-              eventsService.broadcast('http-error-external', 'no external conexion');
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error de conexión externa'
+              });
             }
           }
 

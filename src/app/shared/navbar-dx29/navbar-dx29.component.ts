@@ -25,8 +25,6 @@ export class NavbarD29Component implements OnInit, AfterViewInit, OnDestroy {
   public config: any = {};
   isHomePage: boolean = false;
 
-  private subscription: Subscription = new Subscription();
-
   constructor(public translate: TranslateService, private layoutService: LayoutService, private configService: ConfigService, private router: Router) {
 
 
@@ -72,7 +70,6 @@ export class NavbarD29Component implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     if (this.layoutSub) {
       this.layoutSub.unsubscribe();
     }

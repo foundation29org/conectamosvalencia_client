@@ -8,7 +8,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatchHeightModule } from "../shared/directives/match-height.directive";
 import { UiSwitchModule } from 'ngx-ui-switch';
-import { AgmCoreModule } from '@agm/core';
 
 import { UsersAdminComponent } from "./users-admin/users-admin.component";
 import {MatSelectModule} from '@angular/material/select';
@@ -17,7 +16,6 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {AutosizeModule} from 'ngx-autosize';
-import { SafePipe2 } from '../shared/services/safe2.pipe';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -37,10 +35,6 @@ import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
         MatDatepickerModule,
         MatNativeDateModule,
         UiSwitchModule,
-        AgmCoreModule.forRoot({
-            apiKey: "AIzaSyAcbDF_C9btRGAUWSePhOR4UxsVbtK3cJA",
-            language: 'es'
-          }),
         NgxDatatableModule,
         AutosizeModule,
         MatCardModule,
@@ -52,8 +46,7 @@ import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
     ],
     exports: [TranslateModule],
     declarations: [
-        UsersAdminComponent,
-        SafePipe2
+        UsersAdminComponent
     ],
     providers: [],
 })

@@ -26,20 +26,12 @@ import { FullLayoutComponent } from "./layouts/full/full-layout.component";
 import { LandPageLayoutComponent } from "./layouts/land-page/land-page-layout.component";
 
 import { AuthService } from './shared/auth/auth.service';
-import { TokenService } from './shared/auth/token.service';
 import { AuthGuard } from './shared/auth/auth-guard.service';
 import { RoleGuard } from './shared/auth/role-guard.service';
 import { AuthInterceptor } from './shared/auth/auth.interceptor';
 import { DatePipe } from '@angular/common';
 import { DateService } from 'app/shared/services/date.service';
-import { SearchFilterPipe } from 'app/shared/services/search-filter.service';
-import { HighlightSearch } from 'app/shared/services/search-filter-highlight.service';
-import { TextTransform } from 'app/shared/services/transform-text.service';
 import { SortService } from 'app/shared/services/sort.service';
-import { SearchService } from 'app/shared/services/search.service';
-import { EventsService } from 'app/shared/services/events.service';
-import { DialogService } from 'app/shared/services/dialog.service';
-import { Data } from 'app/shared/services/data.service';
 import { environment } from 'environments/environment';
 
 
@@ -54,7 +46,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 
   @NgModule({
-    declarations: [AppComponent, FullLayoutComponent, ContentLayoutComponent, LandPageLayoutComponent, SearchFilterPipe, HighlightSearch, TextTransform],
+    declarations: [AppComponent, FullLayoutComponent, ContentLayoutComponent, LandPageLayoutComponent],
     imports: [
       CommonModule,
       BrowserAnimationsModule,
@@ -78,7 +70,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ],
     providers: [
       AuthService,
-      TokenService,
       AuthGuard,
       RoleGuard,
       {
@@ -88,15 +79,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       },
       DatePipe,
       DateService,
-      SearchFilterPipe,
-      HighlightSearch,
-      TextTransform,
       { provide: LOCALE_ID, useValue: 'es-ES' },
       SortService,
-      SearchService,
-      EventsService,
-      DialogService,
-      Data,
       {
         provide: PERFECT_SCROLLBAR_CONFIG,
         useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
