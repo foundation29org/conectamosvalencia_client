@@ -12,6 +12,9 @@ import { environment } from 'environments/environment';
 import { EventsService } from 'app/shared/services/events.service';
 import { takeUntil } from 'rxjs/operators';
 import * as decode from 'jwt-decode';
+import { tap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 
 @Injectable()
@@ -20,73 +23,62 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     var eventsService = this.inj.get(EventsService);
-
-    let authService = this.inj.get(AuthService); //authservice is an angular service
-        // Get the auth header from the service.
-    const Authorization = authService.getToken();
-    if(authService.getToken()==undefined){
-      const authReq = req.clone({ headers: req.headers});
-      return next.handle(authReq)
-    }
-    // Clone the request to add the new header.
-    var token =  authService.getToken();
-    var type = 'Bearer'
-
-    // Clone the request to add the new header.
+    let authService = this.inj.get(AuthService);
 
     var isExternalReq = false;
-    var authReq = req.clone({});
 
-    if(req.url.indexOf(environment.api)!==-1){
-      /*const headers = new HttpHeaders({
-        'authorization': `${type} ${token}`,
-        'Cache-Control':  'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
-        'Pragma': 'no-cache',
-        'Expires': '0'
+    if (req.url.startsWith(environment.api)) {
+      const authReq = req.clone({
+        withCredentials: true,
+        headers: req.headers
+          .set('Accept', 'application/json')
       });
-      authReq = req.clone({ headers});*/
-      authReq = req.clone({ headers: req.headers.set('authorization',  `${type} ${token}`) });
-      let tokenService = this.inj.get(TokenService);
-      if(!tokenService.isTokenValid()){
-        authService.logout();
-        this.router.navigate([authService.getLoginUrl()]);
-      }
-    }
 
-    // Pass on the cloned request instead of the original request.
-    return next.handle(authReq)
-      .catch((error, caught) => {
-
-        if (error.status === 401) {
-          return Observable.throw(error);
-        }
-        //if 403
-        if (error.status === 403) {
-          authService.logout();
-          this.router.navigate([authService.getLoginUrl()]);
-          return Observable.throw(error);
-        }
-
-        if (error.status === 404 || error.status === 0) {
-          if (!isExternalReq) {
-            var returnMessage = error.message;
-            if (error.error.message) {
-              returnMessage = error.error;
+      return next.handle(authReq).pipe(
+        tap(
+          event => {
+            if (event instanceof HttpResponse) {
+              /*console.log('Response:', {
+                url: event.url,
+                status: event.status,
+                headers: event.headers.keys()
+              });*/
             }
-            //eventsService.broadcast('http-error', returnMessage);
-          } else {
-            //eventsService.broadcast('http-error-external', 'no external conexion');
-
           }
-          return Observable.throw(error);
-        }
+        ),
+        catchError((error: any) => {
+          console.log('Interceptor error:', error);
 
-        if (error.status === 419) {
-          return Observable.throw(error);
-        }
+          if (error.status === 401) {
+            // No autorizado
+            console.log('Unauthorized error');
+            return throwError(error);
+          }
 
-        //return all others errors
-        return Observable.throw(error);
-      }) as any;
+          if (error.status === 403) {
+            // Forbidden - hacer logout
+            console.log('Forbidden error - logging out');
+            authService.logout().subscribe(
+              () => console.log('Logout successful after 403'),
+              err => console.error('Error during logout after 403:', err)
+            );
+            return throwError(error);
+          }
+
+          if (error.status === 404 || error.status === 0) {
+            if (!isExternalReq) {
+              const returnMessage = error.error?.message || error.message;
+              eventsService.broadcast('http-error', returnMessage);
+            } else {
+              eventsService.broadcast('http-error-external', 'no external conexion');
+            }
+          }
+
+          return throwError(error);
+        })
+      );
+    }
+    
+    return next.handle(req);
   }
 }

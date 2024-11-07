@@ -25,10 +25,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   @ViewChild('myTable') table: DatatableComponent;
   selectedRow: any = null;
 
-  addedlang: boolean = false;
-  lang: any;
-  allLangs: any;
-  langs: any;
   working: boolean = false;
   sending: boolean = false;
   loadingNeeds: boolean = false;
@@ -101,24 +97,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   ];
 
   constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, private authGuard: AuthGuard, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService,private adapter: DateAdapter<any>, private fb: FormBuilder, private zone: NgZone){
-
-    this.adapter.setLocale(this.authService.getLang());
-    this.lang = this.authService.getLang()
-    switch(this.authService.getLang()){
-      case 'en':
-        this.timeformat="M/d/yy";
-        break;
-      case 'es':
-          this.timeformat="d/M/yy";
-          break;
-      case 'nl':
-          this.timeformat="d-M-yy";
-          break;
-      default:
-          this.timeformat="M/d/yy";
-          break;
-
-    }  
     //get role
     this.role = this.authService.getRole();
     this.initForm();

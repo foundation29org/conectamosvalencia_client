@@ -69,7 +69,6 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.role = this.authService.getRole();
-    console.log(this.role);
     this.redirectUrl = this.authService.getRedirectUrl();
 
     this.router.events.filter((event: any) => event instanceof NavigationEnd).subscribe(
@@ -148,9 +147,18 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate([this.authService.getLoginUrl()]);
-  }
+    this.authService.logout().subscribe(
+        () => {
+            console.log('Logout successful');
+            // La navegación ya está manejada en el AuthService
+        },
+        error => {
+            console.error('Logout error:', error);
+            // Manejar el error si es necesario
+            this.router.navigate(['/login']);
+        }
+    );
+}
 
   exit() {
     navigator.app.exitApp();

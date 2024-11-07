@@ -35,7 +35,6 @@ import { DateService } from 'app/shared/services/date.service';
 import { SearchFilterPipe } from 'app/shared/services/search-filter.service';
 import { HighlightSearch } from 'app/shared/services/search-filter-highlight.service';
 import { TextTransform } from 'app/shared/services/transform-text.service';
-import { LocalizedDatePipe } from 'app/shared/services/localizedDatePipe.service';
 import { SortService } from 'app/shared/services/sort.service';
 import { SearchService } from 'app/shared/services/search.service';
 import { EventsService } from 'app/shared/services/events.service';
@@ -55,7 +54,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 
   @NgModule({
-    declarations: [AppComponent, FullLayoutComponent, ContentLayoutComponent, LandPageLayoutComponent, SearchFilterPipe, HighlightSearch, TextTransform, LocalizedDatePipe],
+    declarations: [AppComponent, FullLayoutComponent, ContentLayoutComponent, LandPageLayoutComponent, SearchFilterPipe, HighlightSearch, TextTransform],
     imports: [
       CommonModule,
       BrowserAnimationsModule,
@@ -73,7 +72,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       }),
       AgmCoreModule.forRoot({
         apiKey: environment.googlemapkey,
-        language: sessionStorage && sessionStorage.getItem('lang') || 'es'
+        language: 'es'
       }),
       PerfectScrollbarModule
     ],
@@ -92,7 +91,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       SearchFilterPipe,
       HighlightSearch,
       TextTransform,
-      LocalizedDatePipe,
       { provide: LOCALE_ID, useValue: 'es-ES' },
       SortService,
       SearchService,

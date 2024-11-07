@@ -10,7 +10,6 @@ import { TranslateService } from '@ngx-translate/core';
 })
 
 export class LandPageComponent {
-    lang: string = 'es';
 
     constructor(public translate: TranslateService, private router: Router) {
     }

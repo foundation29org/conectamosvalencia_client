@@ -40,7 +40,7 @@ import { MatFormFieldModule } from '@angular/material/form-field'
         UiSwitchModule,
         AgmCoreModule.forRoot({
             apiKey: "AIzaSyAcbDF_C9btRGAUWSePhOR4UxsVbtK3cJA",
-            language: sessionStorage && sessionStorage.getItem('lang') || 'es'
+            language: 'es'
           }),
         NgxDatatableModule,
         AutosizeModule,

@@ -47,7 +47,7 @@ import { CookiesPageComponent } from "./cookies/cookies.component";
         MatNativeDateModule,
         AgmCoreModule.forRoot({
             apiKey: "AIzaSyAcbDF_C9btRGAUWSePhOR4UxsVbtK3cJA",
-            language: sessionStorage && sessionStorage.getItem('lang') || 'es'
+            language: 'es'
           }),
     ],
     declarations: [
