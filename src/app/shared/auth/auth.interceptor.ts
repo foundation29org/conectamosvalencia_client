@@ -15,6 +15,7 @@ import * as decode from 'jwt-decode';
 import { tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 
 @Injectable()
@@ -48,10 +49,34 @@ export class AuthInterceptor implements HttpInterceptor {
         ),
         catchError((error: any) => {
           console.log('Interceptor error:', error);
-
+          if (req.url.endsWith('/api/me')) {
+            return throwError(error);
+          }
           if (error.status === 401) {
-            // No autorizado
-            console.log('Unauthorized error');
+            console.log('Unauthorized error:', error.error);
+            if (error.error?.message === 'Token expired') {
+              console.log('Token expired - logging out');
+              error.handled = true;
+              if (Swal.isVisible()) {
+                console.log('Hay un Swal abierto, cerrándolo...');
+                Swal.close();
+                // Pequeño delay para asegurar que el Swal anterior se cierre
+                setTimeout(() => {
+                    this.showSessionExpiredAlert(authService);
+                }, 200);
+              } else {
+                  this.showSessionExpiredAlert(authService);
+              }
+              
+            }else if (error.error?.message === 'Invalid token') {
+              console.log('Invalid token - logging out');
+              authService.logout().subscribe(
+                () => {
+                  console.log('Logout successful after Invalid token');
+                  this.router.navigate(['/login']);
+                }
+              );
+            }
             return throwError(error);
           }
 
@@ -80,5 +105,27 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     
     return next.handle(req);
+  }
+  private showSessionExpiredAlert(authService: AuthService): void {
+    Swal.fire({
+        title: 'Atención',
+        text: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false
+    }).then((result) => {
+        authService.logout().subscribe(
+            () => {
+                console.log('Logout successful after token expiration');
+                this.router.navigate(['/login']);
+            },
+            err => {
+                console.error('Error during logout after token expiration:', err);
+                this.router.navigate(['/login']);
+            }
+        );
+    });
   }
 }

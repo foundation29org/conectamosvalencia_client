@@ -12,7 +12,7 @@
                                     <input type="email" name="email" autocomplete="email" class="form-control" placeholder="{{'generics.Email' | translate }}" #userName required>
                                   </div>
                                   <div class="formGroup mt-3">
-                                    <button type="submit" class="btn btn-dark btn-block">
+                                    <button type="submit" class="btn btn-dark btn-block" [disabled]="sending">
                                       Iniciar sesión
                                     </button>
                                   </div>

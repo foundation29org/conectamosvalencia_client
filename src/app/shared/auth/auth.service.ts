@@ -12,6 +12,7 @@ import { of } from 'rxjs';
 import Swal from 'sweetalert2';
 import { switchMap, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
 
   private isApp: boolean = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1 && location.hostname != "localhost" && location.hostname != "127.0.0.1";
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {}
 
 
   checkAuthStatus(): Observable<boolean> {
@@ -153,6 +154,8 @@ private setUserInfo(userInfo: any) {
         withCredentials: true
     }).pipe(
         tap(() => {
+
+          this.modalService.dismissAll();
             // Limpiar el estado
             this.isloggedIn = false;
             this.role = null;
@@ -170,6 +173,7 @@ private setUserInfo(userInfo: any) {
             console.error('Logout error:', error);
             // En caso de error, forzar la limpieza y redirección
             this.isloggedIn = false;
+            this.modalService.dismissAll();
             sessionStorage.clear();
             this.router.navigate(['/login']);
             return throwError(error);

@@ -12,6 +12,7 @@ import { SortService} from 'app/shared/services/sort.service';
 import { DateService } from 'app/shared/services/date.service';
 import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
+import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 
 @Component({
     selector: 'app-users-admin',
@@ -38,7 +39,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
   emailMsg="";
   msgList: any = {};
 
-  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService,private adapter: DateAdapter<any>, private sortService: SortService, private dateService: DateService){
+  constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService,private adapter: DateAdapter<any>, private sortService: SortService, private dateService: DateService, private errorHandler: ErrorHandlerService){
     
   }
 
@@ -68,7 +69,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
     }, (err) => {
       console.log(err);
       this.loadingUsers = false;
-      this.toastr.error(this.translate.instant("generics.error try again"));
+      this.errorHandler.handleError(err, this.translate.instant("generics.error try again"));
     }));
   }
 
@@ -127,7 +128,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
               user.confirmed = true;
             }, (err) => {
               console.log(err);
-              this.toastr.error('Error al activar la cuenta');
+              this.errorHandler.handleError(err, 'Error al activar la cuenta');
             })
         );
       }
@@ -151,7 +152,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
               user.confirmed = false;
             }, (err) => {
               console.log(err);
-              this.toastr.error('Error al desactivar la cuenta');
+              this.errorHandler.handleError(err, 'Error al desactivar la cuenta');
             })
         );
       }
