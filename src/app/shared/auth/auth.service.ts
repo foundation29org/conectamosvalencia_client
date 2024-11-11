@@ -19,6 +19,7 @@ export class AuthService {
   private message: string;
   private iduser: string;
   private role: string;
+  private lastError: any = null;
 
   constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {}
 
@@ -36,12 +37,17 @@ export class AuthService {
             }
         }),
         map(response => this.isloggedIn),
-        catchError(() => {
-            console.log('Auth check failed');
-            this.isloggedIn = false;
-            return of(false);
+        catchError((error) => {
+          console.log('Auth check failed');
+          this.lastError = error; // Guardar el error
+          this.isloggedIn = false;
+          return of(false);
         })
     );
+}
+
+getLastError(): any {
+  return this.lastError;
 }
 
 getEnvironment(): boolean {
