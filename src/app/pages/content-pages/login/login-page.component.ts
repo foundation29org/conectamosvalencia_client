@@ -43,12 +43,6 @@ export class LoginPageComponent implements OnDestroy, OnInit{
     haveToken: boolean = false;
 
     constructor(private router: Router, public authService: AuthService, public translate: TranslateService, public toastr: ToastrService) {
-      /*if(this.authService.checkAuthStatus()){
-        console.log('Authentication successful, redirecting...');
-        let url =  this.authService.getRedirectUrl();
-        console.log(url);
-        this.router.navigate([ url ]);
-      }*/
      }
 
 

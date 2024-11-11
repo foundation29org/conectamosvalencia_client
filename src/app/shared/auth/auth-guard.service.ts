@@ -21,7 +21,10 @@ export class AuthGuard implements CanActivate {
         tap(isValid => {
             if (!isValid) {
                 console.log('Auth check failed');
-                this.handleAuthError();
+                // Solo mostrar el error si no es por falta de token
+                if (this.authService.getLastError()?.error?.message !== 'No token provided') {
+                    this.handleAuthError();
+                }
                 this.router.navigate(['/login']);
             }
         }),
