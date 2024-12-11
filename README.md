@@ -5,7 +5,7 @@ ConectamosValencia es una plataforma web diseñada para facilitar la coordinaci�
 
 ## Características principales
 - Sistema de registro y autenticación de usuarios
-- Gestión de necesidades y ofertas de ayuda
+- Gestión de necesidades
 - Geolocalización de recursos
 - Panel de administración para gestión de recursos
 - Visualización en mapa de calor de zonas afectadas

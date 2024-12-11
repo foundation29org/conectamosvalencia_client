@@ -26,7 +26,8 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   resources: any = [];
   filteredResources: any[] = [];
   filters = {
-    type: '',
+    fullName: '',
+    idNumber: '',
     status: '',
     date: '',
     search: ''
@@ -61,31 +62,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   zoom = 7;
   rowIndex: number = -1;
 
-  needTypes = [
-    { id: 'all', label: 'Todas las necesidades', info: 'Incluye todas las categorías de necesidades' },
-    { id: 'transport_logistics', label: 'Transporte y Logística', info: 'Camiones, grúas, vehículos pesados, servicios de transporte internacional, maquinaria de construcción' },
-    { id: 'humanitarian_aid', label: 'Ayuda Humanitaria', info: 'Alimentos, agua, ropa, mantas, productos de higiene y limpieza' },
-    { id: 'professional_services', label: 'Servicios Profesionales', info: 'Asesoramiento legal, servicios de arquitectura, peritación y gestión de seguros' },
-    { id: 'construction_repair', label: 'Construcción y Reparación', info: 'Materiales de construcción, maquinaria de obra, servicios de limpieza y desescombro' },
-    { id: 'technical_services', label: 'Servicios Técnicos', info: 'Instalaciones eléctricas, servicios informáticos, recuperación de datos' },
-    { id: 'volunteering', label: 'Voluntariado', info: 'Mano de obra, asistencia personal, apoyo comunitario' },
-    { id: 'financial_support', label: 'Apoyo Económico', info: 'Donaciones monetarias, apoyo financiero, gestión de recursos' },
-    { id: 'equipment_supplies', label: 'Equipamiento y Suministros', info: 'Generadores eléctricos, herramientas, material de camping' },
-    { id: 'health_services', label: 'Servicios Sanitarios', info: 'Asistencia ambulatoria, apoyo psicológico, control médico' },
-    { id: 'storage', label: 'Almacenamiento', info: 'Espacios de almacenaje, puntos de recogida, gestión de donaciones' },
-    { id: 'vehicles', label: 'Coches', info: 'Recursos de vehículos para quienes han perdido los suyos, ofrecidos por asociaciones como Faconauto o Sernauto' },
-    { id: 'animal_resources', label: 'Recursos para Animales', info: 'Protectora, espacios donde dejarles, comida' },
-    { id: 'education_training', label: 'Educación y Formación', info: 'Material escolar, clases de recuperación educativa, formación en gestión de emergencias' },
-    { id: 'communication_technology', label: 'Comunicación y Tecnología', info: 'Equipos de telecomunicaciones, Wi-Fi móvil, servicios de comunicación comunitaria' },
-    { id: 'temporary_infrastructure', label: 'Infraestructura Temporal', info: 'Tiendas de campaña, sistemas de purificación de agua, instalaciones sanitarias móviles' },
-    { id: 'children_families', label: 'Recursos para Niños y Familias', info: 'Juguetes, guarderías temporales, asistencia para lactantes' },
-    { id: 'disability_support', label: 'Asistencia a Personas con Discapacidad', info: 'Equipos de movilidad, servicios de asistencia personal, adaptaciones temporales' },
-    { id: 'psychosocial_support', label: 'Apoyo Psicosocial', info: 'Grupos de apoyo emocional, actividades recreativas, terapias grupales' },
-    { id: 'energy_supply', label: 'Energía y Suministro Eléctrico', info: 'Paneles solares, bancos de energía, servicios de instalación temporal' },
-    { id: 'environmental_recovery', label: 'Recuperación Ambiental', info: 'Limpieza de ríos y zonas verdes, asesoramiento en recuperación de ecosistemas, reforestación' },
-    { id: 'other', label: 'Otras necesidades', info: 'Categoría general para necesidades que no encajan en las anteriores' }
-  ];
-
   constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService, private fb: FormBuilder, private zone: NgZone, private errorHandler: ErrorHandlerService){
     this.initForm();
   }
@@ -101,52 +77,90 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     });
   }
 
-  atLeastOneNeedValidator() {
-    return (formGroup: FormGroup) => {
-      const needs = formGroup.get('needs') as FormArray;
-      const otherNeeds = formGroup.get('otherNeeds').value;
-
-      if (needs.length === 0 && (!otherNeeds || otherNeeds.trim() === '')) {
-        return { needsRequired: true };
-      }
-
-      return null;
-    };
-  }
 
   initForm() {
     this.resourceForm = this.fb.group({
-      type: ['', Validators.required],
-      needs: this.fb.array([]),
-      otherNeeds: [''],
+      personalInfo: this.fb.group({
+        fullName: ['', Validators.required],
+        idType: ['', Validators.required],
+        idNumber: ['', Validators.required],
+        lostDocumentation: [false],
+        birthDate: ['', Validators.required],
+        gender: ['', Validators.required],
+        language: ['', Validators.required],
+        residence: ['', Validators.required],
+        city: ['', Validators.required],
+        householdMembers: ['', [Validators.required, Validators.min(1)]]
+      }),
+      housing: this.fb.group({
+        items: this.fb.group({
+          noHousing: [false],
+          housingDeficiencies: [false],
+          unsanitary: [false],
+          overcrowding: [false],
+          noBasicGoods: [false],
+          foodShortage: [false]
+        }),
+        observations: ['']
+      }),
+      employment: this.fb.group({
+        items: this.fb.group({
+          allUnemployed: [false],
+          jobLoss: [false],
+          temporaryLayoff: [false],
+          precariousEmployment: [false]
+        }),
+        observations: ['']
+      }),
+      socialNetworks: this.fb.group({
+        items: this.fb.group({
+          socialIsolation: [false],
+          neighborConflicts: [false],
+          needsInstitutionalSupport: [false],
+          vulnerableMinors: [false]
+        }),
+        observations: ['']
+      }),
+      publicServices: this.fb.group({
+        items: this.fb.group({
+          noHealthCoverage: [false],
+          discontinuedMedicalTreatment: [false],
+          unschooledMinors: [false],
+          dependencyWithoutAssessment: [false],
+          mentalHealthIssues: [false]
+        }),
+        observations: ['']
+      }),
+      socialParticipation: this.fb.group({
+        items: this.fb.group({
+          memberOfOrganizations: [false],
+          receivesSocialServices: [false]
+        }),
+        observations: ['']
+      }),
+      economicCoverage: this.fb.group({
+        items: this.fb.group({
+          noIncome: [false],
+          pensionsOrBenefits: [false],
+          receivesRviImv: [false]
+        }),
+        observations: ['']
+      }),
       details: [''],
-      lat: [null],
-      lng: [null]
-    }, {
-      validators: this.atLeastOneNeedValidator()
+      lat: [null, Validators.required],
+      lng: [null, Validators.required]
     });
   
     // Actualizar validaciones cuando cambia el tipo
-    this.resourceForm.get('type').valueChanges.subscribe(type => {
       const latControl = this.resourceForm.get('lat');
       const lngControl = this.resourceForm.get('lng');
       
-      if (type === 'need') {
-        latControl.setValidators([Validators.required]);
-        lngControl.setValidators([Validators.required]);
-      } else {
-        latControl.clearValidators();
-        lngControl.clearValidators();
-      }
+      latControl.setValidators([Validators.required]);
+      lngControl.setValidators([Validators.required]);
       
       latControl.updateValueAndValidity();
       lngControl.updateValueAndValidity();
-    });
     this.editingResourceId = null;
-  }
-
-  get needsArray() {
-    return this.resourceForm.get('needs') as FormArray;
   }
 
   hasActiveFilters(): boolean {
@@ -156,19 +170,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     });
   }
 
-  isNeedSelected(needId: string): boolean {
-    return this.needsArray.value.includes(needId);
-  }
-
-  getNeedLabel(needId: string): string {
-    const needType = this.needTypes.find(type => type.id === needId);
-    return needType ? needType.label : needId;
-  }
-
-  getNeedInfo(needId: string): string {
-    const needType = this.needTypes.find(type => type.id === needId);
-    return needType ? needType.info : '';
-  }
 
   getStatusLabel(status: string): string {
     const statusMap = {
@@ -193,18 +194,15 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
       let comparison = 0;
       
       switch (column) {
-        case 'type':
-          comparison = (a.type === 'need' ? 'Necesidad' : 'Oferta')
-            .localeCompare(b.type === 'need' ? 'Necesidad' : 'Oferta');
-          break;
-        case 'needs':
-          const needsA = a.needs.map(need => this.getNeedLabel(need)).join(',');
-          const needsB = b.needs.map(need => this.getNeedLabel(need)).join(',');
-          comparison = needsA.localeCompare(needsB);
-          break;
         case 'status':
           comparison = this.getStatusLabel(a.status)
             .localeCompare(this.getStatusLabel(b.status));
+          break;
+        case 'fullName':
+          comparison = a.personalInfo.fullName.localeCompare(b.personalInfo.fullName);
+          break;
+        case 'idNumber':
+          comparison = a.personalInfo.idNumber.localeCompare(b.personalInfo.idNumber);
           break;
         case 'timestamp':
           comparison = new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
@@ -234,34 +232,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     return '↕';
   }
 
-  onNeedToggle(needId: string, checked: boolean) {
-    const needsArray = this.needsArray;
-    
-    if (needId === 'all' && checked) {
-      // Si selecciona 'all', añadir todos los IDs excepto 'all'
-      needsArray.clear();
-      this.needTypes
-        .filter(type => type.id !== 'all')
-        .forEach(type => needsArray.push(this.fb.control(type.id)));
-    } else if (needId === 'all' && !checked) {
-      // Si deselecciona 'all', limpiar todo
-      needsArray.clear();
-    } else {
-      if (checked) {
-        needsArray.push(this.fb.control(needId));
-        // Remover 'all' si estaba seleccionado
-        const allIndex = needsArray.value.indexOf('all');
-        if (allIndex >= 0) {
-          needsArray.removeAt(allIndex);
-        }
-      } else {
-        const index = needsArray.value.indexOf(needId);
-        if (index >= 0) {
-          needsArray.removeAt(index);
-        }
-      }
-    }
-  }
 
   showNewResourceModal(content) {
     this.initForm(); // Asegurarse de que el formulario está inicializado
@@ -316,88 +286,97 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
         this.errorHandler.handleError(error, 'No se pudo crear el recurso. Por favor, inténtalo de nuevo.');
       }
     } else {
-      Object.keys(this.resourceForm.controls).forEach(key => {
-        const control = this.resourceForm.get(key);
+      // Marcar todos los campos como tocados para mostrar los errores
+    Object.keys(this.resourceForm.controls).forEach(key => {
+      const control = this.resourceForm.get(key);
+      if (control instanceof FormGroup) {
+        Object.keys(control.controls).forEach(subKey => {
+          control.get(subKey).markAsTouched();
+        });
+      } else {
         control.markAsTouched();
-      });
-  
-      const errorMessages = [];
-      const form = this.resourceForm;
-  
-      // Validación de tipo
-      if (form.get('type').errors?.required) {
-        errorMessages.push('- Debes seleccionar un tipo (Necesidad u Oferta)');
       }
-  
-      // Validación de necesidades
-      const needsArray = form.get('needs') as FormArray;
-      const otherNeeds = form.get('otherNeeds').value;
-      if (needsArray.length === 0 && (!otherNeeds || otherNeeds.trim() === '')) {
-        errorMessages.push('- Debes seleccionar al menos una necesidad o completar el campo "Otras necesidades"');
+    });
+
+    const errorMessages = [];
+    const form = this.resourceForm;
+
+    // Validación de información personal
+    const personalInfo = form.get('personalInfo');
+    if (personalInfo.invalid) {
+      if (!personalInfo.get('fullName').value) {
+        errorMessages.push('- Nombre e iniciales de los apellidos');
       }
-  
-      // Validación de ubicación para necesidades
-      if (form.get('type').value === 'need') {
-        if (!form.get('lat').value || !form.get('lng').value) {
-          errorMessages.push('- Para las necesidades es obligatorio indicar la ubicación en el mapa');
-        }
+      if (!personalInfo.get('idType').value || !personalInfo.get('idNumber').value) {
+        errorMessages.push('- Identificación completa (tipo y número)');
       }
-  
-      // Validación de detalles (si es requerido)
-      if (form.get('details').errors?.required) {
-        errorMessages.push('- El campo "Detalles" es obligatorio');
+      if (!personalInfo.get('birthDate').value) {
+        errorMessages.push('- Fecha de nacimiento');
       }
-  
-      let message = 'Por favor, completa los siguientes campos:';
-      if (errorMessages.length > 0) {
-        message += '<br><br>' + errorMessages.join('<br>');
+      if (!personalInfo.get('gender').value) {
+        errorMessages.push('- Sexo');
       }
-  
+      if (!personalInfo.get('language').value) {
+        errorMessages.push('- Idioma');
+      }
+      if (!personalInfo.get('residence').value) {
+        errorMessages.push('- Residencia');
+      }
+      if (!personalInfo.get('city').value) {
+        errorMessages.push('- Población');
+      }
+      if (!personalInfo.get('householdMembers').value || personalInfo.get('householdMembers').value < 1) {
+        errorMessages.push('- Número de miembros de la unidad de convivencia (debe ser mayor que 0)');
+      }
+    }
+
+    // Validación de ubicación
+    if (!form.get('lat').value || !form.get('lng').value) {
+      errorMessages.push('- Es obligatorio indicar la ubicación en el mapa');
+    }
+
+    if (errorMessages.length > 0) {
+      let message = 'Por favor, completa los siguientes campos obligatorios:';
+      message += '<br><br>' + errorMessages.join('<br>');
+
       Swal.fire({
         icon: 'warning',
         title: 'Formulario incompleto',
-        html: message,
+        html: '<div class="text-left">'+message+'</div>',
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3085d6'
       });
       return;
     }
+    }
   }
 
   editResource(resource: any) {
-    // Inicializar el formulario con los datos existentes
-    this.resourceForm.patchValue({
-      type: resource.type,
-      otherNeeds: resource.otherNeeds,
-      details: resource.details,
+    // Reestructurar la ubicación para que coincida con el formulario
+    const resourceData = {
+      ...resource,
       lat: resource.location?.lat,
-      lng: resource.location?.lng,
-      status: resource.status
-    });
-  
-    // Limpiar y establecer las necesidades seleccionadas
-    const needsArray = this.resourceForm.get('needs') as FormArray;
-    needsArray.clear();
-    resource.needs.forEach(needId => {
-      this.onNeedToggle(needId, true);
-    });
+      lng: resource.location?.lng
+    };
+    delete resourceData.location;  // Eliminamos el objeto location original
+
+    // Inicializar el formulario con todos los datos
+    this.resourceForm.patchValue(resourceData);
   
     // Establecer el marcador en el mapa si hay ubicación
     if (resource.location?.lat && resource.location?.lng) {
       this.showMarker = true;
     }
   
-    // Guardar el ID del recurso que estamos editando
     this.editingResourceId = resource._id;
-  
-    // Abrir el modal
+    
     let ngbModalOptions: NgbModalOptions = {
       keyboard: false,
       windowClass: 'ModalClass-lg'
     };
     
     this.modalReference = this.modalService.open(this.contentResource, ngbModalOptions);
-  }
+}
 
   deleteResource(resourceId: string) {
     // Mostrar diálogo de confirmación
@@ -447,17 +426,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     return this.http.put(apiUrl, needRequest);
   }
 
-  viewDetails(resource: any) {
-    Swal.fire({
-      title: 'Detalles adicionales',
-      text: resource.details,
-      icon: 'info',
-      confirmButtonText: 'Cerrar'
-    });
-  }
-
-
-
   ngOnDestroy() {
     this.subscription.unsubscribe();
     if (this.mapClickListener) {
@@ -477,14 +445,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
           request.lng = request.location.lng;
           request.formattedDate = this.dateService.transformDate(new Date(request.timestamp));
           
-          // Mapear los IDs a sus etiquetas
-          request.formattedNeeds = request.needs.map(needId => 
-            this.needTypes.find(need => need.id === needId)?.label || needId
-          ).join(', ');
-          
-          if(request.otherNeeds) {
-            request.formattedNeeds += request.formattedNeeds ? `, ${request.otherNeeds}` : request.otherNeeds;
-          }
         }
         this.resources = requests.sort((a, b) => 
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
@@ -505,7 +465,8 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
 
   clearFilters() {
     this.filters = {
-      type: '',
+      fullName: '',
+      idNumber: '',
       status: '',
       date: '',
       search: ''
@@ -515,19 +476,21 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
 
   applyFilters() {
     this.filteredResources = this.resources.filter(resource => {
-      let matchesType = true;
       let matchesStatus = true;
       let matchesDate = true;
       let matchesSearch = true;
-  
-      // Filtro por tipo
-      if (this.filters.type) {
-        matchesType = resource.type === this.filters.type;
-      }
+      let matchesFullName = true;
+      let matchesIdNumber = true;
   
       // Filtro por estado
       if (this.filters.status) {
         matchesStatus = resource.status === this.filters.status;
+      }
+      if(this.filters.fullName){
+        matchesFullName = resource.personalInfo.fullName.toLowerCase().includes(this.filters.fullName.toLowerCase());
+      }
+      if(this.filters.idNumber){
+        matchesIdNumber = resource.personalInfo.idNumber.toLowerCase().includes(this.filters.idNumber.toLowerCase());
       }
   
       // Filtro por fecha
@@ -540,16 +503,15 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
       // Filtro por texto
       if (this.filters.search) {
         const searchTerm = this.filters.search.toLowerCase();
-        const needsString = resource.needs.map(need => this.getNeedLabel(need)).join(' ').toLowerCase();
-        const otherNeedsString = resource.otherNeeds ? resource.otherNeeds.toLowerCase() : '';
+      
         const detailsString = resource.details ? resource.details.toLowerCase() : '';
+        const fullNameString = resource.personalInfo.fullName.toLowerCase();    
+        const idNumberString = resource.personalInfo.idNumber.toLowerCase();
         
-        matchesSearch = needsString.includes(searchTerm) || 
-                       otherNeedsString.includes(searchTerm) ||
-                       detailsString.includes(searchTerm);
+        matchesSearch = detailsString.includes(searchTerm) || fullNameString.includes(searchTerm) || idNumberString.includes(searchTerm);
       }
   
-      return matchesType && matchesStatus && matchesDate && matchesSearch;
+      return matchesStatus && matchesDate && matchesSearch && matchesFullName && matchesIdNumber;
     });
   
     // Actualizar la paginación

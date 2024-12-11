@@ -3,6 +3,14 @@
   width: 100%;
 }
 
+.description-text {
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.2;
+  max-width: 90%;
+  margin-top: 2px;
+}
+
 .need-type-filter {
   display: flex;
   flex-direction: column;

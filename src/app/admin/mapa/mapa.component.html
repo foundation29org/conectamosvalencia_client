@@ -10,15 +10,34 @@
             [(ngModel)]="selectedNeedType"
             (change)="onNeedTypeChange($event.value)"
             class="need-type-filter">
+            
+            <!-- Opción "Todas" -->
             <mat-radio-button 
-              *ngFor="let type of needTypes" 
-              [value]="type.id"
-              class="d-block mb-2">
-              {{type.label}}
+              [value]="'all'"
+              class="d-block mb-3">
+              Todas las necesidades
               <span class="ms-2 text-muted">
-                ({{type.id === 'all' ? getNeedStats().total : getNeedStats().byType[type.id]}})
+                ({{getNeedStats().total}})
               </span>
             </mat-radio-button>
+        
+            <!-- Filtros por categoría -->
+            <div *ngFor="let category of getCategories()" class="mb-4">
+              <h6 class="text-muted mb-2">{{category}}</h6>
+              <mat-radio-button 
+                *ngFor="let type of getNeedsByCategory(category)"
+                [value]="type.id"
+                class="d-block mb-2 ms-3">
+                {{type.label}}
+                <span class="ms-2 text-muted">
+                  ({{getNeedStats().byType[type.id]}})
+                </span>
+                <small class="d-block text-muted ms-4 description-text" style="font-size: 0.8em">
+                  {{type.info}}
+                </small>
+              </mat-radio-button>
+            </div>
+        
           </mat-radio-group>
         </mat-card-content>
       </mat-card>

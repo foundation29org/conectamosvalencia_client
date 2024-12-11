@@ -28,7 +28,8 @@ export class ResourcesComponent implements OnInit, OnDestroy{
   resources: any = [];
   filteredResources: any[] = [];
   filters = {
-    type: '',
+    fullName: '',
+    idNumber: '',
     status: '',
     date: '',
     search: ''
@@ -141,18 +142,15 @@ export class ResourcesComponent implements OnInit, OnDestroy{
       let comparison = 0;
       
       switch (column) {
-        case 'type':
-          comparison = (a.type === 'need' ? 'Necesidad' : 'Oferta')
-            .localeCompare(b.type === 'need' ? 'Necesidad' : 'Oferta');
-          break;
-        case 'needs':
-          const needsA = a.needs.map(need => this.getNeedLabel(need)).join(',');
-          const needsB = b.needs.map(need => this.getNeedLabel(need)).join(',');
-          comparison = needsA.localeCompare(needsB);
-          break;
         case 'status':
           comparison = this.getStatusLabel(a.status)
             .localeCompare(this.getStatusLabel(b.status));
+          break;
+          case 'fullName':
+          comparison = a.personalInfo.fullName.localeCompare(b.personalInfo.fullName);
+          break;
+        case 'idNumber':
+          comparison = a.personalInfo.idNumber.localeCompare(b.personalInfo.idNumber);
           break;
         case 'timestamp':
           comparison = new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
@@ -190,15 +188,6 @@ export class ResourcesComponent implements OnInit, OnDestroy{
     let apiUrl = environment.api + '/api/status/needs/'+this.editingResourceId;
     return this.http.put(apiUrl, needRequest);
   }
-  
-  viewDetails(resource: any) {
-    Swal.fire({
-      title: 'Detalles adicionales',
-      text: resource.details,
-      icon: 'info',
-      confirmButtonText: 'Cerrar'
-    });
-  }
 
   viewPhone(resource: any) {
     //get the phone from the resource in ddbb
@@ -231,16 +220,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
         for(let request of requests){
           request.lat = request.location.lat;
           request.lng = request.location.lng;
-          request.formattedDate = this.dateService.transformDate(new Date(request.timestamp));
-          
-          // Mapear los IDs a sus etiquetas
-          request.formattedNeeds = request.needs.map(needId => 
-            this.needTypes.find(need => need.id === needId)?.label || needId
-          ).join(', ');
-          
-          if(request.otherNeeds) {
-            request.formattedNeeds += request.formattedNeeds ? `, ${request.otherNeeds}` : request.otherNeeds;
-          }
+          request.formattedDate = this.dateService.transformDate(new Date(request.timestamp));          
         }
         this.resources = requests.sort((a, b) => 
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
@@ -261,7 +241,8 @@ export class ResourcesComponent implements OnInit, OnDestroy{
 
   clearFilters() {
     this.filters = {
-      type: '',
+      fullName: '',
+      idNumber: '',
       status: '',
       date: '',
       search: ''
@@ -271,19 +252,21 @@ export class ResourcesComponent implements OnInit, OnDestroy{
 
   applyFilters() {
     this.filteredResources = this.resources.filter(resource => {
-      let matchesType = true;
       let matchesStatus = true;
       let matchesDate = true;
       let matchesSearch = true;
-  
-      // Filtro por tipo
-      if (this.filters.type) {
-        matchesType = resource.type === this.filters.type;
-      }
+      let matchesFullName = true;
+      let matchesIdNumber = true;
   
       // Filtro por estado
       if (this.filters.status) {
         matchesStatus = resource.status === this.filters.status;
+      }
+      if(this.filters.fullName){
+        matchesFullName = resource.personalInfo.fullName.toLowerCase().includes(this.filters.fullName.toLowerCase());
+      }
+      if(this.filters.idNumber){
+        matchesIdNumber = resource.personalInfo.idNumber.toLowerCase().includes(this.filters.idNumber.toLowerCase());
       }
   
       // Filtro por fecha
@@ -296,16 +279,15 @@ export class ResourcesComponent implements OnInit, OnDestroy{
       // Filtro por texto
       if (this.filters.search) {
         const searchTerm = this.filters.search.toLowerCase();
-        const needsString = resource.needs.map(need => this.getNeedLabel(need)).join(' ').toLowerCase();
-        const otherNeedsString = resource.otherNeeds ? resource.otherNeeds.toLowerCase() : '';
+      
         const detailsString = resource.details ? resource.details.toLowerCase() : '';
+        const fullNameString = resource.personalInfo.fullName.toLowerCase();  
+        const idNumberString = resource.personalInfo.idNumber.toLowerCase();
         
-        matchesSearch = needsString.includes(searchTerm) || 
-                       otherNeedsString.includes(searchTerm) ||
-                       detailsString.includes(searchTerm);
+        matchesSearch = detailsString.includes(searchTerm) || fullNameString.includes(searchTerm) || idNumberString.includes(searchTerm);
       }
   
-      return matchesType && matchesStatus && matchesDate && matchesSearch;
+      return matchesStatus && matchesDate && matchesSearch && matchesFullName && matchesIdNumber;
     });
   
     // Actualizar la paginación

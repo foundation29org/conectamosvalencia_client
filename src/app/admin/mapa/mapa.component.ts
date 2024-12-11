@@ -7,16 +7,7 @@ import { map } from 'rxjs/operators';
 import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 declare const google: any;
 
-export interface NeedRequest {
-  needs: string[];
-  otherNeeds: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
-  timestamp: Date;
-  status?: string; 
-}
+
 @Component({
     selector: 'app-mapa',
     templateUrl: './mapa.component.html',
@@ -32,8 +23,8 @@ export class MapaPageComponent2 implements OnInit{
   };
   zoom = 7;
   
-  needs: NeedRequest[] = [];
-  filteredNeeds: NeedRequest[] = [];
+  needs: any[] = [];
+  filteredNeeds: any[] = [];
   selectedNeedType: string = 'all';
   heatmapLayer: any;
   map: any;
@@ -48,28 +39,161 @@ export class MapaPageComponent2 implements OnInit{
   };
   
   needTypes = [
-    { id: 'all', label: 'Todas las necesidades', info: 'Incluye todas las categorías de necesidades' },
-    { id: 'transport_logistics', label: 'Transporte y Logística', info: 'Camiones, grúas, vehículos pesados, servicios de transporte internacional, maquinaria de construcción' },
-    { id: 'humanitarian_aid', label: 'Ayuda Humanitaria', info: 'Alimentos, agua, ropa, mantas, productos de higiene y limpieza' },
-    { id: 'professional_services', label: 'Servicios Profesionales', info: 'Asesoramiento legal, servicios de arquitectura, peritación y gestión de seguros' },
-    { id: 'construction_repair', label: 'Construcción y Reparación', info: 'Materiales de construcción, maquinaria de obra, servicios de limpieza y desescombro' },
-    { id: 'technical_services', label: 'Servicios Técnicos', info: 'Instalaciones eléctricas, servicios informáticos, recuperación de datos' },
-    { id: 'volunteering', label: 'Voluntariado', info: 'Mano de obra, asistencia personal, apoyo comunitario' },
-    { id: 'financial_support', label: 'Apoyo Económico', info: 'Donaciones monetarias, apoyo financiero, gestión de recursos' },
-    { id: 'equipment_supplies', label: 'Equipamiento y Suministros', info: 'Generadores eléctricos, herramientas, material de camping' },
-    { id: 'health_services', label: 'Servicios Sanitarios', info: 'Asistencia ambulatoria, apoyo psicológico, control médico' },
-    { id: 'storage', label: 'Almacenamiento', info: 'Espacios de almacenaje, puntos de recogida, gestión de donaciones' },
-    { id: 'vehicles', label: 'Coches', info: 'Recursos de vehículos para quienes han perdido los suyos, ofrecidos por asociaciones como Faconauto o Sernauto' },
-    { id: 'animal_resources', label: 'Recursos para Animales', info: 'Protectora, espacios donde dejarles, comida' },
-    { id: 'education_training', label: 'Educación y Formación', info: 'Material escolar, clases de recuperación educativa, formación en gestión de emergencias' },
-    { id: 'communication_technology', label: 'Comunicación y Tecnología', info: 'Equipos de telecomunicaciones, Wi-Fi móvil, servicios de comunicación comunitaria' },
-    { id: 'temporary_infrastructure', label: 'Infraestructura Temporal', info: 'Tiendas de campaña, sistemas de purificación de agua, instalaciones sanitarias móviles' },
-    { id: 'children_families', label: 'Recursos para Niños y Familias', info: 'Juguetes, guarderías temporales, asistencia para lactantes' },
-    { id: 'disability_support', label: 'Asistencia a Personas con Discapacidad', info: 'Equipos de movilidad, servicios de asistencia personal, adaptaciones temporales' },
-    { id: 'psychosocial_support', label: 'Apoyo Psicosocial', info: 'Grupos de apoyo emocional, actividades recreativas, terapias grupales' },
-    { id: 'energy_supply', label: 'Energía y Suministro Eléctrico', info: 'Paneles solares, bancos de energía, servicios de instalación temporal' },
-    { id: 'environmental_recovery', label: 'Recuperación Ambiental', info: 'Limpieza de ríos y zonas verdes, asesoramiento en recuperación de ecosistemas, reforestación' },
-    { id: 'other', label: 'Otras necesidades', info: 'Categoría general para necesidades que no encajan en las anteriores' }
+    { 
+      id: 'all', 
+      label: 'Todas las necesidades', 
+      info: 'Incluye todas las categorías de necesidades' 
+    },
+    // Vivienda
+    { 
+      id: 'housing.noHousing', 
+      label: 'Carencia de vivienda',
+      category: 'Vivienda',
+      info: 'Personas sin vivienda o en riesgo de perderla' 
+    },
+    { 
+      id: 'housing.housingDeficiencies', 
+      label: 'Deficiencias en la vivienda',
+      category: 'Vivienda',
+      info: 'Viviendas con problemas estructurales o de habitabilidad' 
+    },
+    { 
+      id: 'housing.unsanitary', 
+      label: 'Vivienda insalubre',
+      category: 'Vivienda',
+      info: 'Condiciones insalubres en la vivienda' 
+    },
+    { 
+      id: 'housing.overcrowding', 
+      label: 'Hacinamiento',
+      category: 'Vivienda',
+      info: 'Situación de hacinamiento en la vivienda' 
+    },
+    { 
+      id: 'housing.noBasicGoods', 
+      label: 'Sin bienes básicos',
+      category: 'Vivienda',
+      info: 'Hogares sin bienes básicos necesarios' 
+    },
+    { 
+      id: 'housing.foodShortage', 
+      label: 'Carencia de alimentación',
+      category: 'Vivienda',
+      info: 'Hogares con carencia de alimentación' 
+    },
+    // Empleo
+    { 
+      id: 'employment.allUnemployed', 
+      label: 'Todos en paro',
+      category: 'Empleo',
+      info: 'Hogar con todos los miembros en paro' 
+    },
+    { 
+      id: 'employment.jobLoss', 
+      label: 'Pérdida de empleo',
+      category: 'Empleo',
+      info: 'Personas que han perdido su empleo' 
+    },
+    { 
+      id: 'employment.temporaryLayoff', 
+      label: 'En ERTE',
+      category: 'Empleo',
+      info: 'Personas en situación de ERTE' 
+    },
+    { 
+      id: 'employment.precariousEmployment', 
+      label: 'Empleo precario',
+      category: 'Empleo',
+      info: 'Hogar cuyo sustento principal proviene de un empleo precario' 
+    },
+    // Redes Sociales
+    { 
+      id: 'socialNetworks.socialIsolation', 
+      label: 'Aislamiento social',
+      category: 'Redes Sociales',
+      info: 'Personas en situación de aislamiento social' 
+    },
+    { 
+      id: 'socialNetworks.neighborConflicts', 
+      label: 'Conflictos vecinales',
+      category: 'Redes Sociales',
+      info: 'Situaciones de conflicto con vecinos' 
+    },
+    { 
+      id: 'socialNetworks.needsInstitutionalSupport', 
+      label: 'Necesita apoyo institucional',
+      category: 'Redes Sociales',
+      info: 'Personas que precisan apoyo institucional' 
+    },
+    { 
+      id: 'socialNetworks.vulnerableMinors', 
+      label: 'Menores vulnerables',
+      category: 'Redes Sociales',
+      info: 'Menores en situación de vulnerabilidad extrema' 
+    },
+    // Servicios Públicos
+    { 
+      id: 'publicServices.noHealthCoverage', 
+      label: 'Sin cobertura sanitaria',
+      category: 'Servicios Públicos',
+      info: 'Carencia de cobertura sanitaria' 
+    },
+    { 
+      id: 'publicServices.discontinuedMedicalTreatment', 
+      label: 'Tratamiento interrumpido',
+      category: 'Servicios Públicos',
+      info: 'Personas que han dejado de seguir tratamientos médicos' 
+    },
+    { 
+      id: 'publicServices.unschooledMinors', 
+      label: 'Menores sin escolarizar',
+      category: 'Servicios Públicos',
+      info: 'Menores sin escolarizar o con absentismo' 
+    },
+    { 
+      id: 'publicServices.dependencyWithoutAssessment', 
+      label: 'Dependencia sin valorar',
+      category: 'Servicios Públicos',
+      info: 'Persona en situación de dependencia sin valoración' 
+    },
+    { 
+      id: 'publicServices.mentalHealthIssues', 
+      label: 'Problemas de salud mental',
+      category: 'Servicios Públicos',
+      info: 'Personas con problemas de salud mental con/sin tratamiento' 
+    },
+    // Participación Social
+    { 
+      id: 'socialParticipation.memberOfOrganizations', 
+      label: 'Miembro de organizaciones',
+      category: 'Participación Social',
+      info: 'Miembros de entidades ciudadanas, culturales y deportivas' 
+    },
+    { 
+      id: 'socialParticipation.receivesSocialServices', 
+      label: 'Recibe servicios sociales',
+      category: 'Participación Social',
+      info: 'Recibe atención de servicios sociales' 
+    },
+    // Cobertura Económica
+    { 
+      id: 'economicCoverage.noIncome', 
+      label: 'Sin ingresos',
+      category: 'Cobertura Económica',
+      info: 'Personas sin ningún tipo de ingreso' 
+    },
+    { 
+      id: 'economicCoverage.pensionsOrBenefits', 
+      label: 'Pensiones/Prestaciones',
+      category: 'Cobertura Económica',
+      info: 'Ingresos procedentes de pensiones/prestaciones/subsidios' 
+    },
+    { 
+      id: 'economicCoverage.receivesRviImv', 
+      label: 'Percibe RVI/IMV',
+      category: 'Cobertura Económica',
+      info: 'Personas que perciben RVI o IMV' 
+    }
   ];
 
 
@@ -116,8 +240,8 @@ export class MapaPageComponent2 implements OnInit{
   }
 
 
-  getAllNeeds(): Observable<NeedRequest[]> {
-    return this.http.get<{ data: NeedRequest[] }>(this.apiUrl).pipe(
+  getAllNeeds(): Observable<any[]> {
+    return this.http.get<{ data: any[] }>(this.apiUrl).pipe(
       map(response => response.data)
     );
   }
@@ -133,22 +257,31 @@ export class MapaPageComponent2 implements OnInit{
   }
 
   filterNeeds() {
-    // Primero filtrar las necesidades que no están helped
     const activeNeeds = this.needs.filter(need => need.status !== 'helped');
-    console.log(activeNeeds);
+    
     if (this.selectedNeedType === 'all') {
-        this.filteredNeeds = activeNeeds;
-    } else if (this.selectedNeedType === 'other') {
-        this.filteredNeeds = activeNeeds.filter(need => 
-            need.otherNeeds && need.otherNeeds.trim().length > 0
-        );
+      this.filteredNeeds = activeNeeds;
     } else {
-        this.filteredNeeds = activeNeeds.filter(need => 
-            need.needs.includes(this.selectedNeedType)
-        );
+      const [section, item] = this.selectedNeedType.split('.');
+      
+      this.filteredNeeds = activeNeeds.filter(need => {
+        if (!need[section]) return false;
+        return need[section][item] === true;  // Quitamos el .items
+      });
     }
+    
     this.updateHeatmap();
-    }
+  }
+
+  getCategories(): string[] {
+    return [...new Set(this.needTypes
+      .filter(type => type.category) // Excluir 'all'
+      .map(type => type.category))];
+  }
+  
+  getNeedsByCategory(category: string): any[] {
+    return this.needTypes.filter(type => type.category === category);
+  }
 
   updateHeatmap() {
     if (this.heatmapLayer) {
@@ -197,25 +330,20 @@ export class MapaPageComponent2 implements OnInit{
 
   getNeedStats() {
     const stats = {
-        total: this.needs.length,
-        byType: {} as {[key: string]: number}
+      total: this.needs.length,
+      byType: {} as {[key: string]: number}
     };
-
+  
     this.needTypes.forEach(type => {
-        if (type.id === 'all') return;
-        
-        if (type.id === 'other') {
-            stats.byType[type.id] = this.needs.filter(need => 
-                need.otherNeeds && need.otherNeeds.trim().length > 0
-            ).length;
-        } else {
-            stats.byType[type.id] = this.needs.filter(need => 
-                need.needs.includes(type.id)
-            ).length;
-        }
+      if (type.id === 'all') return;
+      
+      const [section, item] = type.id.split('.');
+      stats.byType[type.id] = this.needs.filter(need => 
+        need[section]?.[item] === true  // Quitamos el .items
+      ).length;
     });
-
+  
     return stats;
-}
+  }
 
 }
