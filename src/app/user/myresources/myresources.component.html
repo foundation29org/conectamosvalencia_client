@@ -1,360 +1,555 @@
 <div class="row">
 	<div class="col-sm-12">
-	  <div class="content-header">Mis recursos</div>
-	  <p class="content-sub-header"> Gestiona tus necesidades y ofertas. Aquí podrás ver, editar y eliminar todos los recursos que has creado.</p>
+		<div class="content-header">Mis recursos</div>
+		<p class="content-sub-header"> Gestiona tus necesidades. Aquí podrás ver, editar y eliminar todos los
+			recursos que has creado.</p>
 	</div>
-  </div>
-  <div class="row mb-3">
+</div>
+<div class="row mb-3">
 	<div class="col-sm-12">
-	  <button class="btn btn-primary float-end" (click)="showNewResourceModal(contentResource)">
-		<i class="ft-plus"></i> Nuevo recurso
-	  </button>
+		<button class="btn btn-primary float-end" (click)="showNewResourceModal(contentResource)">
+			<i class="ft-plus"></i> Nuevo recurso
+		</button>
 	</div>
-  </div>
-  <div class="card" *ngIf="loadedNeeds">
+</div>
+<div class="card" *ngIf="loadedNeeds">
 	<div class="card-header">
-	  <div class="row">
-		<div class="col-md-12 mb-3">
-		  <h4>Filtros</h4>
-		  <div class="row g-3">
-			<!-- Filtro por tipo -->
-			<div class="col-md-3">
-				<mat-form-field appearance="outline" class="w-100">
-					<mat-select [(ngModel)]="filters.type" 
-								(selectionChange)="applyFilters()"
-								placeholder="Todos los tipos">
-					  <mat-option value="">Todos los tipos</mat-option>
-					  <mat-option value="need">Necesidad</mat-option>
-					  <mat-option value="offer">Oferta</mat-option>
-					</mat-select>
-				  </mat-form-field>
-			</div>
-  
-			<!-- Filtro por estado -->
-			<div class="col-md-3">
-				<mat-form-field appearance="outline" class="w-100">
-					<mat-select [(ngModel)]="filters.status" 
-								(selectionChange)="applyFilters()"
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<h4>Filtros</h4>
+				<div class="row g-3">
+					<!-- Filtro por estado -->
+					<div class="col-md-3">
+						<mat-form-field class="custom-mat-form-field w-100" appearance="outline">
+							<mat-select [(ngModel)]="filters.status" (selectionChange)="applyFilters()"
 								placeholder="Todos los estados">
-					  <mat-option value="">Todos los estados</mat-option>
-					  <mat-option value="new">Nuevo</mat-option>
-					  <mat-option value="in_progress">En proceso</mat-option>
-					  <mat-option value="completed">Completado</mat-option>
-					</mat-select>
-				  </mat-form-field>
-			  </div>
-  
-			<!-- Filtro por fecha -->
-			<div class="col-md-3">
-			  <input 
-				type="date" 
-				class="form-control" 
-				[(ngModel)]="filters.date"
-				(ngModelChange)="applyFilters()"
-				placeholder="Filtrar por fecha">
+								<mat-option value="">Todos los estados</mat-option>
+								<mat-option value="new">Nuevo</mat-option>
+								<mat-option value="in_progress">En proceso</mat-option>
+								<mat-option value="completed">Completado</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<!-- Filtro por fecha -->
+					<div class="col-md-3">
+						<input type="date" class="form-control" [(ngModel)]="filters.date"
+							(ngModelChange)="applyFilters()" placeholder="Filtrar por fecha">
+					</div>
+
+					<!-- Búsqueda por texto -->
+					<div class="col-md-3">
+						<input type="text" class="form-control" [(ngModel)]="filters.search"
+							(ngModelChange)="applyFilters()" placeholder="Buscar...">
+					</div>
+				</div>
+				<div class="row mt-2" *ngIf="hasActiveFilters()">
+					<div class="col">
+						<button class="btn btn-outline-secondary btn-sm" (click)="clearFilters()">
+							<i class="ft-x"></i> Limpiar filtros
+						</button>
+					</div>
+				</div>
 			</div>
-  
-			<!-- Búsqueda por texto -->
-			<div class="col-md-3">
-			  <input 
-				type="text" 
-				class="form-control" 
-				[(ngModel)]="filters.search"
-				(ngModelChange)="applyFilters()"
-				placeholder="Buscar...">
-			</div>
-		  </div>
-		  <div class="row mt-2" *ngIf="hasActiveFilters()">
-			<div class="col">
-			  <button class="btn btn-outline-secondary btn-sm" 
-					  (click)="clearFilters()"
-					  >
-				<i class="ft-x"></i> Limpiar filtros
-			  </button>
-			</div>
-		  </div>
 		</div>
-	  </div>
 	</div>
-  
+
 	<div class="card-content">
-	  <div class="card-body">
-		<!-- Tabla de recursos -->
-		<div class="table-responsive">
-		  <table class="table table-hover">
-			<thead>
-				<tr>
-					<th (click)="sort('type')">
-					  Tipo {{sortColumn === 'type' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
-					</th>
-					<th (click)="sort('needs')">
-					  Necesidades/Ofertas {{sortColumn === 'needs' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
-					</th>
-					<th (click)="sort('status')">
-					  Estado {{sortColumn === 'status' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
-					</th>
-					<th (click)="sort('timestamp')">
-					  Fecha {{sortColumn === 'timestamp' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
-					</th>
-					<th>Acciones</th>
-				  </tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let resource of filteredResources | slice:(currentPage-1)*pageSize:currentPage*pageSize">
-				<td>
-				  <span [class.badge-danger]="resource.type === 'need'"
-						[class.badge-success]="resource.type === 'offer'"
-						class="badge">
-					{{resource.type === 'need' ? 'Necesidad' : 'Oferta'}}
-				  </span>
-				</td>
-				<td>
-				  <ul class="mb-0 list-unstyled">
-					<li *ngFor="let need of resource.needs">
-						{{getNeedLabel(need)}}
-						<i class="ft-info ms-1" 
-						style="font-size: 14px; color: #666;"
-						[ngbPopover]="getNeedInfo(need)"
-						popoverClass="info-popover"
-						placement="right"
-						[openDelay]="200"
-						triggers="mouseenter:mouseleave">
-					 </i>
-					<li *ngIf="resource.otherNeeds">{{resource.otherNeeds}}</li>
-				  </ul>
-				</td>
-				<td>
-					<mat-select [(ngModel)]="resource.status"
-								(selectionChange)="updateStatus(resource)"
-								class="status-select"
-								[ngClass]="{
+		<div class="card-body">
+			<!-- Tabla de recursos -->
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th (click)="sort('fullName')">
+								Nombre {{sortColumn === 'fullName' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+							</th>
+							<th (click)="sort('idNumber')">
+								Identificación {{sortColumn === 'idNumber' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+							</th>
+							<th (click)="sort('status')">
+								Estado {{sortColumn === 'status' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+							</th>
+							<th (click)="sort('timestamp')">
+								Fecha {{sortColumn === 'timestamp' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}}
+							</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							*ngFor="let resource of filteredResources | slice:(currentPage-1)*pageSize:currentPage*pageSize">
+							<td>{{resource.personalInfo.fullName}}</td>
+							<td>{{resource.personalInfo.idNumber}}</td>
+							<td>
+								<mat-select [(ngModel)]="resource.status" (selectionChange)="updateStatus(resource)"
+									class="status-select" [ngClass]="{
 								  'status-new': resource.status === 'new',
 								  'status-progress': resource.status === 'in_progress',
 								  'status-completed': resource.status === 'completed'
 								}">
-					  <mat-option value="new">Nuevo</mat-option>
-					  <mat-option value="in_progress">En proceso</mat-option>
-					  <mat-option value="completed">Completado</mat-option>
-					</mat-select>
-				  </td>
-				<td>{{resource.timestamp | date:'dd/MM/yyyy HH:mm'}}</td>
-				<td>
-				  <div class="btn-group">
-					<button class="btn btn-sm btn-info mr-1" 
-						*ngIf="resource.details"
-						(click)="viewDetails(resource)"
-						[matTooltip]="'Ver detalles adicionales'">
-						<i class="ft-file-text"></i>
-					</button>
+									<mat-option value="new">Nuevo</mat-option>
+									<mat-option value="in_progress">En proceso</mat-option>
+									<mat-option value="completed">Completado</mat-option>
+								</mat-select>
+							</td>
+							<td>{{resource.timestamp | date:'dd/MM/yyyy HH:mm'}}</td>
+							<td>
+								<div class="btn-group">
+									<button *ngIf="resource.location.lat && resource.location.lng"
+										class="btn btn-sm btn-info mr-1"
+										(click)="showOnMap(resource.location, mapModal)">
+										<i class="ft-map-pin"></i> Ver
+									</button>
 
-					<button *ngIf="resource.location.lat && resource.location.lng" class="btn btn-sm btn-info mr-1" 
-						  (click)="showOnMap(resource.location, mapModal)">
-					<i class="ft-map-pin"></i> Ver
-				  </button>
+									<button class="btn btn-sm btn-primary mr-1" (click)="editResource(resource)"
+										[matTooltip]="'Editar recurso'">
+										<i class="ft-edit-2"></i>
+									</button>
 
-				  <button class="btn btn-sm btn-primary mr-1" 
-						(click)="editResource(resource)"
-						[matTooltip]="'Editar recurso'">
-						<i class="ft-edit-2"></i>
-					</button>
-				
-				  <button class="btn btn-sm btn-primary" 
-						(click)="deleteResource(resource._id)"
-						[matTooltip]="'Eliminar recurso'">
-						<i class="ft-trash-2"></i>
-					</button>
-				  </div>
-				</td>
-			  </tr>
-			</tbody>
-		  </table>
+									<button class="btn btn-sm btn-primary" (click)="deleteResource(resource._id)"
+										[matTooltip]="'Eliminar recurso'">
+										<i class="ft-trash-2"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Paginación -->
+			<div class="d-flex justify-content-between align-items-center mt-3">
+				<div>
+					Mostrando {{startIndex + 1}} - {{endIndex}} de {{totalItems}} elementos
+				</div>
+				<ngb-pagination [collectionSize]="totalItems" [(page)]="currentPage" [pageSize]="pageSize"
+					(pageChange)="onPageChange($event)">
+				</ngb-pagination>
+			</div>
 		</div>
-  
-		<!-- Paginación -->
-		<div class="d-flex justify-content-between align-items-center mt-3">
-		  <div>
-			Mostrando {{startIndex + 1}} - {{endIndex}} de {{totalItems}} elementos
-		  </div>
-		  <ngb-pagination
-			[collectionSize]="totalItems"
-			[(page)]="currentPage"
-			[pageSize]="pageSize"
-			(pageChange)="onPageChange($event)">
-		  </ngb-pagination>
-		</div>
-	  </div>
 	</div>
-  </div>
-  <div *ngIf="!loadedNeeds">
+</div>
+<div *ngIf="!loadedNeeds">
 	<div class="col-lg-12 col-12 form-group">
 		<p class="centerSpinner"><i class="fa fa-spinner fa-spin fa-3x fa-fw pink"></i></p>
 		<div>Cargando recursos...</div>
 	</div>
-  </div>
+</div>
 
 
-  <ng-template #contentResource let-c="close" let-d="dismiss" appendTo="body">
+<ng-template #contentResource let-c="close" let-d="dismiss" appendTo="body">
 	<div class="modal-header">
-	 <h4 class="modal-title">{{editingResourceId ? 'Editar' : 'Nuevo'}} Recurso</h4>
-	  <button type="button" class="close" aria-label="Close" (click)="closeModal()">
-		<span aria-hidden="true">&times;</span>
-	  </button>
+		<h4 class="modal-title">{{editingResourceId ? 'Editar' : 'Nuevo'}} Recurso</h4>
+		<button type="button" class="close" aria-label="Close" (click)="closeModal()">
+			<span aria-hidden="true" class="doblesize">&times;</span>
+		</button>
 	</div>
 	<div class="modal-body">
-	  <!-- Importante: [formGroup] en lugar de formGroup -->
-	  <form [formGroup]="resourceForm">
-		<!-- Tipo de recurso -->
-		<div class="mb-3">
-			<label class="form-label">Tipo *</label>
-			<mat-radio-group formControlName="type" class="d-flex gap-4">
-			  <mat-radio-button value="need" color="warn" class="mr-2">Necesidad</mat-radio-button>
-			  <mat-radio-button value="offer" color="primary">Oferta</mat-radio-button>
-			</mat-radio-group>
-			<div class="text-danger" *ngIf="resourceForm.get('type').touched && resourceForm.get('type').errors?.required">
-			  El tipo es requerido
-			</div>
-		  </div>
-  
-		<!-- Necesidades -->
-		<div class="mb-3">
-		  <label class="form-label">Necesidades/Ofertas *</label>
-		  <div formArrayName="needs">
-			<div class="row">
-				<div class="col-6 col-md-4 mb-2" *ngFor="let needType of needTypes">
-					<mat-checkbox 
-					[checked]="isNeedSelected(needType.id)"
-					(change)="onNeedToggle(needType.id, $event.checked)"
-					class="d-block mb-2">
-					{{needType.label}}
-					<i class="ft-info ms-1" 
-					   style="font-size: 14px; color: #666;"
-					   [ngbPopover]="needType.info"
-					   popoverClass="info-popover"
-					   placement="right"
-					   [openDelay]="200"
-					   triggers="mouseenter:mouseleave">
-					</i>
-				  </mat-checkbox>
+		<!-- Importante: [formGroup] en lugar de formGroup -->
+		<form [formGroup]="resourceForm">
+			<div class="mb-3" formGroupName="personalInfo">
+				<div class="card-header">
+					<h5>Información Personal</h5>
 				</div>
-			  </div>
-		  </div>
-		  <div class="text-danger" *ngIf="resourceForm.errors?.needsRequired && (resourceForm.touched || resourceForm.dirty)">
-			Debes seleccionar al menos una necesidad o completar el campo "Otras necesidades"
-		  </div>
-		</div>
-  
-		<!-- Otras necesidades -->
-		<div class="mb-3">
-		  <label class="form-label">Otras necesidades</label>
-		  <textarea class="form-control" formControlName="otherNeeds" rows="3"></textarea>
-		</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Nombre e iniciales de los apellidos</label>
+							<input type="text" class="form-control" formControlName="fullName">
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.fullName').touched && resourceForm.get('personalInfo.fullName').errors?.required">
+								El nombre es requerido
+							</div>
+						</div>
 
-		<div class="mb-3">
-			<label class="form-label">Detalles adicionales</label>
-			<textarea 
-			  class="form-control" 
-			  formControlName="details" 
-			  rows="3"
-			  placeholder="Añade cualquier información adicional que pueda ser relevante...">
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Identificación</label>
+							<div class="d-flex gap-2">
+								<select class="form-select" formControlName="idType">
+									<option value="dni">DNI</option>
+									<option value="nie">NIE</option>
+									<option value="passport">Pasaporte</option>
+								</select>
+								<input type="text" class="form-control" formControlName="idNumber">
+							</div>
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.idType').touched && resourceForm.get('personalInfo.idType').errors?.required">
+								El tipo de identificación es requerido
+							</div>
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.idNumber').touched && resourceForm.get('personalInfo.idNumber').errors?.required">
+								El número de identificación es requerido
+							</div>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<mat-checkbox formControlName="lostDocumentation">
+								Pérdida de documentación
+							</mat-checkbox>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Fecha de nacimiento</label>
+							<div class="">
+								<mat-form-field class="mr-sm-24" fxFlex>
+									<input matInput class="grey" [matDatepicker]="birthDatePicker"
+										formControlName="birthDate" placeholder="Selecciona una fecha" readonly
+										(click)="birthDatePicker.open()">
+									<button class="mb-0 btn btn-sm"
+										*ngIf="resourceForm.get('personalInfo.birthDate').value" matSuffix
+										mat-icon-button aria-label="Limpiar" title="Limpiar fecha"
+										(click)="resourceForm.get('personalInfo.birthDate').setValue(null)">
+										<i class="fa fa-trash text-danger"></i>
+									</button>
+									<mat-datepicker-toggle matSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
+									<mat-datepicker touchUi="true" #birthDatePicker></mat-datepicker>
+									<mat-error
+										*ngIf="resourceForm.get('personalInfo.birthDate').touched && resourceForm.get('personalInfo.birthDate').errors?.required">
+										La fecha de nacimiento es requerida
+									</mat-error>
+								</mat-form-field>
+							</div>
+
+						</div>
+
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Sexo</label>
+							<select class="form-control form-select" formControlName="gender">
+								<option value="male">Hombre</option>
+								<option value="female">Mujer</option>
+								<option value="other">Otro</option>
+							</select>
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.gender').touched && resourceForm.get('personalInfo.gender').errors?.required">
+								El sexo es requerido
+							</div>
+						</div>
+
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Idioma</label>
+							<input type="text" class="form-control" formControlName="language">
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.language').touched && resourceForm.get('personalInfo.language').errors?.required">
+								El idioma es requerido
+							</div>
+						</div>
+
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Nº miembros unidad convivencia</label>
+							<input type="number" class="form-control" formControlName="householdMembers" min="1">
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.householdMembers').touched && resourceForm.get('personalInfo.householdMembers').errors?.required">
+								El número de miembros es requerido
+							</div>
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.householdMembers').touched && resourceForm.get('personalInfo.householdMembers').errors?.min">
+								El número debe ser mayor que 0
+							</div>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Residencia</label>
+							<input type="text" class="form-control" formControlName="residence">
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.residence').touched && resourceForm.get('personalInfo.residence').errors?.required">
+								La residencia es requerida
+							</div>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Población</label>
+							<input type="text" class="form-control" formControlName="city">
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.city').touched && resourceForm.get('personalInfo.city').errors?.required">
+								La población es requerida
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Housing Needs -->
+			<div class="mb-3" formGroupName="housing">
+				<div class="card-header">
+					<h5>a) Necesidades relacionadas con la vivienda</h5>
+				</div>
+				<div class="card-body">
+					<div formGroupName="items">
+						<div class="mb-2">
+							<mat-checkbox formControlName="noHousing">
+								Carencia de vivienda
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="housingDeficiencies">
+								Deficiencias en la vivienda
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="unsanitary">
+								Insalubre
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="overcrowding">
+								Hacinamiento
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="noBasicGoods">
+								Hogares sin bienes básicos
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="foodShortage">
+								Hogares con carencia de alimentación
+							</mat-checkbox>
+						</div>
+					</div>
+					<textarea class="form-control mt-3" formControlName="observations"
+						placeholder="Observaciones..."></textarea>
+				</div>
+			</div>
+			<!-- Employment Situation -->
+			<div class="mb-3" formGroupName="employment">
+				<div class="card-header">
+					<h5>b) Situación laboral</h5>
+				</div>
+				<div class="card-body">
+					<div formGroupName="items">
+						<div class="mb-2">
+							<mat-checkbox formControlName="allUnemployed">
+								Hogar con todos los miembros en paro
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="jobLoss">
+								Pérdida de empleo
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="temporaryLayoff">
+								En situación de ERTE
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="precariousEmployment">
+								Hogar cuyo sustento principal proviene de un empleo precario
+							</mat-checkbox>
+						</div>
+					</div>
+
+					<textarea class="form-control mt-3" formControlName="observations"
+						placeholder="Observaciones..."></textarea>
+				</div>
+			</div>
+
+			<!-- Social Networks -->
+			<div class="mb-3" formGroupName="socialNetworks">
+				<div class="card-header">
+					<h5>c) Falta o baja intensidad de las redes sociales y familiares</h5>
+				</div>
+				<div class="card-body">
+					<div formGroupName="items">
+						<div class="mb-2">
+							<mat-checkbox formControlName="socialIsolation">
+								Aislamiento social
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="neighborConflicts">
+								Conflictos vecinales
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="needsInstitutionalSupport">
+								Precisa apoyo institucional
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="vulnerableMinors">
+								Personas menores de edad en situación de vulnerabilidad extrema
+							</mat-checkbox>
+						</div>
+					</div>
+					<textarea class="form-control mt-3" formControlName="observations"
+						placeholder="Observaciones..."></textarea>
+				</div>
+			</div>
+
+			<!-- Public Services Access -->
+			<div class="mb-3" formGroupName="publicServices">
+				<div class="card-header">
+					<h5>d) Falta de acceso normalizado a los servicios públicos</h5>
+				</div>
+				<div class="card-body">
+					<div formGroupName="items">
+						<div class="mb-2">
+							<mat-checkbox formControlName="noHealthCoverage">
+								Carencia de cobertura sanitaria
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="discontinuedMedicalTreatment">
+								Hogares con personas que han dejado de seguir tratamientos médicos
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="unschooledMinors">
+								Hogares con personas menores de edad sin escolarizar o absentismo
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="dependencyWithoutAssessment">
+								Persona en situación de dependencia / sin valoración
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="mentalHealthIssues">
+								Persona con problemas de salud mental con/sin tratamiento
+							</mat-checkbox>
+						</div>
+					</div>
+					<textarea class="form-control mt-3" formControlName="observations"
+						placeholder="Observaciones..."></textarea>
+				</div>
+			</div>
+
+			<!-- Social Participation -->
+			<div class="mb-3" formGroupName="socialParticipation">
+				<div class="card-header">
+					<h5>e) Participación social en la comunidad</h5>
+				</div>
+				<div class="card-body">
+					<div formGroupName="items">
+						<div class="mb-2">
+							<mat-checkbox formControlName="memberOfOrganizations">
+								Miembros de entidades ciudadanas, culturales y deportivas
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="receivesSocialServices">
+								Recibe atención de servicios sociales
+							</mat-checkbox>
+						</div>
+					</div>
+					<textarea class="form-control mt-3" formControlName="observations"
+						placeholder="Observaciones..."></textarea>
+				</div>
+			</div>
+
+			<!-- Economic Coverage -->
+			<div class="mb-3" formGroupName="economicCoverage">
+				<div class="card-header">
+					<h5>f) Cobertura económica</h5>
+				</div>
+				<div class="card-body">
+					<div formGroupName="items">
+						<div class="mb-2">
+							<mat-checkbox formControlName="noIncome">
+								Sin ingresos
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="pensionsOrBenefits">
+								Ingresos procedentes de pensiones/prestaciones/subsidios
+							</mat-checkbox>
+						</div>
+						<div class="mb-2">
+							<mat-checkbox formControlName="receivesRviImv">
+								Percibe RVI/ IMV
+							</mat-checkbox>
+						</div>
+					</div>
+					<textarea class="form-control mt-3" formControlName="observations"
+						placeholder="Observaciones..."></textarea>
+				</div>
+			</div>
+
+
+			<div class="mb-3">
+				<label class="form-label">Detalles adicionales</label>
+				<textarea class="form-control" formControlName="details" rows="3"
+					placeholder="Añade cualquier información adicional que pueda ser relevante...">
 			</textarea>
-			<small class="text-muted">
-			  <i class="ft-info me-1"></i>
-			  Puedes incluir aquí cualquier detalle específico que ayude a coordinar mejor la ayuda.
-			</small>
-		  </div>
-  
-		<!-- Ubicación -->
-		<div class="mb-3" *ngIf="resourceForm.get('type').value === 'need' || resourceForm.get('type').value === 'offer'">
-			<label class="form-label">Ubicación</label>
-			
-			<div class="text-muted mb-2" *ngIf="resourceForm.get('type').value === 'need'">
-			  <small>
-				<i class="ft-info me-1"></i>
-				Es importante marcar la ubicación exacta donde se necesita la ayuda para poder coordinar mejor la asistencia.
-				Haz clic en el mapa para seleccionar el punto.
-			  </small>
+				<small class="text-muted">
+					<i class="ft-info me-1"></i>
+					Puedes incluir aquí cualquier detalle específico que ayude a coordinar mejor la ayuda.
+				</small>
 			</div>
-		  
-			<div class="text-muted mb-2" *ngIf="resourceForm.get('type').value === 'offer'">
-			  <small>
-				<i class="ft-info me-1"></i>
-				Puedes marcar una ubicación de referencia si lo deseas, aunque no es obligatorio para las ofertas de ayuda.
-			  </small>
-			  <small> Si deseas indicar una ubicación de referencia, por favor sé lo más preciso posible. 
-				Puedes hacer zoom en el mapa para marcar el punto exacto. Una ubicación precisa 
-				ayudará a coordinar mejor la ayuda.</small>
-			</div>
-		  
-			<div class="map-container offset-1 col-10">
-				<agm-map 
-				[latitude]="defaultLat" 
-				[longitude]="defaultLng" 
-				[zoom]="7"
-				(mapReady)="mapReadyHandler($event)">
-				<agm-marker 
-				  *ngIf="showMarker && resourceForm.get('lat').value"
-				  [latitude]="resourceForm.get('lat').value"
-				  [longitude]="resourceForm.get('lng').value"
-				  [markerDraggable]="true"
-				  (dragEnd)="onMarkerDragEnd($event)">
-				</agm-marker>
-			  </agm-map>
-			</div>
-			
-			<!-- Campos ocultos para el formulario -->
-			<div class="row" [hidden]="true">
-			  <div class="col-md-6">
-				<input type="number" formControlName="lat">
-			  </div>
-			  <div class="col-md-6">
-				<input type="number" formControlName="lng">
-			  </div>
-			</div>
-		  
-			<!-- Mostrar las coordenadas seleccionadas -->
-			<div class="text-muted small offset-1 col-10" *ngIf="resourceForm.get('lat').value">
-			  <!--Ubicación seleccionada: {{resourceForm.get('lat').value}}, {{resourceForm.get('lng').value}}-->
-			  <button type="button" class="btn btn-sm btn-primary mt-2" (click)="clearLocation()">
-				<i class="fas fa-times"></i> Borrar ubicación
-			  </button>
-			</div>
-			<div class="text-danger offset-1 col-10" 
-			*ngIf="resourceForm.get('type').value === 'need' && 
-				   (resourceForm.get('lat').touched || resourceForm.get('lng').touched) && 
-				   (!resourceForm.get('lat').value || !resourceForm.get('lng').value)">
-			  La ubicación es obligatoria para las necesidades. Por favor, selecciona un punto en el mapa.
-			</div>
-		  </div>
-  
-		<div class="modal-footer">
-		  <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
-		  <button type="button" class="btn btn-primary" (click)="saveResource()" >Guardar</button>
-		</div>
-	  </form>
-	</div>
-  </ng-template>
 
-  <ng-template #mapModal let-c="close" let-d="dismiss">
+			<!-- Ubicación -->
+			<div class="mb-3">
+				<label class="form-label">Ubicación</label>
+
+				<div class="text-muted mb-2">
+					<small>
+						<i class="ft-info me-1"></i>
+						Es importante marcar la ubicación exacta donde se necesita la ayuda para poder coordinar mejor
+						la asistencia.
+						Haz clic en el mapa para seleccionar el punto.
+					</small>
+				</div>
+
+
+				<div class="map-container offset-1 col-10">
+					<agm-map [latitude]="defaultLat" [longitude]="defaultLng" [zoom]="7"
+						(mapReady)="mapReadyHandler($event)">
+						<agm-marker *ngIf="showMarker && resourceForm.get('lat').value"
+							[latitude]="resourceForm.get('lat').value" [longitude]="resourceForm.get('lng').value"
+							[markerDraggable]="true" (dragEnd)="onMarkerDragEnd($event)">
+						</agm-marker>
+					</agm-map>
+				</div>
+
+				<!-- Campos ocultos para el formulario -->
+				<div class="row" [hidden]="true">
+					<div class="col-md-6">
+						<input type="number" formControlName="lat">
+					</div>
+					<div class="col-md-6">
+						<input type="number" formControlName="lng">
+					</div>
+				</div>
+
+				<!-- Mostrar las coordenadas seleccionadas -->
+				<div class="text-muted small offset-1 col-10" *ngIf="resourceForm.get('lat').value">
+					<!--Ubicación seleccionada: {{resourceForm.get('lat').value}}, {{resourceForm.get('lng').value}}-->
+					<button type="button" class="btn btn-sm btn-primary mt-2" (click)="clearLocation()">
+						<i class="fas fa-times"></i> Borrar ubicación
+					</button>
+				</div>
+				<div class="text-danger offset-1 col-10" *ngIf="				   (resourceForm.get('lat').touched || resourceForm.get('lng').touched) && 
+				   (!resourceForm.get('lat').value || !resourceForm.get('lng').value)">
+					La ubicación es obligatoria. Por favor, selecciona un punto en el mapa.
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+				<button type="button" class="btn btn-primary" (click)="saveResource()">Guardar</button>
+			</div>
+		</form>
+	</div>
+</ng-template>
+
+<ng-template #mapModal let-c="close" let-d="dismiss">
 	<div class="modal-header">
-	  <h4 class="modal-title">Ubicación</h4>
-	  <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-		<span aria-hidden="true">&times;</span>
-	  </button>
+		<h4 class="modal-title">Ubicación</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+			<span aria-hidden="true" class="doblesize">&times;</span>
+		</button>
 	</div>
 	<div class="modal-body">
-	  <div class="map-container" style="height: 400px;">
-		<agm-map 
-		  [latitude]="selectedLocation.lat" 
-		  [longitude]="selectedLocation.lng" 
-		  [zoom]="15">
-		  <agm-marker 
-			[latitude]="selectedLocation.lat" 
-			[longitude]="selectedLocation.lng">
-		  </agm-marker>
-		</agm-map>
-	  </div>
+		<div class="map-container" style="height: 400px;">
+			<agm-map [latitude]="selectedLocation.lat" [longitude]="selectedLocation.lng" [zoom]="15">
+				<agm-marker [latitude]="selectedLocation.lat" [longitude]="selectedLocation.lng">
+				</agm-marker>
+			</agm-map>
+		</div>
 	</div>
 	<div class="modal-footer">
-	  <button type="button" class="btn btn-secondary" (click)="c('Close click')">Cerrar</button>
+		<button type="button" class="btn btn-secondary" (click)="c('Close click')">Cerrar</button>
 	</div>
-  </ng-template>
+</ng-template>

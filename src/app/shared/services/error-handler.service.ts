@@ -17,7 +17,7 @@ export class ErrorHandlerService {
     // Mostrar Swal con mensaje personalizado o genérico
     Swal.fire({
       icon: 'error',
-      title: this.translate.instant('generics.Error'),
+      title: 'Error',
       text: customMessage || this.translate.instant('generics.error try again'),
       confirmButtonText: this.translate.instant('generics.Accept')
     });
