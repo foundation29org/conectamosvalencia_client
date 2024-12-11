@@ -98,7 +98,6 @@
     "Restored data": "Restored data",
     "Warning": "Warning!",
     "error try again": "An error has occurred, please try again",
-    "Error": "Error",
     "Submit": "Submit",
     "entervalidemail": "Please enter a valid email!",
     "Passwordlength": "Password length must be between 8 and 24",
@@ -141,7 +140,8 @@
     "Welcome to ucr": "We need some information to begin",
     "and": "and",
     "Account data": "Account data",
-    "Save changes": "Save changes"
+    "Save changes": "Save changes",
+    "Accept": "Accept"
   },
   "navbar":{
     "Logout": "Logout",
