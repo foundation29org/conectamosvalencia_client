@@ -89,7 +89,10 @@
 							<td>{{resource.timestamp | date:'dd/MM/yyyy HH:mm'}}</td>
 							<td>
 								<div class="btn-group">
-
+									<button class="btn btn-sm btn-primary mr-1" (click)="viewResource(resource)"
+										[matTooltip]="'Ver recurso'">
+										<i class="ft-eye"></i>
+									</button>
 									<button *ngIf="resource.location.lat && resource.location.lng"
 										class="btn btn-sm btn-info mr-1"
 										(click)="showOnMap(resource.location, mapModal)">
@@ -149,3 +152,194 @@
 	</div>
 	<div>{{'generics.Sending' | translate }}...</div>
 </div>
+<ng-template #viewResourceModal let-c="close" let-d="dismiss" appendTo="body">
+    <div class="modal-header">
+        <h4 class="modal-title">Detalles del Recurso</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true" class="doblesize">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <!-- Información Personal -->
+        <div class="mb-3">
+            <div class="card-header">
+                <h5>Información Personal</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Nombre:</label>
+                        <div>{{selectedResource?.personalInfo?.fullName}}</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Identificación:</label>
+                        <div>{{selectedResource?.personalInfo?.idType}} - {{selectedResource?.personalInfo?.idNumber}}</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Pérdida de documentación:</label>
+                        <div>{{selectedResource?.personalInfo?.lostDocumentation ? 'Sí' : 'No'}}</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Fecha de nacimiento:</label>
+                        <div>{{selectedResource?.personalInfo?.birthDate | date:'dd/MM/yyyy'}}</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Sexo:</label>
+                        <div>{{selectedResource?.personalInfo?.gender === 'male' ? 'Hombre' : 
+                              selectedResource?.personalInfo?.gender === 'female' ? 'Mujer' : 'Otro'}}</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Idioma:</label>
+                        <div>{{selectedResource?.personalInfo?.language}}</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Nº miembros unidad convivencia:</label>
+                        <div>{{selectedResource?.personalInfo?.householdMembers}}</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Residencia:</label>
+                        <div>{{selectedResource?.personalInfo?.residence}}</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Población:</label>
+                        <div>{{selectedResource?.personalInfo?.city}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Necesidades de Vivienda -->
+        <div class="mb-3">
+            <div class="card-header">
+                <h5>a) Necesidades relacionadas con la vivienda</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2" *ngIf="selectedResource?.housing?.items?.noHousing">✓ Carencia de vivienda</div>
+                <div class="mb-2" *ngIf="selectedResource?.housing?.items?.housingDeficiencies">✓ Deficiencias en la vivienda</div>
+                <div class="mb-2" *ngIf="selectedResource?.housing?.items?.unsanitary">✓ Insalubre</div>
+                <div class="mb-2" *ngIf="selectedResource?.housing?.items?.overcrowding">✓ Hacinamiento</div>
+                <div class="mb-2" *ngIf="selectedResource?.housing?.items?.noBasicGoods">✓ Hogares sin bienes básicos</div>
+                <div class="mb-2" *ngIf="selectedResource?.housing?.items?.foodShortage">✓ Hogares con carencia de alimentación</div>
+                <div class="mt-3" *ngIf="selectedResource?.housing?.observations">
+                    <label class="form-label fw-bold">Observaciones:</label>
+                    <div>{{selectedResource?.housing?.observations}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Situación laboral -->
+        <div class="mb-3">
+            <div class="card-header">
+                <h5>b) Situación laboral</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2" *ngIf="selectedResource?.employment?.items?.allUnemployed">✓ Hogar con todos los miembros en paro</div>
+                <div class="mb-2" *ngIf="selectedResource?.employment?.items?.jobLoss">✓ Pérdida de empleo</div>
+                <div class="mb-2" *ngIf="selectedResource?.employment?.items?.temporaryLayoff">✓ En situación de ERTE</div>
+                <div class="mb-2" *ngIf="selectedResource?.employment?.items?.precariousEmployment">✓ Hogar cuyo sustento principal proviene de un empleo precario</div>
+                <div class="mt-3" *ngIf="selectedResource?.employment?.observations">
+                    <label class="form-label fw-bold">Observaciones:</label>
+                    <div>{{selectedResource?.employment?.observations}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Redes sociales -->
+        <div class="mb-3">
+            <div class="card-header">
+                <h5>c) Falta o baja intensidad de las redes sociales y familiares</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2" *ngIf="selectedResource?.socialNetworks?.items?.socialIsolation">✓ Aislamiento social</div>
+                <div class="mb-2" *ngIf="selectedResource?.socialNetworks?.items?.neighborConflicts">✓ Conflictos vecinales</div>
+                <div class="mb-2" *ngIf="selectedResource?.socialNetworks?.items?.needsInstitutionalSupport">✓ Precisa apoyo institucional</div>
+                <div class="mb-2" *ngIf="selectedResource?.socialNetworks?.items?.vulnerableMinors">✓ Personas menores de edad en situación de vulnerabilidad extrema</div>
+                <div class="mt-3" *ngIf="selectedResource?.socialNetworks?.observations">
+                    <label class="form-label fw-bold">Observaciones:</label>
+                    <div>{{selectedResource?.socialNetworks?.observations}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Servicios públicos -->
+        <div class="mb-3">
+            <div class="card-header">
+                <h5>d) Falta de acceso normalizado a los servicios públicos</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2" *ngIf="selectedResource?.publicServices?.items?.noHealthCoverage">✓ Carencia de cobertura sanitaria</div>
+                <div class="mb-2" *ngIf="selectedResource?.publicServices?.items?.discontinuedMedicalTreatment">✓ Hogares con personas que han dejado de seguir tratamientos médicos</div>
+                <div class="mb-2" *ngIf="selectedResource?.publicServices?.items?.unschooledMinors">✓ Hogares con personas menores de edad sin escolarizar o absentismo</div>
+                <div class="mb-2" *ngIf="selectedResource?.publicServices?.items?.dependencyWithoutAssessment">✓ Persona en situación de dependencia / sin valoración</div>
+                <div class="mb-2" *ngIf="selectedResource?.publicServices?.items?.mentalHealthIssues">✓ Persona con problemas de salud mental con/sin tratamiento</div>
+                <div class="mt-3" *ngIf="selectedResource?.publicServices?.observations">
+                    <label class="form-label fw-bold">Observaciones:</label>
+                    <div>{{selectedResource?.publicServices?.observations}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Participación social -->
+        <div class="mb-3">
+            <div class="card-header">
+                <h5>e) Participación social en la comunidad</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2" *ngIf="selectedResource?.socialParticipation?.items?.memberOfOrganizations">✓ Miembros de entidades ciudadanas, culturales y deportivas</div>
+                <div class="mb-2" *ngIf="selectedResource?.socialParticipation?.items?.receivesSocialServices">✓ Recibe atención de servicios sociales</div>
+                <div class="mt-3" *ngIf="selectedResource?.socialParticipation?.observations">
+                    <label class="form-label fw-bold">Observaciones:</label>
+                    <div>{{selectedResource?.socialParticipation?.observations}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cobertura económica -->
+        <div class="mb-3">
+            <div class="card-header">
+                <h5>f) Cobertura económica</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2" *ngIf="selectedResource?.economicCoverage?.items?.noIncome">✓ Sin ingresos</div>
+                <div class="mb-2" *ngIf="selectedResource?.economicCoverage?.items?.pensionsOrBenefits">✓ Ingresos procedentes de pensiones/prestaciones/subsidios</div>
+                <div class="mb-2" *ngIf="selectedResource?.economicCoverage?.items?.receivesRviImv">✓ Percibe RVI/ IMV</div>
+                <div class="mt-3" *ngIf="selectedResource?.economicCoverage?.observations">
+                    <label class="form-label fw-bold">Observaciones:</label>
+                    <div>{{selectedResource?.economicCoverage?.observations}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles adicionales -->
+        <div class="mb-3" *ngIf="selectedResource?.details">
+            <div class="card-header">
+                <h5>Detalles adicionales</h5>
+            </div>
+            <div class="card-body">
+                <div>{{selectedResource?.details}}</div>
+            </div>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="mb-3" *ngIf="selectedResource?.location?.lat && selectedResource?.location?.lng">
+            <div class="card-header">
+                <h5>Ubicación</h5>
+            </div>
+            <div class="card-body">
+                <div class="map-container" style="height: 400px;">
+                    <agm-map [latitude]="selectedResource.location.lat" 
+                            [longitude]="selectedResource.location.lng" 
+                            [zoom]="15">
+                        <agm-marker [latitude]="selectedResource.location.lat" 
+                                  [longitude]="selectedResource.location.lng">
+                        </agm-marker>
+                    </agm-map>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="d('Close click')">Cerrar</button>
+    </div>
+</ng-template>

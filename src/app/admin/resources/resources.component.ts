@@ -49,6 +49,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
   showMarker = false;
   selectedLocation: any = null;
   @ViewChild('mapModal') mapModal: any;
+  @ViewChild('viewResourceModal') viewResourceModal: any;
 
   editingResourceId: string | null = null;
 
@@ -66,31 +67,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
   rowIndex: number = -1;
   emailMsg="";
   msgList: any = {};
-
-  needTypes = [
-    { id: 'all', label: 'Todas las necesidades', info: 'Incluye todas las categorías de necesidades' },
-    { id: 'transport_logistics', label: 'Transporte y Logística', info: 'Camiones, grúas, vehículos pesados, servicios de transporte internacional, maquinaria de construcción' },
-    { id: 'humanitarian_aid', label: 'Ayuda Humanitaria', info: 'Alimentos, agua, ropa, mantas, productos de higiene y limpieza' },
-    { id: 'professional_services', label: 'Servicios Profesionales', info: 'Asesoramiento legal, servicios de arquitectura, peritación y gestión de seguros' },
-    { id: 'construction_repair', label: 'Construcción y Reparación', info: 'Materiales de construcción, maquinaria de obra, servicios de limpieza y desescombro' },
-    { id: 'technical_services', label: 'Servicios Técnicos', info: 'Instalaciones eléctricas, servicios informáticos, recuperación de datos' },
-    { id: 'volunteering', label: 'Voluntariado', info: 'Mano de obra, asistencia personal, apoyo comunitario' },
-    { id: 'financial_support', label: 'Apoyo Económico', info: 'Donaciones monetarias, apoyo financiero, gestión de recursos' },
-    { id: 'equipment_supplies', label: 'Equipamiento y Suministros', info: 'Generadores eléctricos, herramientas, material de camping' },
-    { id: 'health_services', label: 'Servicios Sanitarios', info: 'Asistencia ambulatoria, apoyo psicológico, control médico' },
-    { id: 'storage', label: 'Almacenamiento', info: 'Espacios de almacenaje, puntos de recogida, gestión de donaciones' },
-    { id: 'vehicles', label: 'Coches', info: 'Recursos de vehículos para quienes han perdido los suyos, ofrecidos por asociaciones como Faconauto o Sernauto' },
-    { id: 'animal_resources', label: 'Recursos para Animales', info: 'Protectora, espacios donde dejarles, comida' },
-    { id: 'education_training', label: 'Educación y Formación', info: 'Material escolar, clases de recuperación educativa, formación en gestión de emergencias' },
-    { id: 'communication_technology', label: 'Comunicación y Tecnología', info: 'Equipos de telecomunicaciones, Wi-Fi móvil, servicios de comunicación comunitaria' },
-    { id: 'temporary_infrastructure', label: 'Infraestructura Temporal', info: 'Tiendas de campaña, sistemas de purificación de agua, instalaciones sanitarias móviles' },
-    { id: 'children_families', label: 'Recursos para Niños y Familias', info: 'Juguetes, guarderías temporales, asistencia para lactantes' },
-    { id: 'disability_support', label: 'Asistencia a Personas con Discapacidad', info: 'Equipos de movilidad, servicios de asistencia personal, adaptaciones temporales' },
-    { id: 'psychosocial_support', label: 'Apoyo Psicosocial', info: 'Grupos de apoyo emocional, actividades recreativas, terapias grupales' },
-    { id: 'energy_supply', label: 'Energía y Suministro Eléctrico', info: 'Paneles solares, bancos de energía, servicios de instalación temporal' },
-    { id: 'environmental_recovery', label: 'Recuperación Ambiental', info: 'Limpieza de ríos y zonas verdes, asesoramiento en recuperación de ecosistemas, reforestación' },
-    { id: 'other', label: 'Otras necesidades', info: 'Categoría general para necesidades que no encajan en las anteriores' }
-  ];
+  selectedResource: any;
 
   constructor(private http: HttpClient, public translate: TranslateService, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService, private errorHandler: ErrorHandlerService){
 
@@ -108,16 +85,6 @@ export class ResourcesComponent implements OnInit, OnDestroy{
     });
   }
 
-
-  getNeedLabel(needId: string): string {
-    const needType = this.needTypes.find(type => type.id === needId);
-    return needType ? needType.label : needId;
-  }
-
-  getNeedInfo(needId: string): string {
-    const needType = this.needTypes.find(type => type.id === needId);
-    return needType ? needType.info : '';
-  }
 
   getStatusLabel(status: string): string {
     const statusMap = {
@@ -462,6 +429,32 @@ deleteResource(resourceId: string) {
         );
     }
   });
+}
+
+viewResource(resource: any) {
+  // Reestructurar la ubicación para que coincida con el formulario
+  const resourceData = {
+    ...resource,
+    lat: resource.location?.lat,
+    lng: resource.location?.lng
+  };
+  delete resourceData.location;  // Eliminamos el objeto location original
+
+  this.selectedResource = resourceData;
+
+  // Establecer el marcador en el mapa si hay ubicación
+  if (resource.location?.lat && resource.location?.lng) {
+    this.showMarker = true;
+  }
+
+  this.editingResourceId = resource._id;
+  
+  let ngbModalOptions: NgbModalOptions = {
+    keyboard: false,
+    windowClass: 'ModalClass-lg'
+  };
+  
+  this.modalReference = this.modalService.open(this.viewResourceModal, ngbModalOptions);
 }
 
 
