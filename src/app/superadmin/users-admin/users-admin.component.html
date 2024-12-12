@@ -4,7 +4,7 @@
 
 		<div class="card">
 			<div class="card-header">
-			  <h4 class="card-title">Gestión de usuarios pendientes de activación</h4>
+			  <h4 class="card-title">Gestión de usuarios</h4>
 			  <div class="float-right">
 				<button class="mb-0 btn btn-dark btn-sm"
 					(click)="onSubmitExportData()">{{'generics.ExportData' | translate }}</button>
@@ -38,17 +38,11 @@
 				  </ng-template>
 				</ngx-datatable-column>
 		  
-				<ngx-datatable-column name="Posición" prop="position" [flexGrow]="2" [sortable]="true">
-				  <ng-template let-value="value" ngx-datatable-cell-template>
-					<span>{{value}}</span>
-				  </ng-template>
-				</ngx-datatable-column>
-		  
 				<ngx-datatable-column name="Institución" prop="institution" [flexGrow]="2" [sortable]="true">
-				  <ng-template let-value="value" ngx-datatable-cell-template>
-					<span>{{value}}</span>
-				  </ng-template>
-				</ngx-datatable-column>
+					<ng-template let-value="value" ngx-datatable-cell-template>
+					  <span>{{getMunicipalityName(value)}}</span>
+					</ng-template>
+				  </ngx-datatable-column>
 				<ngx-datatable-column name="Teléfono" prop="phone" [flexGrow]="2" [sortable]="true">
 					<ng-template let-value="value" ngx-datatable-cell-template>
 					  <span>{{value}}</span>

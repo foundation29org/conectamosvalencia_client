@@ -90,7 +90,11 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
         language: ['', Validators.required],
         residence: ['', Validators.required],
         city: ['', Validators.required],
-        householdMembers: ['', [Validators.required, Validators.min(1)]]
+        householdMembers: ['', [Validators.required, Validators.min(1)]],
+        phone: ['', [
+          Validators.required,
+          Validators.pattern('^[+]?[0-9]{9,15}$')  // Permite entre 9 y 15 dígitos, y el símbolo + opcional
+        ]]
       }),
       housing: this.fb.group({
         items: this.fb.group({
@@ -327,6 +331,9 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
       }
       if (!personalInfo.get('householdMembers').value || personalInfo.get('householdMembers').value < 1) {
         errorMessages.push('- Número de miembros de la unidad de convivencia (debe ser mayor que 0)');
+      }
+      if (!personalInfo.get('phone').value) {
+        errorMessages.push('- Teléfono de contacto');
       }
     }
 

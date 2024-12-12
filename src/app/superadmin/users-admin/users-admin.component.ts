@@ -18,6 +18,7 @@ import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 export class UsersAdminComponent implements OnInit, OnDestroy{
   loadedUsers: boolean = false;
   users: any = [];
+  municipalities: any[] = [];
   private subscription: Subscription = new Subscription();
 
   constructor(private http: HttpClient, public translate: TranslateService, public toastr: ToastrService, private sortService: SortService, private errorHandler: ErrorHandlerService){
@@ -26,6 +27,15 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
 
   ngOnInit() {
     this.getUsers();
+    this.http.get<any[]>('assets/jsons/valencia_municipios.json')
+      .subscribe(data => {
+        this.municipalities = data;
+      });
+  }
+
+  getMunicipalityName(municipalityId: string): string {
+    const municipality = this.municipalities.find(m => m.municipio_id === municipalityId);
+    return municipality ? municipality.nombre : municipalityId;
   }
 
 
