@@ -57,7 +57,7 @@
 	<div class="card-content">
 		<div class="card-body">
 			<!-- Tabla de recursos -->
-			<div class="table-responsive">
+			<div class="table-responsive d-none d-md-block">
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -117,7 +117,61 @@
 					</tbody>
 				</table>
 			</div>
-
+			<div class="d-md-none">
+				<div class="card mb-2" *ngFor="let resource of filteredResources | slice:(currentPage-1)*pageSize:currentPage*pageSize">
+					<div class="">
+						<!-- Información principal -->
+						<div class="mb-2">
+							<h6 class="mb-1">{{resource.personalInfo.fullName}}</h6>
+							<div class="text-muted small">
+								<div>ID: {{resource.personalInfo.idNumber}}</div>
+								<div>
+									<i class="ft-clock me-1"></i>
+									{{resource.timestamp | date:'dd/MM/yyyy HH:mm'}}
+								</div>
+							</div>
+						</div>
+			
+						<!-- Estado -->
+						<div class="mb-2 d-flex align-items-center">
+							<label class="mr-2 mb-0">Estado:</label>
+							<mat-select [(ngModel)]="resource.status" 
+									  (selectionChange)="updateStatus(resource)"
+									  class="status-select flex-grow-1" 
+									  [ngClass]="{
+										  'status-new': resource.status === 'new',
+										  'status-progress': resource.status === 'in_progress',
+										  'status-completed': resource.status === 'completed'
+									  }">
+								<mat-option value="new">Nuevo</mat-option>
+								<mat-option value="in_progress">En proceso</mat-option>
+								<mat-option value="completed">Completado</mat-option>
+							</mat-select>
+						</div>
+			
+						<div class="d-flex gap-2">
+							<button *ngIf="resource.location.lat && resource.location.lng"
+									class="btn btn-sm btn-info"
+									(click)="showOnMap(resource.location, mapModal)"
+									[matTooltip]="'Ver ubicación'">
+								<i class="ft-map-pin"></i>
+							</button>
+			
+							<button class="ml-1 btn btn-sm btn-primary"
+									(click)="editResource(resource)"
+									[matTooltip]="'Editar recurso'">
+								<i class="ft-edit-2"></i>
+							</button>
+			
+							<button class="ml-1 btn btn-sm btn-danger"
+									(click)="deleteResource(resource._id)"
+									[matTooltip]="'Eliminar recurso'">
+								<i class="ft-trash-2 white"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
 			<!-- Paginación -->
 			<div class="d-flex justify-content-between align-items-center mt-3">
 				<div>
@@ -162,33 +216,6 @@
 								El nombre es requerido
 							</div>
 						</div>
-
-						<div class="col-md-6 mb-3">
-							<label class="form-label">Identificación</label>
-							<div class="d-flex gap-2">
-								<select class="form-select" formControlName="idType">
-									<option value="dni">DNI</option>
-									<option value="nie">NIE</option>
-									<option value="passport">Pasaporte</option>
-								</select>
-								<input type="text" class="form-control" formControlName="idNumber">
-							</div>
-							<div class="text-danger"
-								*ngIf="resourceForm.get('personalInfo.idType').touched && resourceForm.get('personalInfo.idType').errors?.required">
-								El tipo de identificación es requerido
-							</div>
-							<div class="text-danger"
-								*ngIf="resourceForm.get('personalInfo.idNumber').touched && resourceForm.get('personalInfo.idNumber').errors?.required">
-								El número de identificación es requerido
-							</div>
-						</div>
-
-						<div class="col-md-6 mb-3">
-							<mat-checkbox formControlName="lostDocumentation">
-								Pérdida de documentación
-							</mat-checkbox>
-						</div>
-
 						<div class="col-md-6 mb-3">
 							<label class="form-label">Fecha de nacimiento</label>
 							<div class="">
@@ -212,6 +239,33 @@
 							</div>
 
 						</div>
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Identificación</label>
+							<div class="d-flex gap-2">
+								<select class="form-select" formControlName="idType">
+									<option value="dni">DNI</option>
+									<option value="nie">NIE</option>
+									<option value="passport">Pasaporte</option>
+								</select>
+								<input type="text" class="form-control" formControlName="idNumber">
+							</div>
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.idType').touched && resourceForm.get('personalInfo.idType').errors?.required">
+								El tipo de identificación es requerido
+							</div>
+							<div class="text-danger"
+								*ngIf="resourceForm.get('personalInfo.idNumber').touched && resourceForm.get('personalInfo.idNumber').errors?.required">
+								El número de identificación es requerido
+							</div>
+						</div>
+
+						<div class="col-md-6 mb-3 margin-top-custom">
+							<mat-checkbox formControlName="lostDocumentation">
+								Pérdida de documentación
+							</mat-checkbox>
+						</div>
+
+						
 
 						<div class="col-md-4 mb-3">
 							<label class="form-label">Sexo</label>
@@ -248,7 +302,7 @@
 							</div>
 						</div>
 
-						<div class="col-md-6 mb-3">
+						<div class="col-md-4 mb-3">
 							<label class="form-label">Residencia</label>
 							<input type="text" class="form-control" formControlName="residence">
 							<div class="text-danger"
@@ -257,12 +311,32 @@
 							</div>
 						</div>
 
-						<div class="col-md-6 mb-3">
+						<div class="col-md-4 mb-3">
 							<label class="form-label">Población</label>
 							<input type="text" class="form-control" formControlName="city">
 							<div class="text-danger"
 								*ngIf="resourceForm.get('personalInfo.city').touched && resourceForm.get('personalInfo.city').errors?.required">
 								La población es requerida
+							</div>
+						</div>
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Teléfono de contacto</label>
+							<input type="tel" 
+								   class="form-control" 
+								   formControlName="phone" 
+								   placeholder="Ej: 666777888 o +44555666777">
+							<small class="text-muted">
+								Para números extranjeros, incluya el código del país (ej: +44 para Reino Unido)
+							</small>
+							<div class="text-danger" 
+								 *ngIf="resourceForm.get('personalInfo.phone').touched && resourceForm.get('personalInfo.phone').errors">
+								<div *ngIf="resourceForm.get('personalInfo.phone').errors?.required">
+									El teléfono es requerido
+								</div>
+								<div *ngIf="resourceForm.get('personalInfo.phone').errors?.pattern">
+									El formato del teléfono no es válido. Debe contener entre 9 y 15 dígitos, 
+									opcionalmente precedido por el símbolo +
+								</div>
 							</div>
 						</div>
 					</div>

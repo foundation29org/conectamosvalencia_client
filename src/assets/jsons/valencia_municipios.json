@@ -1,0 +1,1066 @@
+[
+  {
+    "municipio_id": "46001",
+    "nombre": "Ademuz"
+  },
+  {
+    "municipio_id": "46002",
+    "nombre": "Ador"
+  },
+  {
+    "municipio_id": "46004",
+    "nombre": "Agullent"
+  },
+  {
+    "municipio_id": "46042",
+    "nombre": "Aielo de Malferit"
+  },
+  {
+    "municipio_id": "46043",
+    "nombre": "Aielo de Rugat"
+  },
+  {
+    "municipio_id": "46005",
+    "nombre": "Alaquàs"
+  },
+  {
+    "municipio_id": "46006",
+    "nombre": "Albaida"
+  },
+  {
+    "municipio_id": "46007",
+    "nombre": "Albal"
+  },
+  {
+    "municipio_id": "46008",
+    "nombre": "Albalat de la Ribera"
+  },
+  {
+    "municipio_id": "46009",
+    "nombre": "Albalat dels Sorells"
+  },
+  {
+    "municipio_id": "46010",
+    "nombre": "Albalat dels Tarongers"
+  },
+  {
+    "municipio_id": "46011",
+    "nombre": "Alberic"
+  },
+  {
+    "municipio_id": "46012",
+    "nombre": "Alborache"
+  },
+  {
+    "municipio_id": "46013",
+    "nombre": "Alboraia/Alboraya"
+  },
+  {
+    "municipio_id": "46014",
+    "nombre": "Albuixech"
+  },
+  {
+    "municipio_id": "46016",
+    "nombre": "Alcàntera de Xúquer"
+  },
+  {
+    "municipio_id": "46015",
+    "nombre": "Alcàsser"
+  },
+  {
+    "municipio_id": "46018",
+    "nombre": "Alcublas"
+  },
+  {
+    "municipio_id": "46020",
+    "nombre": "Alcúdia de Crespins, l'"
+  },
+  {
+    "municipio_id": "46019",
+    "nombre": "Alcúdia, l'"
+  },
+  {
+    "municipio_id": "46021",
+    "nombre": "Aldaia"
+  },
+  {
+    "municipio_id": "46022",
+    "nombre": "Alfafar"
+  },
+  {
+    "municipio_id": "46024",
+    "nombre": "Alfara de la Baronia"
+  },
+  {
+    "municipio_id": "46025",
+    "nombre": "Alfara del Patriarca"
+  },
+  {
+    "municipio_id": "46026",
+    "nombre": "Alfarp"
+  },
+  {
+    "municipio_id": "46027",
+    "nombre": "Alfarrasí"
+  },
+  {
+    "municipio_id": "46023",
+    "nombre": "Alfauir"
+  },
+  {
+    "municipio_id": "46028",
+    "nombre": "Algar de Palancia"
+  },
+  {
+    "municipio_id": "46029",
+    "nombre": "Algemesí"
+  },
+  {
+    "municipio_id": "46030",
+    "nombre": "Algimia de Alfara"
+  },
+  {
+    "municipio_id": "46031",
+    "nombre": "Alginet"
+  },
+  {
+    "municipio_id": "46032",
+    "nombre": "Almàssera"
+  },
+  {
+    "municipio_id": "46033",
+    "nombre": "Almiserà"
+  },
+  {
+    "municipio_id": "46034",
+    "nombre": "Almoines"
+  },
+  {
+    "municipio_id": "46035",
+    "nombre": "Almussafes"
+  },
+  {
+    "municipio_id": "46036",
+    "nombre": "Alpuente"
+  },
+  {
+    "municipio_id": "46037",
+    "nombre": "Alqueria de la Comtessa, l'"
+  },
+  {
+    "municipio_id": "46017",
+    "nombre": "Alzira"
+  },
+  {
+    "municipio_id": "46038",
+    "nombre": "Andilla"
+  },
+  {
+    "municipio_id": "46039",
+    "nombre": "Anna"
+  },
+  {
+    "municipio_id": "46040",
+    "nombre": "Antella"
+  },
+  {
+    "municipio_id": "46041",
+    "nombre": "Aras de los Olmos"
+  },
+  {
+    "municipio_id": "46003",
+    "nombre": "Atzeneta d'Albaida"
+  },
+  {
+    "municipio_id": "46044",
+    "nombre": "Ayora"
+  },
+  {
+    "municipio_id": "46046",
+    "nombre": "Barx"
+  },
+  {
+    "municipio_id": "46045",
+    "nombre": "Barxeta"
+  },
+  {
+    "municipio_id": "46047",
+    "nombre": "Bèlgida"
+  },
+  {
+    "municipio_id": "46048",
+    "nombre": "Bellreguard"
+  },
+  {
+    "municipio_id": "46049",
+    "nombre": "Bellús"
+  },
+  {
+    "municipio_id": "46050",
+    "nombre": "Benagéber"
+  },
+  {
+    "municipio_id": "46051",
+    "nombre": "Benaguasil"
+  },
+  {
+    "municipio_id": "46052",
+    "nombre": "Benavites"
+  },
+  {
+    "municipio_id": "46053",
+    "nombre": "Beneixida"
+  },
+  {
+    "municipio_id": "46054",
+    "nombre": "Benetússer"
+  },
+  {
+    "municipio_id": "46055",
+    "nombre": "Beniarjó"
+  },
+  {
+    "municipio_id": "46056",
+    "nombre": "Beniatjar"
+  },
+  {
+    "municipio_id": "46057",
+    "nombre": "Benicolet"
+  },
+  {
+    "municipio_id": "46904",
+    "nombre": "Benicull de Xúquer"
+  },
+  {
+    "municipio_id": "46060",
+    "nombre": "Benifaió"
+  },
+  {
+    "municipio_id": "46059",
+    "nombre": "Benifairó de la Valldigna"
+  },
+  {
+    "municipio_id": "46058",
+    "nombre": "Benifairó de les Valls"
+  },
+  {
+    "municipio_id": "46061",
+    "nombre": "Beniflá"
+  },
+  {
+    "municipio_id": "46062",
+    "nombre": "Benigànim"
+  },
+  {
+    "municipio_id": "46063",
+    "nombre": "Benimodo"
+  },
+  {
+    "municipio_id": "46064",
+    "nombre": "Benimuslem"
+  },
+  {
+    "municipio_id": "46065",
+    "nombre": "Beniparrell"
+  },
+  {
+    "municipio_id": "46066",
+    "nombre": "Benirredrà"
+  },
+  {
+    "municipio_id": "46067",
+    "nombre": "Benissanó"
+  },
+  {
+    "municipio_id": "46068",
+    "nombre": "Benissoda"
+  },
+  {
+    "municipio_id": "46069",
+    "nombre": "Benissuera"
+  },
+  {
+    "municipio_id": "46070",
+    "nombre": "Bétera"
+  },
+  {
+    "municipio_id": "46071",
+    "nombre": "Bicorp"
+  },
+  {
+    "municipio_id": "46072",
+    "nombre": "Bocairent"
+  },
+  {
+    "municipio_id": "46073",
+    "nombre": "Bolbaite"
+  },
+  {
+    "municipio_id": "46074",
+    "nombre": "Bonrepòs i Mirambell"
+  },
+  {
+    "municipio_id": "46075",
+    "nombre": "Bufali"
+  },
+  {
+    "municipio_id": "46076",
+    "nombre": "Bugarra"
+  },
+  {
+    "municipio_id": "46077",
+    "nombre": "Buñol"
+  },
+  {
+    "municipio_id": "46078",
+    "nombre": "Burjassot"
+  },
+  {
+    "municipio_id": "46079",
+    "nombre": "Calles"
+  },
+  {
+    "municipio_id": "46080",
+    "nombre": "Camporrobles"
+  },
+  {
+    "municipio_id": "46081",
+    "nombre": "Canals"
+  },
+  {
+    "municipio_id": "46082",
+    "nombre": "Canet d'En Berenguer"
+  },
+  {
+    "municipio_id": "46083",
+    "nombre": "Carcaixent"
+  },
+  {
+    "municipio_id": "46084",
+    "nombre": "Càrcer"
+  },
+  {
+    "municipio_id": "46085",
+    "nombre": "Carlet"
+  },
+  {
+    "municipio_id": "46086",
+    "nombre": "Carrícola"
+  },
+  {
+    "municipio_id": "46087",
+    "nombre": "Casas Altas"
+  },
+  {
+    "municipio_id": "46088",
+    "nombre": "Casas Bajas"
+  },
+  {
+    "municipio_id": "46089",
+    "nombre": "Casinos"
+  },
+  {
+    "municipio_id": "46090",
+    "nombre": "Castelló de Rugat"
+  },
+  {
+    "municipio_id": "46091",
+    "nombre": "Castellonet de la Conquesta"
+  },
+  {
+    "municipio_id": "46092",
+    "nombre": "Castielfabib"
+  },
+  {
+    "municipio_id": "46093",
+    "nombre": "Catadau"
+  },
+  {
+    "municipio_id": "46094",
+    "nombre": "Catarroja"
+  },
+  {
+    "municipio_id": "46095",
+    "nombre": "Caudete de las Fuentes"
+  },
+  {
+    "municipio_id": "46096",
+    "nombre": "Cerdà"
+  },
+  {
+    "municipio_id": "46107",
+    "nombre": "Chella"
+  },
+  {
+    "municipio_id": "46106",
+    "nombre": "Chelva"
+  },
+  {
+    "municipio_id": "46108",
+    "nombre": "Chera"
+  },
+  {
+    "municipio_id": "46109",
+    "nombre": "Cheste"
+  },
+  {
+    "municipio_id": "46111",
+    "nombre": "Chiva"
+  },
+  {
+    "municipio_id": "46112",
+    "nombre": "Chulilla"
+  },
+  {
+    "municipio_id": "46097",
+    "nombre": "Cofrentes"
+  },
+  {
+    "municipio_id": "46098",
+    "nombre": "Corbera"
+  },
+  {
+    "municipio_id": "46099",
+    "nombre": "Cortes de Pallás"
+  },
+  {
+    "municipio_id": "46100",
+    "nombre": "Cotes"
+  },
+  {
+    "municipio_id": "46105",
+    "nombre": "Cullera"
+  },
+  {
+    "municipio_id": "46113",
+    "nombre": "Daimús"
+  },
+  {
+    "municipio_id": "46114",
+    "nombre": "Domeño"
+  },
+  {
+    "municipio_id": "46115",
+    "nombre": "Dos Aguas"
+  },
+  {
+    "municipio_id": "46116",
+    "nombre": "Eliana, l'"
+  },
+  {
+    "municipio_id": "46117",
+    "nombre": "Emperador"
+  },
+  {
+    "municipio_id": "46118",
+    "nombre": "Enguera"
+  },
+  {
+    "municipio_id": "46119",
+    "nombre": "Ènova, l'"
+  },
+  {
+    "municipio_id": "46120",
+    "nombre": "Estivella"
+  },
+  {
+    "municipio_id": "46121",
+    "nombre": "Estubeny"
+  },
+  {
+    "municipio_id": "46122",
+    "nombre": "Faura"
+  },
+  {
+    "municipio_id": "46123",
+    "nombre": "Favara"
+  },
+  {
+    "municipio_id": "46126",
+    "nombre": "Foios"
+  },
+  {
+    "municipio_id": "46128",
+    "nombre": "Font de la Figuera, la"
+  },
+  {
+    "municipio_id": "46127",
+    "nombre": "Font d'En Carròs, la"
+  },
+  {
+    "municipio_id": "46124",
+    "nombre": "Fontanars dels Alforins"
+  },
+  {
+    "municipio_id": "46125",
+    "nombre": "Fortaleny"
+  },
+  {
+    "municipio_id": "46129",
+    "nombre": "Fuenterrobles"
+  },
+  {
+    "municipio_id": "46131",
+    "nombre": "Gandia"
+  },
+  {
+    "municipio_id": "46902",
+    "nombre": "Gátova"
+  },
+  {
+    "municipio_id": "46130",
+    "nombre": "Gavarda"
+  },
+  {
+    "municipio_id": "46132",
+    "nombre": "Genovés"
+  },
+  {
+    "municipio_id": "46133",
+    "nombre": "Gestalgar"
+  },
+  {
+    "municipio_id": "46134",
+    "nombre": "Gilet"
+  },
+  {
+    "municipio_id": "46135",
+    "nombre": "Godella"
+  },
+  {
+    "municipio_id": "46136",
+    "nombre": "Godelleta"
+  },
+  {
+    "municipio_id": "46137",
+    "nombre": "Granja de la Costera, la"
+  },
+  {
+    "municipio_id": "46138",
+    "nombre": "Guadasséquies"
+  },
+  {
+    "municipio_id": "46139",
+    "nombre": "Guadassuar"
+  },
+  {
+    "municipio_id": "46140",
+    "nombre": "Guardamar de la Safor"
+  },
+  {
+    "municipio_id": "46141",
+    "nombre": "Higueruelas"
+  },
+  {
+    "municipio_id": "46142",
+    "nombre": "Jalance"
+  },
+  {
+    "municipio_id": "46144",
+    "nombre": "Jarafuel"
+  },
+  {
+    "municipio_id": "46154",
+    "nombre": "Llanera de Ranes"
+  },
+  {
+    "municipio_id": "46155",
+    "nombre": "Llaurí"
+  },
+  {
+    "municipio_id": "46147",
+    "nombre": "Llíria"
+  },
+  {
+    "municipio_id": "46152",
+    "nombre": "Llocnou de la Corona"
+  },
+  {
+    "municipio_id": "46153",
+    "nombre": "Llocnou de Sant Jeroni"
+  },
+  {
+    "municipio_id": "46151",
+    "nombre": "Llocnou d'En Fenollet"
+  },
+  {
+    "municipio_id": "46156",
+    "nombre": "Llombai"
+  },
+  {
+    "municipio_id": "46157",
+    "nombre": "Llosa de Ranes, la"
+  },
+  {
+    "municipio_id": "46150",
+    "nombre": "Llutxent"
+  },
+  {
+    "municipio_id": "46148",
+    "nombre": "Loriguilla"
+  },
+  {
+    "municipio_id": "46149",
+    "nombre": "Losa del Obispo"
+  },
+  {
+    "municipio_id": "46158",
+    "nombre": "Macastre"
+  },
+  {
+    "municipio_id": "46159",
+    "nombre": "Manises"
+  },
+  {
+    "municipio_id": "46160",
+    "nombre": "Manuel"
+  },
+  {
+    "municipio_id": "46161",
+    "nombre": "Marines"
+  },
+  {
+    "municipio_id": "46162",
+    "nombre": "Massalavés"
+  },
+  {
+    "municipio_id": "46163",
+    "nombre": "Massalfassar"
+  },
+  {
+    "municipio_id": "46164",
+    "nombre": "Massamagrell"
+  },
+  {
+    "municipio_id": "46165",
+    "nombre": "Massanassa"
+  },
+  {
+    "municipio_id": "46166",
+    "nombre": "Meliana"
+  },
+  {
+    "municipio_id": "46167",
+    "nombre": "Millares"
+  },
+  {
+    "municipio_id": "46168",
+    "nombre": "Miramar"
+  },
+  {
+    "municipio_id": "46169",
+    "nombre": "Mislata"
+  },
+  {
+    "municipio_id": "46170",
+    "nombre": "Mogente/Moixent"
+  },
+  {
+    "municipio_id": "46171",
+    "nombre": "Moncada"
+  },
+  {
+    "municipio_id": "46173",
+    "nombre": "Montaverner"
+  },
+  {
+    "municipio_id": "46174",
+    "nombre": "Montesa"
+  },
+  {
+    "municipio_id": "46175",
+    "nombre": "Montitxelvo/Montichelvo"
+  },
+  {
+    "municipio_id": "46176",
+    "nombre": "Montroi/Montroy"
+  },
+  {
+    "municipio_id": "46172",
+    "nombre": "Montserrat"
+  },
+  {
+    "municipio_id": "46177",
+    "nombre": "Museros"
+  },
+  {
+    "municipio_id": "46178",
+    "nombre": "Náquera"
+  },
+  {
+    "municipio_id": "46179",
+    "nombre": "Navarrés"
+  },
+  {
+    "municipio_id": "46180",
+    "nombre": "Novelé/Novetlè"
+  },
+  {
+    "municipio_id": "46181",
+    "nombre": "Oliva"
+  },
+  {
+    "municipio_id": "46183",
+    "nombre": "Olleria, l'"
+  },
+  {
+    "municipio_id": "46182",
+    "nombre": "Olocau"
+  },
+  {
+    "municipio_id": "46184",
+    "nombre": "Ontinyent"
+  },
+  {
+    "municipio_id": "46185",
+    "nombre": "Otos"
+  },
+  {
+    "municipio_id": "46186",
+    "nombre": "Paiporta"
+  },
+  {
+    "municipio_id": "46187",
+    "nombre": "Palma de Gandía"
+  },
+  {
+    "municipio_id": "46188",
+    "nombre": "Palmera"
+  },
+  {
+    "municipio_id": "46189",
+    "nombre": "Palomar, el"
+  },
+  {
+    "municipio_id": "46190",
+    "nombre": "Paterna"
+  },
+  {
+    "municipio_id": "46191",
+    "nombre": "Pedralba"
+  },
+  {
+    "municipio_id": "46192",
+    "nombre": "Petrés"
+  },
+  {
+    "municipio_id": "46193",
+    "nombre": "Picanya"
+  },
+  {
+    "municipio_id": "46194",
+    "nombre": "Picassent"
+  },
+  {
+    "municipio_id": "46195",
+    "nombre": "Piles"
+  },
+  {
+    "municipio_id": "46196",
+    "nombre": "Pinet"
+  },
+  {
+    "municipio_id": "46199",
+    "nombre": "Pobla de Farnals, la"
+  },
+  {
+    "municipio_id": "46202",
+    "nombre": "Pobla de Vallbona, la"
+  },
+  {
+    "municipio_id": "46200",
+    "nombre": "Pobla del Duc, la"
+  },
+  {
+    "municipio_id": "46203",
+    "nombre": "Pobla Llarga, la"
+  },
+  {
+    "municipio_id": "46197",
+    "nombre": "Polinyà de Xúquer"
+  },
+  {
+    "municipio_id": "46198",
+    "nombre": "Potries"
+  },
+  {
+    "municipio_id": "46205",
+    "nombre": "Puçol"
+  },
+  {
+    "municipio_id": "46201",
+    "nombre": "Puebla de San Miguel"
+  },
+  {
+    "municipio_id": "46204",
+    "nombre": "Puig de Santa Maria, el"
+  },
+  {
+    "municipio_id": "46101",
+    "nombre": "Quart de les Valls"
+  },
+  {
+    "municipio_id": "46102",
+    "nombre": "Quart de Poblet"
+  },
+  {
+    "municipio_id": "46103",
+    "nombre": "Quartell"
+  },
+  {
+    "municipio_id": "46104",
+    "nombre": "Quatretonda"
+  },
+  {
+    "municipio_id": "46206",
+    "nombre": "Quesa"
+  },
+  {
+    "municipio_id": "46207",
+    "nombre": "Rafelbunyol"
+  },
+  {
+    "municipio_id": "46208",
+    "nombre": "Rafelcofer"
+  },
+  {
+    "municipio_id": "46209",
+    "nombre": "Rafelguaraf"
+  },
+  {
+    "municipio_id": "46210",
+    "nombre": "Ráfol de Salem"
+  },
+  {
+    "municipio_id": "46212",
+    "nombre": "Real"
+  },
+  {
+    "municipio_id": "46211",
+    "nombre": "Real de Gandia, el"
+  },
+  {
+    "municipio_id": "46213",
+    "nombre": "Requena"
+  },
+  {
+    "municipio_id": "46214",
+    "nombre": "Riba-roja de Túria"
+  },
+  {
+    "municipio_id": "46215",
+    "nombre": "Riola"
+  },
+  {
+    "municipio_id": "46216",
+    "nombre": "Rocafort"
+  },
+  {
+    "municipio_id": "46217",
+    "nombre": "Rotglà i Corberà"
+  },
+  {
+    "municipio_id": "46218",
+    "nombre": "Rótova"
+  },
+  {
+    "municipio_id": "46219",
+    "nombre": "Rugat"
+  },
+  {
+    "municipio_id": "46220",
+    "nombre": "Sagunto/Sagunt"
+  },
+  {
+    "municipio_id": "46221",
+    "nombre": "Salem"
+  },
+  {
+    "municipio_id": "46903",
+    "nombre": "San Antonio de Benagéber"
+  },
+  {
+    "municipio_id": "46222",
+    "nombre": "Sant Joanet"
+  },
+  {
+    "municipio_id": "46223",
+    "nombre": "Sedaví"
+  },
+  {
+    "municipio_id": "46224",
+    "nombre": "Segart"
+  },
+  {
+    "municipio_id": "46225",
+    "nombre": "Sellent"
+  },
+  {
+    "municipio_id": "46226",
+    "nombre": "Sempere"
+  },
+  {
+    "municipio_id": "46227",
+    "nombre": "Senyera"
+  },
+  {
+    "municipio_id": "46228",
+    "nombre": "Serra"
+  },
+  {
+    "municipio_id": "46229",
+    "nombre": "Siete Aguas"
+  },
+  {
+    "municipio_id": "46230",
+    "nombre": "Silla"
+  },
+  {
+    "municipio_id": "46231",
+    "nombre": "Simat de la Valldigna"
+  },
+  {
+    "municipio_id": "46232",
+    "nombre": "Sinarcas"
+  },
+  {
+    "municipio_id": "46233",
+    "nombre": "Sollana"
+  },
+  {
+    "municipio_id": "46234",
+    "nombre": "Sot de Chera"
+  },
+  {
+    "municipio_id": "46235",
+    "nombre": "Sueca"
+  },
+  {
+    "municipio_id": "46236",
+    "nombre": "Sumacàrcer"
+  },
+  {
+    "municipio_id": "46237",
+    "nombre": "Tavernes Blanques"
+  },
+  {
+    "municipio_id": "46238",
+    "nombre": "Tavernes de la Valldigna"
+  },
+  {
+    "municipio_id": "46239",
+    "nombre": "Teresa de Cofrentes"
+  },
+  {
+    "municipio_id": "46240",
+    "nombre": "Terrateig"
+  },
+  {
+    "municipio_id": "46241",
+    "nombre": "Titaguas"
+  },
+  {
+    "municipio_id": "46242",
+    "nombre": "Torrebaja"
+  },
+  {
+    "municipio_id": "46243",
+    "nombre": "Torrella"
+  },
+  {
+    "municipio_id": "46244",
+    "nombre": "Torrent"
+  },
+  {
+    "municipio_id": "46245",
+    "nombre": "Torres Torres"
+  },
+  {
+    "municipio_id": "46246",
+    "nombre": "Tous"
+  },
+  {
+    "municipio_id": "46247",
+    "nombre": "Tuéjar"
+  },
+  {
+    "municipio_id": "46248",
+    "nombre": "Turís"
+  },
+  {
+    "municipio_id": "46249",
+    "nombre": "Utiel"
+  },
+  {
+    "municipio_id": "46250",
+    "nombre": "Valencia"
+  },
+  {
+    "municipio_id": "46251",
+    "nombre": "Vallada"
+  },
+  {
+    "municipio_id": "46252",
+    "nombre": "Vallanca"
+  },
+  {
+    "municipio_id": "46253",
+    "nombre": "Vallés"
+  },
+  {
+    "municipio_id": "46254",
+    "nombre": "Venta del Moro"
+  },
+  {
+    "municipio_id": "46255",
+    "nombre": "Vilallonga/Villalonga"
+  },
+  {
+    "municipio_id": "46256",
+    "nombre": "Vilamarxant"
+  },
+  {
+    "municipio_id": "46257",
+    "nombre": "Villanueva de Castellón"
+  },
+  {
+    "municipio_id": "46258",
+    "nombre": "Villar del Arzobispo"
+  },
+  {
+    "municipio_id": "46259",
+    "nombre": "Villargordo del Cabriel"
+  },
+  {
+    "municipio_id": "46260",
+    "nombre": "Vinalesa"
+  },
+  {
+    "municipio_id": "46145",
+    "nombre": "Xàtiva"
+  },
+  {
+    "municipio_id": "46143",
+    "nombre": "Xeraco"
+  },
+  {
+    "municipio_id": "46146",
+    "nombre": "Xeresa"
+  },
+  {
+    "municipio_id": "46110",
+    "nombre": "Xirivella"
+  },
+  {
+    "municipio_id": "46261",
+    "nombre": "Yátova"
+  },
+  {
+    "municipio_id": "46262",
+    "nombre": "Yesa, La"
+  },
+  {
+    "municipio_id": "46263",
+    "nombre": "Zarra"
+  }
+]

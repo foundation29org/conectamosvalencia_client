@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 
 export class RegisterPageComponent implements OnDestroy, OnInit {
-
+  municipalities: any[] = [];
   @ViewChild('f') registerForm: NgForm;
   sending: boolean = false;
 
@@ -46,6 +46,11 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
+    this.http.get<any[]>('assets/jsons/valencia_municipios.json')
+      .subscribe(data => {
+        this.municipalities = data;
+      });
+      
     this.addRecaptchaScript();
   }
 

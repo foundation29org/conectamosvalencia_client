@@ -52,6 +52,10 @@ agm-map {
   }
 }
 
+.margin-top-custom{
+  margin-top: 2.25rem !important;
+}
+
 /* Asegurarse de que los estilos se aplican incluso con el hover */
 .datatable-row-wrapper:hover .selected-row {
   background-color: #e6f3ff !important;
@@ -118,5 +122,11 @@ agm-map {
       line-height: 36px;
       font-size: 14px;
     }
+  }
+}
+
+@media (max-width: 767px) {
+  .margin-top-custom{
+    margin-top: -1rem !important;
   }
 }
