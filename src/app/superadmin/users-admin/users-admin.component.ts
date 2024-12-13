@@ -18,6 +18,7 @@ import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
 export class UsersAdminComponent implements OnInit, OnDestroy{
   loadedUsers: boolean = false;
   users: any = [];
+  filteredUsers: any[] = [];
   municipalities: any[] = [];
   private subscription: Subscription = new Subscription();
 
@@ -56,12 +57,30 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
       
       // Ordenar por fecha de creación (más recientes primero)
       this.users.sort(this.sortService.GetSortOrderInverse("creationDate"));
+      this.filteredUsers = [...this.users];
       this.loadedUsers = true;      
     }, (err) => {
       console.log(err);
       this.loadedUsers = true;
       this.errorHandler.handleError(err, this.translate.instant("generics.error try again"));
     }));
+  }
+
+  updateFilter(event: any) {
+    const val = event.target.value.toLowerCase();
+  
+    // filtra los datos
+    const temp = this.users.filter((d) => {
+      return d.userName.toLowerCase().indexOf(val) !== -1 ||
+             d.email.toLowerCase().indexOf(val) !== -1 ||
+             this.getMunicipalityName(d.institution).toLowerCase().indexOf(val) !== -1 ||  // Modificado aquí
+             d.phone.toLowerCase().indexOf(val) !== -1 ||
+             d.role.toLowerCase().indexOf(val) !== -1 ||
+             !val;
+    });
+  
+    // actualiza los datos
+    this.filteredUsers = temp;
   }
 
   capitalizeFirstLetter(string) {
@@ -147,6 +166,24 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
             })
         );
       }
+    });
+  }
+
+  onSort(event: any) {
+    console.log('Sort Event:', event);
+    // Este evento se dispara cuando se ordena una columna
+    const sort = event.sorts[0];
+    this.users.sort((a: any, b: any) => {
+      const valueA = a[sort.prop];
+      const valueB = b[sort.prop];
+      
+      if (valueA < valueB) {
+        return sort.dir === 'asc' ? -1 : 1;
+      }
+      if (valueA > valueB) {
+        return sort.dir === 'asc' ? 1 : -1;
+      }
+      return 0;
     });
   }
 

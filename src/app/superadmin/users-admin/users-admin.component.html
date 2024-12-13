@@ -4,12 +4,14 @@
 
 		<div class="card">
 			<div class="card-header">
-			  <h4 class="card-title">Gestión de usuarios</h4>
-			  <div class="float-right">
-				<button class="mb-0 btn btn-dark btn-sm"
-					(click)="onSubmitExportData()">{{'generics.ExportData' | translate }}</button>
-				<div class="d-none"><span id="content"></span></div>
-			</div>
+			  <h4 class="card-title">Gestión de usuarios
+				<div class="float-right">
+					<button class="mb-0 btn btn-dark btn-sm"
+						(click)="onSubmitExportData()">{{'generics.ExportData' | translate }}</button>
+					<div class="d-none"><span id="content"></span></div>
+				</div>
+			  </h4>
+			  
 			</div>
 			<div class="center-elements" *ngIf="loadingUsers">
 			  <div>
@@ -17,49 +19,68 @@
 			  </div>
 			</div>
 			<div class="mt-2 table-responsive" *ngIf="!loadingUsers && users.length>0">
+
+				<div class="">
+					<div class="mb-3">
+					  <div class="col-md-6">
+						<input
+						  type="text"
+						  class="form-control"
+						  placeholder="Buscar..."
+						  (keyup)="updateFilter($event)"
+						>
+					  </div>
+					</div>
+				  </div>
+
 			  <ngx-datatable 
 				class="bootstrap fullscreen" 
-				[columnMode]="'flex'" 
+				[columnMode]="'force'" 
 				[headerHeight]="50"
 				[footerHeight]="50" 
 				[rowHeight]="'auto'" 
-				[rows]="users" 
-				[limit]="10">
+				[rows]="filteredUsers" 
+				[limit]="10"
+				[scrollbarH]="true"
+				[sorts]="[{prop: 'userName', dir: 'asc'}]"
+				[sortable]="true"
+				[reorderable]="true"
+				(sort)="onSort($event)">
 		  
-				<ngx-datatable-column name="Nombre" prop="userName" [flexGrow]="2" [sortable]="true">
+				<ngx-datatable-column name="Nombre" prop="userName" [flexGrow]="1" [sortable]="true">
 				  <ng-template let-value="value" ngx-datatable-cell-template>
 					<span>{{value}}</span>
 				  </ng-template>
 				</ngx-datatable-column>
 		  
-				<ngx-datatable-column name="Email" prop="email" [flexGrow]="3" [sortable]="true">
+				<ngx-datatable-column name="Email" prop="email" [flexGrow]="1.5" [sortable]="true">
 				  <ng-template let-value="value" ngx-datatable-cell-template>
 					<span>{{value}}</span>
 				  </ng-template>
 				</ngx-datatable-column>
 		  
-				<ngx-datatable-column name="Institución" prop="institution" [flexGrow]="2" [sortable]="true">
+				<ngx-datatable-column name="Institución" prop="institution" [flexGrow]="1" [sortable]="true">
 					<ng-template let-value="value" ngx-datatable-cell-template>
 					  <span>{{getMunicipalityName(value)}}</span>
 					</ng-template>
 				  </ngx-datatable-column>
-				<ngx-datatable-column name="Teléfono" prop="phone" [flexGrow]="2" [sortable]="true">
+				<ngx-datatable-column name="Teléfono" prop="phone" [flexGrow]="1" [sortable]="true">
 					<ng-template let-value="value" ngx-datatable-cell-template>
 					  <span>{{value}}</span>
 					</ng-template>
 				  </ngx-datatable-column>
-				  <ngx-datatable-column name="Role" prop="role" [flexGrow]="2" [sortable]="true">
+				  <ngx-datatable-column name="Role" prop="role" [flexGrow]="0.8" [sortable]="true">
 					<ng-template let-value="value" ngx-datatable-cell-template>
 					  <span>{{value}}</span>
 					</ng-template>
 				  </ngx-datatable-column>
-				  <ngx-datatable-column name="Último acceso" prop="lastLogin" [flexGrow]="2" [sortable]="true">
+				  <ngx-datatable-column name="Último acceso" prop="lastLogin" [flexGrow]="1" [sortable]="true">
 					<ng-template let-value="value" ngx-datatable-cell-template>
 					  <span>{{value | date:'dd/MM/yyyy HH:mm'}}</span>
 					</ng-template>
 				  </ngx-datatable-column>
 		  
-				<ngx-datatable-column name="Estado" prop="confirmed" [flexGrow]="2" [sortable]="true">
+				<ngx-datatable-column name="Estado" prop="confirmed" [flexGrow]="0.8" [sortable]="true">
 				  <ng-template let-value="value" ngx-datatable-cell-template>
 					<span class="badge" [ngClass]="value ? 'badge-success' : 'badge-warning'">
 					  {{value ? 'Activada' : 'Pendiente'}}
@@ -67,7 +88,7 @@
 				  </ng-template>
 				</ngx-datatable-column>
 		  
-				<ngx-datatable-column name="Acciones" [flexGrow]="2" [sortable]="false">
+				<ngx-datatable-column name="Acciones" [flexGrow]="1" [sortable]="false">
 				  <ng-template let-row="row" ngx-datatable-cell-template>
 					<button *ngIf="!row.confirmed" 
 							class="btn btn-sm btn-primary mr-2" 

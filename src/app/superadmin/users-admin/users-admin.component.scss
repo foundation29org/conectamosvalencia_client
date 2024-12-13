@@ -22,3 +22,21 @@ agm-map {
 .btn-success, .btn-warning{
   color: #FFF !important;
 }
+
+.ngx-datatable .datatable-header-cell {
+  cursor: pointer;
+}
+
+.ngx-datatable .datatable-header-cell i {
+  margin-left: 5px;
+}
+
+.ngx-datatable .datatable-header-cell:hover {
+  background-color: #f5f5f5;
+}
+
+.table-responsive-wrapper {
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
