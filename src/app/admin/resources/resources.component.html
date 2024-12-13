@@ -13,7 +13,7 @@
 				<div class="row g-3">
 					<!-- Filtro por estado -->
 					<div class="col-md-3">
-						<mat-form-field appearance="outline" class="w-100">
+						<mat-form-field class="custom-mat-form-field" appearance="outline">
 							<mat-select [(ngModel)]="filters.status" (selectionChange)="applyFilters()"
 								placeholder="Todos los estados">
 								<mat-option value="">Todos los estados</mat-option>

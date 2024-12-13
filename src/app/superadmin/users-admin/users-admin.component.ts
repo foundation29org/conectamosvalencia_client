@@ -8,6 +8,7 @@ import { SortService} from 'app/shared/services/sort.service';
 import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
 import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
+import { DateService } from 'app/shared/services/date.service';
 
 @Component({
     selector: 'app-users-admin',
@@ -22,7 +23,7 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
   municipalities: any[] = [];
   private subscription: Subscription = new Subscription();
 
-  constructor(private http: HttpClient, public translate: TranslateService, public toastr: ToastrService, private sortService: SortService, private errorHandler: ErrorHandlerService){
+  constructor(private http: HttpClient, public translate: TranslateService, public toastr: ToastrService, private sortService: SortService, private errorHandler: ErrorHandlerService, private dateService: DateService){
     
   }
 
@@ -91,6 +92,8 @@ export class UsersAdminComponent implements OnInit, OnDestroy{
   onSubmitExportData(){
     var tempRes = JSON.parse(JSON.stringify(this.users));
     for(var j=0;j<tempRes.length;j++){
+      tempRes[j].institution = this.getMunicipalityName(tempRes[j].institution);
+      tempRes[j].lastLogin = this.dateService.transformDate(tempRes[j].lastLogin);
       delete tempRes[j].icon;
     }
     this.createFile(tempRes);

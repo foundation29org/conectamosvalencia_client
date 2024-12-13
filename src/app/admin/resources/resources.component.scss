@@ -60,22 +60,22 @@ agm-map {
   background-color: #e6f3ff !important;
 }
 
-::ng-deep .mat-form-field {
+::ng-deep .custom-mat-form-field {
   .mat-form-field-wrapper {
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
   }
 
   .mat-form-field-flex {
-    padding: 0 0.75em;
+    padding: 0 0.75em !important;
   }
 
   .mat-form-field-infix {
-    padding: 0.5em 0;
-    border-top: 0;
+    padding: 0.5em 0 !important;
+    border-top: 0 !important;
   }
 
   .mat-form-field-outline {
-    color: #ced4da;
+    color: #ced4da !important;
   }
 }
 
