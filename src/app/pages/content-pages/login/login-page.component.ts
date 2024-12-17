@@ -223,6 +223,9 @@ private handleLoginWithEmailAndKey(email: string, key: string) {
           }).then((result) => {
           })
           this.isLoginFailed = false;
+          this.loginForm.reset();
+          this.needCaptcha = true;
+          this.addRecaptchaScript();
         }else{
           this.needCaptcha = true;
           this.addRecaptchaScript();
