@@ -60,12 +60,15 @@ getEnvironment(): boolean {
   return this.isloggedIn;
 }
 
-  login(formValue: any): Observable<boolean> {
+  /*login(formValue: any): Observable<boolean> {
     //your code for signing up the new user
     return this.http.post(environment.api+'/api/login',formValue)
     .pipe(
       tap((res: any) => {
         console.log(res);
+        var msg = "";
+        this.isloggedIn = true;
+        return res; 
           if(res.message == "Check email"){
             var msg = "";
             this.isloggedIn = true;
@@ -84,7 +87,7 @@ getEnvironment(): boolean {
           return of(this.isloggedIn); // aquí devuelves un observable que emite this.isloggedIn en caso de error
         })
       );
-  }
+  }*/
 
 
   checkLogin(formValue: any): Observable<any> {
