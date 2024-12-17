@@ -28,7 +28,6 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
   sending: boolean = false;
 
   isVerifyemail: boolean = false;
-  isEmailBusy: boolean = false;
   openedTerms: boolean = false;
   isApp: boolean = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 && location.hostname != "localhost" && location.hostname != "127.0.0.1";
 
@@ -151,7 +150,6 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
 
     this.sending = true;
     this.isVerifyemail = false;
-    this.isEmailBusy = false;
     //codificar el password
     this.registerForm.value.email = (this.registerForm.value.email).toLowerCase();
 
@@ -159,7 +157,7 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
       params.captchaToken = this.captchaToken;
       this.subscription.add(this.http.post(environment.api + '/api/signup', params)
         .subscribe((res: any) => {
-          if (res.message == 'Account created') {
+          if (res.message == 'Login to your account if exists') {
             this.isVerifyemail = true;
             this.isVerifyemail = true;
             Swal.fire('', 
@@ -168,13 +166,12 @@ export class RegisterPageComponent implements OnDestroy, OnInit {
               "success");
               //go to login
               this.goToLogin();
-          }else if (res.message == 'Si existe una cuenta asociada, recibirá un correo con más instrucciones.') {
-            this.isEmailBusy = true;
-            Swal.fire(this.translate.instant("generics.Warning"), 'Si existe una cuenta asociada, recibirá un correo con más instrucciones.', "warning");
-          }else if (res.message == 'Token is empty or invalid' || res.message == 'recaptcha failed') {
-            Swal.fire(this.translate.instant("generics.Warning"), res.message, "warning");
+          }else if ( res.message == 'recaptcha failed') {
+            Swal.fire(this.translate.instant("generics.Warning"), 'Por favor, complete el captcha antes de continuar', "warning");
+          }else{
+            Swal.fire(this.translate.instant("generics.Warning"), this.translate.instant("generics.error try again"), "warning");
           }
-          if (res.message != 'Account created') {
+          if (res.message != 'Login to your account if exists') {
             this.needCaptcha = true;
             this.addRecaptchaScript();
           }
