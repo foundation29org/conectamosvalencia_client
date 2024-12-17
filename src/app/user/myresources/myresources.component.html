@@ -568,13 +568,7 @@
 
 
 				<div class="map-container offset-1 col-10">
-					<agm-map [latitude]="defaultLat" [longitude]="defaultLng" [zoom]="7"
-						(mapReady)="mapReadyHandler($event)">
-						<agm-marker *ngIf="showMarker && resourceForm.get('lat').value"
-							[latitude]="resourceForm.get('lat').value" [longitude]="resourceForm.get('lng').value"
-							[markerDraggable]="true" (dragEnd)="onMarkerDragEnd($event)">
-						</agm-marker>
-					</agm-map>
+					<div class="map-container" id="mapContainer" style="height: 400px; width: 100%;"></div>
 				</div>
 
 				<!-- Campos ocultos para el formulario -->
@@ -617,10 +611,9 @@
 	</div>
 	<div class="modal-body">
 		<div class="map-container" style="height: 400px;">
-			<agm-map [latitude]="selectedLocation.lat" [longitude]="selectedLocation.lng" [zoom]="15">
-				<agm-marker [latitude]="selectedLocation.lat" [longitude]="selectedLocation.lng">
-				</agm-marker>
-			</agm-map>
+			<div id="selectedMapContainer" style="height: 400px;">
+				<!-- Azure Maps renderiza aquí -->
+			</div>
 		</div>
 	</div>
 	<div class="modal-footer">

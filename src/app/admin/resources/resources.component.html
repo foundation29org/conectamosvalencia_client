@@ -188,10 +188,9 @@
 	</div>
 	<div class="modal-body">
 		<div class="map-container" style="height: 400px;">
-			<agm-map [latitude]="selectedLocation.lat" [longitude]="selectedLocation.lng" [zoom]="15">
-				<agm-marker [latitude]="selectedLocation.lat" [longitude]="selectedLocation.lng">
-				</agm-marker>
-			</agm-map>
+			<div id="selectedMapContainer" style="height: 400px;">
+				<!-- Azure Maps renderiza aquí -->
+			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
@@ -387,13 +386,7 @@
             </div>
             <div class="card-body">
                 <div class="map-container" style="height: 400px;">
-                    <agm-map [latitude]="selectedResource.location.lat" 
-                            [longitude]="selectedResource.location.lng" 
-                            [zoom]="15">
-                        <agm-marker [latitude]="selectedResource.location.lat" 
-                                  [longitude]="selectedResource.location.lng">
-                        </agm-marker>
-                    </agm-map>
+                    <div class="map-container" id="mapContainer" style="height: 400px; width: 100%;"></div>
                 </div>
             </div>
         </div>

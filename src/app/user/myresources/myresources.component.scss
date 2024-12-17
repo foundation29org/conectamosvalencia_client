@@ -6,6 +6,13 @@
   width: 100%;
 }
 
+::ng-deep #atlas-map-state,
+::ng-deep #atlas-map-style,
+::ng-deep #atlas-map-shortcuts,
+::ng-deep .atlas-control-container {
+  display: none !important;
+}
+
 ::ng-deep .cdk-overlay-container {
   z-index: 9999 !important;
 }
