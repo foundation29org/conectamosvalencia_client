@@ -438,7 +438,7 @@ viewResource(resource: any) {
     lat: resource.location?.lat,
     lng: resource.location?.lng
   };
-  delete resourceData.location;  // Eliminamos el objeto location original
+  //delete resourceData.location;  // Eliminamos el objeto location original
 
   this.selectedResource = resourceData;
 
