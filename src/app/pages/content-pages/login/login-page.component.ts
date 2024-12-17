@@ -1,6 +1,8 @@
-import { Component, ViewChild, OnDestroy, OnInit } from '@angular/core';
+import { Component, ViewChild, OnDestroy, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from "@angular/router";
+import { environment } from 'environments/environment';
+import { HttpClient } from "@angular/common/http";
 import { AuthService } from '../../../../app/shared/auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -20,17 +22,9 @@ import { catchError } from 'rxjs/operators';
 export class LoginPageComponent implements OnDestroy, OnInit{
 
     @ViewChild('f') loginForm: NgForm;
-    //loginForm: FormGroup;
     sending: boolean = false;
 
-    isBlockedAccount: boolean = false;
     isLoginFailed: boolean = false;
-    errorAccountActivated: boolean = false;
-    emailResent: boolean = false;
-    supportContacted: boolean = false;
-    isAccountActivated: boolean = false;
-    isActivationPending: boolean = false;
-    isBlocked: boolean = false;
     email: string;
     userEmail: string;
     patient: any;
@@ -42,7 +36,13 @@ export class LoginPageComponent implements OnDestroy, OnInit{
     isApp: boolean = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1 && location.hostname != "localhost" && location.hostname != "127.0.0.1";
     haveToken: boolean = false;
 
-    constructor(private router: Router, public authService: AuthService, public translate: TranslateService, public toastr: ToastrService) {
+    @ViewChild('recaptcha') recaptchaElement: ElementRef;
+    captchaToken: string = "";
+    needCaptcha: boolean = true;
+    private lastSubmitTime: number = 0;
+    private readonly THROTTLE_TIME_MS: number = 2000; // 2 segundos entre intentos
+
+    constructor(private router: Router, public authService: AuthService, public translate: TranslateService, public toastr: ToastrService, private cdr: ChangeDetectorRef, private http: HttpClient) {
      }
 
 
@@ -57,6 +57,48 @@ export class LoginPageComponent implements OnDestroy, OnInit{
     } else {
         this.checkAuthentication();
     }
+
+    this.addRecaptchaScript();
+}
+
+renderReCaptch() {
+  this.needCaptcha = true;
+  if(this.recaptchaElement==undefined){
+      location.reload();
+  }else{
+      try{  
+          const size = window.innerWidth < 400 ? 'compact' : 'normal';
+          window['grecaptcha'].render(this.recaptchaElement.nativeElement, {
+              'sitekey' : environment.captcha,
+              'size': size,
+              'callback': (response) => {
+                this.captchaToken = response;
+                this.needCaptcha = false;
+                this.cdr.detectChanges(); 
+              }
+          });
+      }catch(e){
+          console.log(e);
+          window['grecaptcha'].reset();
+          this.needCaptcha = true;
+      }
+  }
+}
+
+addRecaptchaScript() {
+
+  window['grecaptchaCallback'] = () => {
+    this.renderReCaptch();
+  }
+
+  (function(d, s, id, obj){
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) { obj.renderReCaptch(); return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "https://www.google.com/recaptcha/api.js?onload=grecaptchaCallback&amp;render=explicit";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'recaptcha-jssdk', this));
+
 }
 
 private checkAuthentication() {
@@ -141,17 +183,79 @@ private handleLoginWithEmailAndKey(email: string, key: string) {
        }
      }
 
-     sendSignInLink(email: string, event?: Event) {
+     sendSignInLink() {
+
+      if (!this.captchaToken) {
+        Swal.fire(
+          this.translate.instant("generics.Warning"),
+          'Por favor, complete el captcha antes de continuar',
+          "warning"
+        );
+        return;
+      }
+      // Rate limiting básico
+      const now = Date.now();
+      if (now - this.lastSubmitTime < this.THROTTLE_TIME_MS) {
+        Swal.fire(
+          this.translate.instant("generics.Warning"),
+          'Por favor, espere unos segundos antes de intentar nuevamente',
+          "warning"
+        );
+        return;
+      }
+      this.lastSubmitTime = now;
+      
       this.sending = true;
       this.isLoginFailed = false;
-      if(event) {
-        event.preventDefault();  // Evita el envío real del formulario
-      }
-      let form = {email: email};
-    this.subscription.add( this.authService.login(form).subscribe(
+      this.loginForm.value.email = (this.loginForm.value.email).toLowerCase();
+      let form = {email: this.loginForm.value.email, captchaToken: this.captchaToken};
+      this.subscription.add(this.http.post(environment.api + '/api/login', form)
+      .subscribe((res: any) => {
+        if(res.message == 'Si existe una cuenta asociada, recibirá un correo con el enlace de inicio de sesión.'){
+          this.sending = false;
+          Swal.fire({
+            title: '¡Ya casi está!',
+            html: '<p class="mt-2">Hemos enviado un enlace de acceso a tu dirección de email.</p><ol class="text-left"><li class="mb-2">Abre tu bandeja de entrada y busca un email de ConectamosValencia.</li> <li class="mb-2">Haz clic en el enlace dentro del email para completar el proceso de inicio de sesión. Ten en cuenta que este enlace solo es válido durante 5 minutos.</li> <li class="mb-2">Si no ves el email, revisa tu carpeta de spam o correo no deseado. Si aún no lo encuentras o el enlace ha expirado, por favor, inicia sesión de nuevo.</li> </ol>',
+            icon: 'success',
+            showCancelButton: false,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+          })
+          this.isLoginFailed = false;
+        }else{
+          this.needCaptcha = true;
+          this.addRecaptchaScript();
+          this.sending = false;
+          this.isLoginFailed = true;
+        }
+      }, (err) => {
+        console.log(err);
+        console.log(err.error.message);
+        if(err.error.message == 'recaptcha failed'){
+          Swal.fire(this.translate.instant("generics.Warning"), 'Por favor, complete el captcha antes de continuar', "warning");
+        }else{
+          Swal.fire(this.translate.instant("generics.Warning"), this.translate.instant("generics.error try again"), "warning");
+        }
+        this.needCaptcha = true;
+        this.addRecaptchaScript();
+        this.sending = false;
+      }));
+
+    /*this.subscription.add( this.authService.login(form).subscribe(
       (response:any) => {
         this.sending = false;
         console.log(response);
+        Swal.fire({
+          title: '¡Ya casi está!',
+          html: '<p class="mt-2">Hemos enviado un enlace de acceso a tu dirección de email.</p><ol class="text-left"><li class="mb-2">Abre tu bandeja de entrada y busca un email de ConectamosValencia.</li> <li class="mb-2">Haz clic en el enlace dentro del email para completar el proceso de inicio de sesión. Ten en cuenta que este enlace solo es válido durante 5 minutos.</li> <li class="mb-2">Si no ves el email, revisa tu carpeta de spam o correo no deseado. Si aún no lo encuentras o el enlace ha expirado, por favor, inicia sesión de nuevo.</li> </ol>',
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonColor: '#DD6B55',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+        })
+        this.isLoginFailed = false;
         if(response.message === "Check email") { 
           Swal.fire({
             title: '¡Ya casi está!',
@@ -180,7 +284,7 @@ private handleLoginWithEmailAndKey(email: string, key: string) {
           }
         }
         
-      }));
+      }));*/
     }
 
     onRegister() {
