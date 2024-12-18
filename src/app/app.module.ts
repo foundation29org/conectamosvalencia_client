@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from "./shared/shared.module";
 import { ToastrModule } from "ngx-toastr";
-import { AgmCoreModule } from "@agm/core";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpClient } from "@angular/common/http";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
@@ -61,10 +60,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
           useFactory: createTranslateLoader,
           deps: [HttpClient]
         }
-      }),
-      AgmCoreModule.forRoot({
-        apiKey: environment.googlemapkey,
-        language: 'es'
       }),
       PerfectScrollbarModule
     ],

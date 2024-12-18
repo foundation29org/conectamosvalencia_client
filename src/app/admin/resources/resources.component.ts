@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { json2csv } from 'json-2-csv';
 import Swal from 'sweetalert2';
 import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
+import * as atlas from 'azure-maps-control';
 
 @Component({
     selector: 'app-resources',
@@ -44,7 +45,8 @@ export class ResourcesComponent implements OnInit, OnDestroy{
   sortDirection = 1;  // 1 ascendente, -1 descendente
   sortColumn = 'timestamp';  
 
-  map: any;
+  map!: atlas.Map;
+  markers: atlas.HtmlMarker[] = []; // Array to hold markers
   mapClickListener: any;
   showMarker = false;
   selectedLocation: any = null;
@@ -312,7 +314,7 @@ export class ResourcesComponent implements OnInit, OnDestroy{
   }
 
 
- showOnMap(location: any) {
+ async showOnMap(location: any) {
   let ngbModalOptions: NgbModalOptions = {
     keyboard: false,
     windowClass: 'ModalClass-md'
@@ -320,6 +322,58 @@ export class ResourcesComponent implements OnInit, OnDestroy{
   
   this.selectedLocation = location;
   this.modalService.open(this.mapModal, ngbModalOptions);
+  await this.delay(200); 
+  this.initMap2();
+}
+
+
+delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+initMap2() {
+  const mapContainer = document.getElementById('selectedMapContainer');
+  
+  if (mapContainer) {
+    this.map = new atlas.Map('selectedMapContainer', {
+      center: [this.selectedLocation.lng, this.selectedLocation.lat],
+      zoom: 12,
+      language: 'es-ES',
+      authOptions: {
+        authType: atlas.AuthenticationType.subscriptionKey,
+        subscriptionKey: environment.azureMapsKey
+      }
+    });
+    this.addMarker([this.selectedLocation.lng, this.selectedLocation.lat]);
+  }
+  
+ 
+}
+
+addMarker(coordinates) {
+  // Clear existing markers
+  this.markers.forEach(marker => this.map.markers.remove(marker));
+  this.markers = [];
+
+  // Create a new marker
+  const marker = new atlas.HtmlMarker({
+      position: coordinates,
+      draggable: true,
+      popup: new atlas.Popup({
+          content: '<div>Marker</div>'
+      })
+  });
+
+  // Add the marker to the map
+  this.map.markers.add(marker);
+  this.markers.push(marker); // Store the marker reference
+
+  // Update the map center to the marker's position
+  /*this.map.setCamera({
+      center: coordinates,
+      zoom: 15 // Adjust zoom level as needed
+  });*/
+      this.showMarker = true;
 }
 
   capitalizeFirstLetter(string) {
@@ -431,7 +485,7 @@ deleteResource(resourceId: string) {
   });
 }
 
-viewResource(resource: any) {
+async viewResource(resource: any) {
   // Reestructurar la ubicación para que coincida con el formulario
   const resourceData = {
     ...resource,
@@ -453,8 +507,38 @@ viewResource(resource: any) {
     keyboard: false,
     windowClass: 'ModalClass-lg'
   };
-  
+  console.log(this.selectedResource)
   this.modalReference = this.modalService.open(this.viewResourceModal, ngbModalOptions);
+  this.selectedResource.location.lat = resource.location.lat;
+    this.selectedResource.location.lng = resource.location.lng;
+  await this.delay(200); 
+    this.initMap();
+    await this.delay(200); 
+    this.addMarker([resource.location.lng, resource.location.lat]);
+    
+    /*this.selectedResource.patchValue({
+      lat: resource.location.lat,
+      lng: resource.location.lng
+    });*/
+}
+
+initMap() {
+
+  const mapContainer = document.getElementById('mapContainer');
+  
+  if (mapContainer) {
+    this.map = new atlas.Map('mapContainer', {
+      center: [this.defaultLng, this.defaultLat],
+      zoom: 7,
+      language: 'es-ES',
+      authOptions: {
+        authType: atlas.AuthenticationType.subscriptionKey,
+        subscriptionKey: environment.azureMapsKey
+      }
+    });
+  }
+  
+ 
 }
 
 

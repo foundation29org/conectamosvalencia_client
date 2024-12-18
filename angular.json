@@ -30,7 +30,8 @@
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/@swimlane/ngx-datatable/index.css",
               "node_modules/@swimlane/ngx-datatable/themes/bootstrap.css",
-              "node_modules/@swimlane/ngx-datatable/assets/icons.css"
+              "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+              "node_modules/azure-maps-control/dist/atlas.min.css"
             ],
             "scripts": [
               "src/assets/vendor/pace/pace.min.js",
@@ -131,7 +132,8 @@
             "styles": [
               "src/assets/css/demo.css",
               "src/assets/sass/app.scss",
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/azure-maps-control/dist/atlas.min.css"
             ],
             "assets": [
               "src/assets",
