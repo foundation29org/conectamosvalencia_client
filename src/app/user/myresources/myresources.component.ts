@@ -261,7 +261,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     const mapContainer = document.getElementById('mapContainer');
     
     if (mapContainer) {
-      console.log('mapContainer');
       this.map = new atlas.Map('mapContainer', {
         center: [this.defaultLng, this.defaultLat],
         zoom: 7,
@@ -274,7 +273,6 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
 
       this.map.events.add('click', (e) => {
         const coordinates = e.position;
-      console.log('Coordenadas del click:', coordinates);
         this.addMarker(coordinates);
         this.resourceForm.patchValue({
           lat: coordinates[1],
@@ -670,7 +668,6 @@ initMap2() {
   const mapContainer = document.getElementById('selectedMapContainer');
   
   if (mapContainer) {
-    console.log('selectedMapContainer');
     this.map = new atlas.Map('selectedMapContainer', {
       center: [this.selectedLocation.lng, this.selectedLocation.lat],
       zoom: 12,

@@ -335,7 +335,6 @@ initMap2() {
   const mapContainer = document.getElementById('selectedMapContainer');
   
   if (mapContainer) {
-    console.log('selectedMapContainer');
     this.map = new atlas.Map('selectedMapContainer', {
       center: [this.selectedLocation.lng, this.selectedLocation.lat],
       zoom: 12,
@@ -528,7 +527,6 @@ initMap() {
   const mapContainer = document.getElementById('mapContainer');
   
   if (mapContainer) {
-    console.log('mapContainer');
     this.map = new atlas.Map('mapContainer', {
       center: [this.defaultLng, this.defaultLat],
       zoom: 7,
