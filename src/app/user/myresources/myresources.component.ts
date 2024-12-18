@@ -12,6 +12,7 @@ import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstr
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import Swal from 'sweetalert2';
+import * as atlas from 'azure-maps-control';
 
 @Component({
     selector: 'app-myresources',
@@ -42,7 +43,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   sortDirection = 1;  // 1 ascendente, -1 descendente
   sortColumn = 'timestamp';  
 
-  map: any;
+ 
   mapClickListener: any;
   showMarker = false;
   selectedLocation: any = null;
@@ -61,6 +62,8 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   lng: number = -0.3763;
   zoom = 7;
   rowIndex: number = -1;
+  map!: atlas.Map;
+  markers: atlas.HtmlMarker[] = []; // Array to hold markers
 
   constructor(private http: HttpClient, public translate: TranslateService, private authService: AuthService, public toastr: ToastrService, private modalService: NgbModal, private dateService: DateService, private fb: FormBuilder, private zone: NgZone, private errorHandler: ErrorHandlerService){
     this.initForm();
@@ -237,7 +240,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
   }
 
 
-  showNewResourceModal(content) {
+  async showNewResourceModal(content) {
     this.initForm(); // Asegurarse de que el formulario está inicializado
     
     let ngbModalOptions: NgbModalOptions = {
@@ -245,7 +248,67 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
       windowClass: 'ModalClass-lg'
     };
     this.modalReference = this.modalService.open(content, ngbModalOptions);
+    await this.delay(200); 
+    this.initMap();
   }
+
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  initMap() {
+
+    const mapContainer = document.getElementById('mapContainer');
+    
+    if (mapContainer) {
+      this.map = new atlas.Map('mapContainer', {
+        center: [this.defaultLng, this.defaultLat],
+        zoom: 7,
+        language: 'es-ES',
+        authOptions: {
+          authType: atlas.AuthenticationType.subscriptionKey,
+          subscriptionKey: environment.azureMapsKey
+        }
+      });
+
+      this.map.events.add('click', (e) => {
+        const coordinates = e.position;
+        this.addMarker(coordinates);
+        this.resourceForm.patchValue({
+          lat: coordinates[1],
+          lng: coordinates[0]
+        });
+        this.showMarker = true;
+      });
+    }
+    
+   
+  }
+
+  addMarker(coordinates) {
+    // Clear existing markers
+    this.markers.forEach(marker => this.map.markers.remove(marker));
+    this.markers = [];
+
+    // Create a new marker
+    const marker = new atlas.HtmlMarker({
+        position: coordinates,
+        draggable: true,
+        popup: new atlas.Popup({
+            content: '<div>Marker</div>'
+        })
+    });
+
+    // Add the marker to the map
+    this.map.markers.add(marker);
+    this.markers.push(marker); // Store the marker reference
+
+    // Update the map center to the marker's position
+    /*this.map.setCamera({
+        center: coordinates,
+        zoom: 15 // Adjust zoom level as needed
+    });*/
+}
 
   closeModal() {
     this.modalReference.close();
@@ -358,7 +421,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     }
   }
 
-  editResource(resource: any) {
+  async editResource(resource: any) {
     // Reestructurar la ubicación para que coincida con el formulario
     const resourceData = {
       ...resource,
@@ -383,6 +446,14 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     };
     
     this.modalReference = this.modalService.open(this.contentResource, ngbModalOptions);
+    await this.delay(200); 
+    this.initMap();
+    await this.delay(200); 
+    this.addMarker([resource.location.lng, resource.location.lat]);
+    this.resourceForm.patchValue({
+      lat: resource.location.lat,
+      lng: resource.location.lng
+    });
 }
 
   deleteResource(resourceId: string) {
@@ -564,18 +635,7 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
     }
   }
 
-  mapReadyHandler(map: google.maps.Map): void {
-    this.map = map;
-    this.mapClickListener = this.map.addListener('click', (e: google.maps.MouseEvent) => {
-      this.zone.run(() => {
-        this.resourceForm.patchValue({
-          lat: e.latLng.lat(),
-          lng: e.latLng.lng()
-        });
-        this.showMarker = true;
-      });
-    });
-  }
+
 
   onMarkerDragEnd(event: any) {
     this.resourceForm.patchValue({
@@ -589,17 +649,38 @@ export class MyResourcesComponent implements OnInit, OnDestroy{
       lat: '',
       lng: ''
     });
+    this.markers.forEach(marker => this.map.markers.remove(marker));
     this.showMarker = false;
   }
 
- showOnMap(location: any) {
+ async showOnMap(location: any) {
   let ngbModalOptions: NgbModalOptions = {
     keyboard: false,
     windowClass: 'ModalClass-md'
   };
-  
   this.selectedLocation = location;
   this.modalService.open(this.mapModal, ngbModalOptions);
+  await this.delay(200); 
+  this.initMap2();
+}
+
+initMap2() {
+  const mapContainer = document.getElementById('selectedMapContainer');
+  
+  if (mapContainer) {
+    this.map = new atlas.Map('selectedMapContainer', {
+      center: [this.selectedLocation.lng, this.selectedLocation.lat],
+      zoom: 12,
+      language: 'es-ES',
+      authOptions: {
+        authType: atlas.AuthenticationType.subscriptionKey,
+        subscriptionKey: environment.azureMapsKey
+      }
+    });
+    this.addMarker([this.selectedLocation.lng, this.selectedLocation.lat]);
+  }
+  
+ 
 }
 
 

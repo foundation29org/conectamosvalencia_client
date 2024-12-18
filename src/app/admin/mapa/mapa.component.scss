@@ -3,6 +3,13 @@
   width: 100%;
 }
 
+::ng-deep #atlas-map-state,
+::ng-deep #atlas-map-style,
+::ng-deep #atlas-map-shortcuts,
+::ng-deep .atlas-control-container {
+  display: none !important;
+}
+
 .description-text {
   white-space: normal;
   word-wrap: break-word;

@@ -5,8 +5,7 @@ import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorHandlerService } from 'app/shared/services/error-handler.service';
-declare const google: any;
-
+import * as atlas from 'azure-maps-control';
 
 @Component({
     selector: 'app-mapa',
@@ -16,7 +15,8 @@ declare const google: any;
 
 export class MapaPageComponent2 implements OnInit{
   @ViewChild('mapContainer') mapContainer: any;
-  
+  map!: atlas.Map;
+  heatmapLayer!: atlas.layer.HeatMapLayer;
   center = {
     lat: 39.4699, // Valencia center
     lng: -0.3763
@@ -26,17 +26,7 @@ export class MapaPageComponent2 implements OnInit{
   needs: any[] = [];
   filteredNeeds: any[] = [];
   selectedNeedType: string = 'all';
-  heatmapLayer: any;
-  map: any;
-  
-  mapOptions = {
-    mapTypeId: 'roadmap',
-    zoomControl: true,
-    scrollwheel: true,
-    disableDoubleClickZoom: true,
-    maxZoom: 20,
-    minZoom: 8,
-  };
+  dataSource!: atlas.source.DataSource;
   
   needTypes = [
     { 
@@ -209,33 +199,41 @@ export class MapaPageComponent2 implements OnInit{
   }
 
   initMap() {
-    this.map = new google.maps.Map(this.mapContainer.nativeElement, {
-      center: this.center,
-      zoom: this.zoom,
-      ...this.mapOptions
+    this.map = new atlas.Map(this.mapContainer.nativeElement, {
+      center: [this.center.lng, this.center.lat],
+      zoom: 7,
+      authOptions: {
+        authType: atlas.AuthenticationType.subscriptionKey,
+        subscriptionKey: environment.azureMapsKey
+      }
     });
-
-    this.heatmapLayer = new google.maps.visualization.HeatmapLayer({
-      map: this.map,
-      data: [],
-      radius: 20,
-      opacity: 0.8,
-      gradient: [
-        'rgba(0, 255, 255, 0)',
-        'rgba(0, 255, 255, 1)',
-        'rgba(0, 191, 255, 1)',
-        'rgba(0, 127, 255, 1)',
-        'rgba(0, 63, 255, 1)',
-        'rgba(0, 0, 255, 1)',
-        'rgba(0, 0, 223, 1)',
-        'rgba(0, 0, 191, 1)',
-        'rgba(0, 0, 159, 1)',
-        'rgba(0, 0, 127, 1)',
-        'rgba(63, 0, 91, 1)',
-        'rgba(127, 0, 63, 1)',
-        'rgba(191, 0, 31, 1)',
-        'rgba(255, 0, 0, 1)'
-      ]
+  
+    this.map.events.add('ready', () => {
+      // Inicializar fuente de datos
+      this.dataSource = new atlas.source.DataSource();
+      this.map.sources.add(this.dataSource);
+  
+      // Crear la capa de heatmap con la fuente de datos inicializada
+      this.heatmapLayer = new atlas.layer.HeatMapLayer(this.dataSource, null, {
+        radius: 20,
+        opacity: 0.8,
+        colorGradient: [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0, 'rgba(0,0,255,0)',
+          0.1, 'royalblue',
+          0.3, 'cyan',
+          0.5, 'lime',
+          0.7, 'yellow',
+          1, 'red'
+        ]
+      });
+  
+      this.map.layers.add(this.heatmapLayer);
+  
+      // Cargar necesidades filtradas
+      this.filterNeeds();
     });
   }
 
@@ -284,42 +282,19 @@ export class MapaPageComponent2 implements OnInit{
   }
 
   updateHeatmap() {
-    if (this.heatmapLayer) {
-      const heatmapData = this.filteredNeeds.map(need => ({
-        location: new google.maps.LatLng(need.location.lat, need.location.lng),
-        weight: 1
-      }));
-      
-      this.heatmapLayer.setData(heatmapData);
-    }
-  }
-
-  onMapInitialized(event: any) {
-    const map = this.map.googleMap;
-    if (map) {
-      this.heatmapLayer = new google.maps.visualization.HeatmapLayer({
-        map: map,
-        data: [],
-        radius: 20,
-        opacity: 0.8,
-        gradient: [
-          'rgba(0, 255, 255, 0)',
-          'rgba(0, 255, 255, 1)',
-          'rgba(0, 191, 255, 1)',
-          'rgba(0, 127, 255, 1)',
-          'rgba(0, 63, 255, 1)',
-          'rgba(0, 0, 255, 1)',
-          'rgba(0, 0, 223, 1)',
-          'rgba(0, 0, 191, 1)',
-          'rgba(0, 0, 159, 1)',
-          'rgba(0, 0, 127, 1)',
-          'rgba(63, 0, 91, 1)',
-          'rgba(127, 0, 63, 1)',
-          'rgba(191, 0, 31, 1)',
-          'rgba(255, 0, 0, 1)'
-        ]
+    if (this.dataSource) {
+      // Limpia la fuente de datos existente
+      this.dataSource.clear();
+  
+      // Genera puntos a partir de las necesidades filtradas
+      const features = this.filteredNeeds.map(need => {
+        return new atlas.data.Feature(
+          new atlas.data.Point([need.location.lng, need.location.lat])
+        );
       });
-      this.filterNeeds();
+  
+      // Añade los puntos a la fuente de datos
+      this.dataSource.add(features);
     }
   }
 
